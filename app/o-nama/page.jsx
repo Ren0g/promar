@@ -49,7 +49,7 @@ export default function ONamaPage() {
               Ako trebate studio koji radi web, aplikacije i marketing – javite se.
             </p>
             <Button href="/kontakt" variant="primary">
-              Kontaktiraj nas
+              Kontaktirajte nas
             </Button>
           </div>
         </div>
