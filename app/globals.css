@@ -570,3 +570,14 @@ p {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+/* TWO COLUMNS GRID LAYOUT */
+.two-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 36px;
+}
+
+/* CTA blok centriran vertikalno */
+.two-cols > .about-highlight {
+  align-self: center;
+}
