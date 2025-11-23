@@ -32,13 +32,7 @@ export default function HomePage() {
 
           <div className="hero-media">
             <img src="/images/hero-image.jpg" alt="Promar hero vizual" />
-            <img
-              src="/images/wave-orange.svg"
-              alt=""
-              aria-hidden="true"
-              className="hero-wave"
-            />
-          </div>
+                   </div>
         </div>
       </section>
 
