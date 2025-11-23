@@ -42,7 +42,7 @@ export default function Header() {
 
         <div className="header-cta">
           <Button href="/kontakt" variant="primary">
-            Zatraži ponudu
+            Zatražite ponudu
           </Button>
         </div>
       </div>
