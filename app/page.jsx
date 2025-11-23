@@ -15,19 +15,16 @@ export default function HomePage() {
         <div className="container hero-inner">
           <div className="hero-text">
             <p className="hero-kicker">Studio za web, aplikacije i marketing</p>
-            <h1>Radimo web stranice, aplikacije i digitalni marketing.</h1>
-            <p className="hero-subtitle">
-              Pomažemo brendovima da izgledaju profesionalno i da privuku više
-              klijenata.
-            </p>
-            <div className="hero-actions">
-              <Button href="/kontakt" variant="primary">
-                Spreman za novi web? Javi se.
-              </Button>
-              <Button href="/reference" variant="secondary">
-                Pogledaj reference
-              </Button>
-            </div>
+            <h1 className="fade-in">Radimo web stranice, aplikacije i digitalni marketing.</h1>
+
+<p className="hero-subtitle fade-in-delay">
+  Pomažemo brendovima da izgledaju profesionalno i privuku više klijenata.
+</p>
+
+<div className="hero-actions fade-in-slow">
+  <Button href="/kontakt" variant="primary">Spreman za novi web? Javi se.</Button>
+</div>
+
           </div>
 
           <div className="hero-media">
