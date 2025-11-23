@@ -1,0 +1,173 @@
+export const metadata = {
+  title: "Promar – Web, aplikacije i marketing",
+  description:
+    "Studio iz Velike Gorice za web stranice, web aplikacije, digitalni marketing te foto i video produkciju. Pomažemo brendovima da izgledaju profesionalno i privuku više klijenata."
+};
+
+import Button from "../components/Button";
+import SectionTitle from "../components/SectionTitle";
+
+export default function HomePage() {
+  return (
+    <>
+      {/* HERO */}
+      <section className="hero">
+        <div className="container hero-inner">
+          <div className="hero-text">
+            <p className="hero-kicker">Studio za web, aplikacije i marketing</p>
+            <h1>Radimo web stranice, aplikacije i digitalni marketing.</h1>
+            <p className="hero-subtitle">
+              Pomažemo brendovima da izgledaju profesionalno i da privuku više
+              klijenata.
+            </p>
+            <div className="hero-actions">
+              <Button href="/kontakt" variant="primary">
+                Spreman za novi web? Javi se.
+              </Button>
+              <Button href="/reference" variant="secondary">
+                Pogledaj reference
+              </Button>
+            </div>
+          </div>
+
+          <div className="hero-media">
+            <img src="/images/hero-image.jpg" alt="Promar hero vizual" />
+            <img
+              src="/images/wave-orange.svg"
+              alt=""
+              aria-hidden="true"
+              className="hero-wave"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* O PROMARU */}
+      <section className="section">
+        <div className="container">
+          <SectionTitle
+            kicker="O PROMARU"
+            title="Praktičan studio za web, aplikacije i marketing"
+            subtitle="Promar je studio specijaliziran za izradu web stranica, web aplikacija i digitalni marketing. Radimo brzo, uredno i bez kompliciranja."
+          />
+
+          <div className="two-cols">
+            <p>
+              Iza nas su projekti poput Fotqa i Tvornice vjenčanja. Spoj
+              iskustva u webu, videu i marketingu znači da dobivate partnera
+              koji razumije i tehnologiju i sadržaj.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* USLUGE – kratki pregled */}
+      <section className="section section-alt">
+        <div className="container">
+          <SectionTitle
+            kicker="USLUGE"
+            title="Web, aplikacije, marketing i produkcija"
+            subtitle="Sve što je potrebno da vaš brend online izgleda i funkcionira profesionalno."
+          />
+
+          <div className="cards-grid">
+            <div className="card">
+              <h3>Web stranice i web aplikacije</h3>
+              <p>Moderne, brze i mobilno prilagođene.</p>
+            </div>
+            <div className="card">
+              <h3>Digitalni marketing</h3>
+              <p>Društvene mreže, reklame, sadržaj, brendiranje.</p>
+            </div>
+            <div className="card">
+              <h3>Foto &amp; video produkcija</h3>
+              <p>Snima­nje, montaža, eventi, sport, brendovi.</p>
+            </div>
+          </div>
+
+          <div className="section-cta-centered">
+            <Button href="/usluge" variant="secondary">
+              Pogledaj sve usluge
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* REFERENCE – kratko */}
+      <section className="section">
+        <div className="container">
+          <SectionTitle
+            kicker="REFERENCE"
+            title="Stvarni projekti, stvarni rezultati"
+          />
+
+          <div className="references-grid">
+            <div className="reference-card">
+              <img
+                src="/images/reference-fotqa.jpg"
+                alt="Fotqa referenca"
+                className="reference-image"
+              />
+              <h3>Fotqa</h3>
+              <p>Web &amp; profesionalna foto/video produkcija.</p>
+            </div>
+            <div className="reference-card">
+              <img
+                src="/images/reference-vjencanja.jpg"
+                alt="Tvornica vjenčanja referenca"
+                className="reference-image"
+              />
+              <h3>Tvornica vjenčanja</h3>
+              <p>Platforma i web za najveću wedding zajednicu.</p>
+            </div>
+            <div className="reference-card">
+              <img
+                src="/images/reference-vgb.jpg"
+                alt="VGB referenca"
+                className="reference-image"
+              />
+              <h3>VGB – Velika Gorica Broadcast</h3>
+              <p>Sportska video produkcija i futsal snimke.</p>
+            </div>
+          </div>
+
+          <div className="section-cta-centered">
+            <Button href="/reference" variant="secondary">
+              Sve reference
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ZAŠTO MI */}
+      <section className="section section-alt">
+        <div className="container">
+          <SectionTitle
+            kicker="ZAŠTO MI"
+            title="Moderni webovi, brza komunikacija, stvarne reference"
+          />
+
+          <ul className="list-check">
+            <li>Moderni webovi i tehnologija.</li>
+            <li>Brza i jasna komunikacija.</li>
+            <li>Vlastita foto &amp; video produkcija.</li>
+            <li>Reference: Fotqa, Tvornica vjenčanja, VGB.</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="section section-cta">
+        <div className="container cta-inner">
+          <div>
+            <h2>Spreman za novi web?</h2>
+            <p>Javi se i dogovorit ćemo sve što trebate.</p>
+          </div>
+          <Button href="/kontakt" variant="primary">
+            Javi se
+          </Button>
+        </div>
+      </section>
+    </>
+  );
+}
