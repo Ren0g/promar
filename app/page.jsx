@@ -22,7 +22,10 @@ export default function HomePage() {
 </p>
 
 <div className="hero-actions fade-in-slow">
-  <Button href="/kontakt" variant="primary">Spreman za novi web? Javi se.</Button>
+  <Button href="/kontakt" variant="primary" className="glow">
+  Spreman za novi web? Javi se.
+</Button>
+
 </div>
 
           </div>
