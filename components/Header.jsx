@@ -19,7 +19,7 @@ export default function Header() {
     <header className="header">
       <div className="container header-inner">
         <Link href="/" className="logo">
-          <img src="/images/logo-primary.png" alt="Promar logo" />
+          <img src="/images/logo-dark.png" alt="Promar logo" />
         </Link>
 
         <nav className="nav">
