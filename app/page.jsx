@@ -158,8 +158,8 @@ export default function HomePage() {
       <section className="section section-cta">
         <div className="container cta-inner">
           <div>
-            <h2>Spreman za novi web?</h2>
-            <p>Javi se i dogovorit ćemo sve što trebate.</p>
+            <h2>Spremni za novi web?</h2>
+            <p>Javite se i dogovorit ćemo sve što trebate.</p>
           </div>
           <Button href="/kontakt" variant="primary">
             Javi se
