@@ -581,3 +581,29 @@ p {
 .two-cols > .about-highlight {
   align-self: center;
 }
+/* Fade-in animacija */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeInUp 0.7s ease-out forwards;
+}
+
+.fade-in-delay {
+  opacity: 0;
+  animation: fadeInUp 0.9s ease-out forwards;
+}
+
+.fade-in-slow {
+  opacity: 0;
+  animation: fadeInUp 1.2s ease-out forwards;
+}
