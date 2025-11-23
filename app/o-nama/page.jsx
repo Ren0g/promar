@@ -1,7 +1,7 @@
 export const metadata = {
   title: "O nama | Promar – Web, aplikacije i marketing",
   description:
-    "Praktičan studio koji spaja web, marketing i produkciju. Voditelj Renato Galeković, iskustvo kroz Fotqa, Tvornicu vjenčanja, VGB i druge projekte."
+    "Digitalna agencija specijalizirana za web stranice, web aplikacije i marketing."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -13,7 +13,7 @@ export default function ONamaPage() {
       <div className="container">
         <SectionTitle
           kicker="O NAMA"
-          title="Praktičan studio koji spaja web, marketing i produkciju"
+          title="Studio koji spaja web, aplikacije i digitalni marketing"
         />
 
         <div className="two-cols">
@@ -44,15 +44,13 @@ export default function ONamaPage() {
             </ul>
           </div>
 
-           <div className="about-highlight">
-              <p>
-                Ako trebate studio koji radi i web i marketing i produkciju –
-                javite se.
-              </p>
-              <Button href="/kontakt" variant="primary">
-                Kontaktiraj nas
-              </Button>
-            </div>
+          <div className="about-highlight">
+            <p>
+              Ako trebate studio koji radi web, aplikacije i marketing – javite se.
+            </p>
+            <Button href="/kontakt" variant="primary">
+              Kontaktiraj nas
+            </Button>
           </div>
         </div>
       </div>
