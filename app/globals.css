@@ -321,40 +321,83 @@ p {
   margin: 4px 0;
 }
 
-/* FOOTER */
+/* ============================
+   CLEAN PROMAR FOOTER
+   ============================ */
 
 .footer {
   background: #050505;
-  color: #fb6a13;
-  padding: 26px 0 22px;
+  padding: 40px 0;
+  color: #ffffff;
 }
 
 .footer-inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr) minmax(0, 0.9fr);
-  gap: 24px;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.8fr);
+  gap: 40px;
 }
 
 .footer-brand img {
-  height: 26px;
-  margin-bottom: 8px;
+  height: 32px;
+  margin-bottom: 12px;
 }
 
+.footer-brand p {
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Title "Navigacija" */
 .footer-links h4 {
-  font-size: 0.9rem;
-  margin-bottom: 8px;
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
 }
 
+/* Linkovi */
 .footer-links a {
   display: block;
-  font-size: 0.9rem;
-  margin-bottom: 4px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  padding: 3px 0;
+  color: #fb6a13;
+  transition: color 0.2s ease;
 }
 
-.footer-meta {
+.footer-links a:hover {
+  color: #ff7f33;
+}
+
+/* Meta tekst – © 2025 Promar */
+.footer-meta p {
+  margin: 0;
+  font-size: 0.9rem;
   text-align: right;
-  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+
+@media (max-width: 992px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .footer-meta p {
+    text-align: left;
+    margin-top: 20px;
+  }
 }
 
 /* SECTION TITLE & BUTTONS */
