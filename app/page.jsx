@@ -162,7 +162,7 @@ export default function HomePage() {
             <p>Javite se i dogovorit ćemo sve što trebate.</p>
           </div>
           <Button href="/kontakt" variant="primary">
-            Javi se
+            Javite se
           </Button>
         </div>
       </section>
