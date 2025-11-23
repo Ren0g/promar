@@ -44,14 +44,7 @@ export default function ONamaPage() {
             </ul>
           </div>
 
-          <div>
-            <h3>O Renatu</h3>
-            <p>
-              Voditelj: Renato Galeković. Iskustvo kroz Fotqa, Tvornicu
-              vjenčanja, VGB, web projekte, video i marketing.
-            </p>
-
-            <div className="about-highlight">
+           <div className="about-highlight">
               <p>
                 Ako trebate studio koji radi i web i marketing i produkciju –
                 javite se.
