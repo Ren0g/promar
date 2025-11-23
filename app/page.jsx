@@ -47,15 +47,19 @@ export default function HomePage() {
         <div className="container">
           <SectionTitle
             kicker="O PROMARU"
-            title="Praktičan studio za web, aplikacije i marketing"
-            subtitle="Promar je studio specijaliziran za izradu web stranica, web aplikacija i digitalni marketing. Radimo brzo, uredno i bez kompliciranja."
+            title="Agencija za web stranice, web aplikacije i digitalni marketing"
+            subtitle="Promar je digitalna agencija specijalizirana za izradu modernih web 
+            stranica, razvoj web aplikacija i provedbu učinkovitih digitalnih kampanja. 
+            Naš pristup temelji se na jasnoj strukturi, čistom dizajnu i funkcionalnim rješenjima 
+            koja klijentima donose stvarnu vrijednost — bez kompliciranja i nepotrebnih koraka."
           />
 
           <div className="two-cols">
             <p>
-              Iza nas su projekti poput Fotqa i Tvornice vjenčanja. Spoj
-              iskustva u webu, videu i marketingu znači da dobivate partnera
-              koji razumije i tehnologiju i sadržaj.
+              Iza nas su projekti poput Fotqa i Tvornice vjenčanja, što nam daje jedinstvenu 
+              kombinaciju iskustva u webu, videu, sadržaju i digitalnom marketingu. Upravo taj 
+              spoj omogućuje nam da razumijemo i tehnološku stranu i potrebe brenda, te isporučimo 
+              rješenja koja istovremeno dobro izgledaju i dobro funkcioniraju.
             </p>
           </div>
         </div>
