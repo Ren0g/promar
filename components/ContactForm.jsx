@@ -138,7 +138,7 @@ export default function ContactForm() {
       </div>
 
       <Button type="submit" variant="primary">
-        Zatraži ponudu
+        Zatražite ponudu
       </Button>
 
       {submitted && (
