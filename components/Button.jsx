@@ -7,20 +7,22 @@ export default function Button({
   href,
   type = "button",
   variant = "primary",
+  className = "",
   ...rest
 }) {
-  const className = `btn btn-${variant}`;
+  // Spojimo klase pravilno: default + variant + dodatne
+  const finalClass = `btn btn-${variant} ${className}`.trim();
 
   if (href) {
     return (
-      <Link href={href} className={className} {...rest}>
+      <Link href={href} className={finalClass} {...rest}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} className={className} {...rest}>
+    <button type={type} className={finalClass} {...rest}>
       {children}
     </button>
   );
