@@ -760,3 +760,13 @@ p {
   max-width: 900px;
   margin: 0 auto;
 }
+/* FIX: Paragrafi široki na laptopu, uži na mobitelu */
+.section p {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .section p {
+    max-width: 600px;
+  }
+}
