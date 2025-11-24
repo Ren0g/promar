@@ -10,34 +10,28 @@ export async function POST(req) {
       secure: false,
       auth: {
         user: "info@promar.hr",
-        pass: "dJoIllRrtC"
+        pass: "OVDJE_STAVI_LOZINKU"
       }
     });
 
-    const mailOptions = {
+    await transporter.sendMail({
       from: "Promar <info@promar.hr>",
       to: "info@promar.hr",
       subject: "Nova poruka sa Promar.hr",
       text: `
-        Ime: ${body.name}
-        Email: ${body.email}
-        Mobitel: ${body.phone}
-        Usluga: ${body.service}
+Ime: ${body.name}
+Email: ${body.email}
+Mobitel: ${body.phone}
+Usluga: ${body.service}
 
-        Poruka:
-        ${body.message}
+Poruka:
+${body.message}
       `
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200
     });
-  } catch (e) {
-    console.error(e);
-    return new Response(JSON.stringify({ success: false }), {
-      status: 500
-    });
+
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (err) {
+    console.error(err);
+    return new Response(JSON.stringify({ success: false }), { status: 500 });
   }
 }
