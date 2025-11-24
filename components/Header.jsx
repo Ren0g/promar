@@ -17,27 +17,30 @@ export default function Header() {
     { href: "/kontakt", label: "Kontakt" }
   ];
 
+  const isActive = (href) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
+
   return (
     <header className="header">
       <div className="container header-inner">
-        
         {/* Logo */}
-        <Link href="/" className="logo">
+        <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
           <img src="/images/logo-dark.png" alt="Promar logo" />
         </Link>
 
-        {/* Desktop navigation */}
+        {/* Desktop navigacija */}
         <nav className="nav">
-          {navItems.map((item) => {
-            const active = item.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.href);
-            return (
-              <Link key={item.href} href={item.href} className={active ? "active" : ""}>
-                {item.label}
-              </Link>
-            );
-          })}
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={isActive(item.href) ? "active" : ""}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         {/* Desktop CTA */}
@@ -47,17 +50,17 @@ export default function Header() {
           </Button>
         </div>
 
-        {/* Mobile Toggle */}
+        {/* Mobile toggle (hamburger) */}
         <div
           className="mobile-nav-toggle"
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label="Otvori navigaciju"
         >
           ☰
         </div>
-
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile meni */}
       <div className={`mobile-nav-menu ${menuOpen ? "show" : ""}`}>
         {navItems.map((item) => (
           <Link
@@ -68,7 +71,12 @@ export default function Header() {
             {item.label}
           </Link>
         ))}
-        <Button href="/kontakt" variant="primary" style={{ marginTop: "14px", width: "100%" }}>
+
+        <Button
+          href="/kontakt"
+          variant="primary"
+          style={{ marginTop: "14px", width: "100%" }}
+        >
           Zatražite ponudu
         </Button>
       </div>
