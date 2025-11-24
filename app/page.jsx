@@ -15,30 +15,32 @@ export default function HomePage() {
         <div className="container hero-inner">
           <div className="hero-text">
             <p className="hero-kicker">Studio za web, aplikacije i marketing</p>
-            <h1 className="fade-in">Radimo web stranice, aplikacije i digitalni marketing.</h1>
 
-<p className="hero-subtitle fade-in-delay">
-  Pomažemo brendovima da izgledaju profesionalno i privuku više klijenata.
-</p>
+            <h1 className="fade-in">
+              Radimo web stranice, aplikacije i digitalni marketing.
+            </h1>
 
-<div className="hero-actions fade-in-slow">
-  <Button href="/kontakt" variant="primary" className="glow">
-  Spreman za novi web? Javi se.
-</Button>
+            <p className="hero-subtitle fade-in-delay">
+              Pomažemo brendovima da izgledaju profesionalno i privuku više
+              klijenata.
+            </p>
 
-</div>
-
+            <div className="hero-actions fade-in-slow">
+              <Button href="/kontakt" variant="primary" className="glow">
+                Spreman za novi web? Javi se.
+              </Button>
+            </div>
           </div>
 
           <div className="hero-media">
             <img src="/images/hero-image.jpg" alt="Promar hero vizual" />
-                   </div>
+          </div>
         </div>
       </section>
 
       {/* O PROMARU */}
       <section className="section">
-        <div className="container">
+        <div className="container home-about">
           <SectionTitle
             kicker="O PROMARU"
             title="Agencija za web stranice, web aplikacije i digitalni marketing"
@@ -50,10 +52,11 @@ export default function HomePage() {
 
           <div className="two-cols">
             <p>
-              Iza nas su projekti poput Fotqa i Tvornice vjenčanja, što nam daje jedinstvenu 
-              kombinaciju iskustva u webu, videu, sadržaju i digitalnom marketingu. Upravo taj 
-              spoj omogućuje nam da razumijemo i tehnološku stranu i potrebe brenda, te isporučimo 
-              rješenja koja istovremeno dobro izgledaju i dobro funkcioniraju.
+              Iza nas su projekti poput Fotqa i Tvornice vjenčanja, što nam daje
+              jedinstvenu kombinaciju iskustva u webu, videu, sadržaju i
+              digitalnom marketingu. Upravo taj spoj omogućuje nam da razumijemo
+              i tehnološku stranu i potrebe brenda, te isporučimo rješenja koja
+              istovremeno dobro izgledaju i dobro funkcioniraju.
             </p>
           </div>
         </div>
