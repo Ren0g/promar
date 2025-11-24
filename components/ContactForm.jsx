@@ -59,6 +59,22 @@ export default function ContactForm() {
       return;
     }
 
+    // 🔥 DODANO — SLANJE NA BACKEND
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      setSubmitted(false);
+      alert("Greška pri slanju poruke.");
+      return;
+    }
+    // 🔥 KRAJ DODATKA
+
     console.log("Kontakt forma poslana:", values);
     setSubmitted(true);
   }
