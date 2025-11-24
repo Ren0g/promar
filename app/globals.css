@@ -755,3 +755,8 @@ p {
     max-width: 100%;
   }
 }
+/* Fix: better alignment for O PROMARU section on homepage */
+.home-about {
+  max-width: 900px;
+  margin: 0 auto;
+}
