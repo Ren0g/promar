@@ -1,4 +1,3 @@
-// Force Node.js runtime + disable all caching
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -32,14 +31,16 @@ Usluga: ${body.service}
 
 Poruka:
 ${body.message}
-      `
+`
     });
 
-    console.log("MAIL POSLAN:", info);
-
     return Response.json({ success: true });
+
   } catch (err) {
-    console.error("MAIL ERROR:", err);
-    return Response.json({ success: false, error: err.message }, { status: 500 });
+    // 🔥 umjesto console.error → vraćamo ERROR u response
+    return Response.json(
+      { success: false, message: err.message, stack: err.stack },
+      { status: 500 }
+    );
   }
 }
