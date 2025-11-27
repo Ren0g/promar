@@ -10,9 +10,9 @@ import nodemailer from "nodemailer";
 const LOGO_URL =
   "https://raw.githubusercontent.com/Ren0g/promar/6dd632d22033e7ac5939cff1a1b427872fcac79b/public/images/logo-dark.png";
 
-/* -----------------------------------------------------------------------------
-   HTML EMAIL (GLAVNI — tebi stiže)
------------------------------------------------------------------------------ */
+/* ============================================================================
+   HTML TEMPLATE — MAIL KOJI STIŽE TEBI
+============================================================================ */
 function generateHtmlEmail(data) {
   return `
   <!DOCTYPE html>
@@ -25,30 +25,25 @@ function generateHtmlEmail(data) {
       body { background:#f5f5f5; margin:0; padding:0; font-family:Arial,Helvetica,sans-serif; }
       .container { max-width:650px; background:#fff; margin:30px auto; padding:30px; border-radius:12px; border:1px solid #eaeaea; }
 
-      .header {
+      /* UNIVERSAL HEADER */
+      .header { text-align:center; padding-bottom:20px; border-bottom:2px solid #FB6A13; }
+      .header-inner {
         display:flex;
         align-items:center;
-        gap:20px;
-        padding-bottom:20px;
-        border-bottom:2px solid #FB6A13;
+        justify-content:center;
+        gap:22px;
+        margin-top:10px;
       }
+      .header-logo { width:60px; height:auto; }
+      .header-text { text-align:left; }
+      .brand { font-size:20px; font-weight:800; color:#FB6A13; line-height:1.2; }
+      .subtitle { font-size:14px; font-weight:500; color:#555; margin-top:2px; }
 
-      .logo img {
-        width:60px;   /* SMANJENO JOŠ 50% */
-        height:auto;
-      }
-
-      .header-title {
-        font-size:20px;
-        color:#FB6A13;
-        font-weight:800;
-        line-height:1.3;
-      }
-
-      .subtitle {
-        font-size:14px;
-        font-weight:500;
-        color:#555;
+      .title {
+        font-size:22px;
+        font-weight:700;
+        color:#333;
+        margin:25px 0 10px;
       }
 
       .section { margin-top:22px; }
@@ -72,18 +67,16 @@ function generateHtmlEmail(data) {
     <div class="container">
 
       <div class="header">
-        <div class="logo">
-          <img src="${LOGO_URL}" alt="Promar logo" />
-        </div>
-        <div>
-          <div class="header-title">Promar</div>
-          <div class="subtitle">agencija za digitalna rješenja</div>
+        <div class="header-inner">
+          <img src="${LOGO_URL}" class="header-logo" />
+          <div class="header-text">
+            <div class="brand">Promar</div>
+            <div class="subtitle">agencija za digitalna rješenja</div>
+          </div>
         </div>
       </div>
 
-      <div style="margin-top:25px;font-size:20px;font-weight:700;color:#444;">
-        Novi upit preko kontakt forme
-      </div>
+      <div class="title">Novi upit preko kontakt forme</div>
 
       <div class="section"><div class="label">Ime i prezime:</div><div class="value">${data.name}</div></div>
       <div class="section"><div class="label">Email:</div><div class="value">${data.email}</div></div>
@@ -98,95 +91,83 @@ function generateHtmlEmail(data) {
     </div>
   </body>
   </html>
-`;
+  `;
 }
 
-/* -----------------------------------------------------------------------------
-   PREMIUM AUTORESPONDER (mail klijentu)
------------------------------------------------------------------------------ */
+/* ============================================================================
+   AUTORESPONDER — MAIL KOJI DOBIVA KLIJENT
+============================================================================ */
 function generateAutoReplyHtml(name) {
   return `
   <!DOCTYPE html>
   <html lang="hr">
   <head>
     <meta charset="UTF-8" />
-    <title>Hvala na poruci – Promar</title>
+    <title>Hvala na vašoj poruci – Promar</title>
 
     <style>
       body { background:#f4f4f4; margin:0; padding:0; font-family:Arial,Helvetica,sans-serif; }
       .container { max-width:650px; background:#fff; margin:30px auto; border-radius:12px; overflow:hidden; border:1px solid #eaeaea; }
       .top-bar { height:6px; background:#FB6A13; }
 
-      .header {
+      /* SAME HEADER AS MAIN MAIL */
+      .header { text-align:center; padding-bottom:0; padding-top:20px; }
+      .header-inner {
         display:flex;
         align-items:center;
-        gap:20px;
-        padding:25px 30px 15px;
+        justify-content:center;
+        gap:22px;
+        margin-bottom:10px;
       }
-
-      .logo img {
-        width:60px; /* smanjeno */
-        height:auto;
-      }
-
-      .brand {
-        font-size:20px;
-        font-weight:800;
-        color:#FB6A13;
-        line-height:1.3;
-      }
-
-      .subtitle {
-        font-size:14px;
-        font-weight:500;
-        color:#555;
-      }
+      .header-logo { width:60px; height:auto; }
+      .header-text { text-align:left; }
+      .brand { font-size:20px; font-weight:800; color:#FB6A13; line-height:1.2; }
+      .subtitle { font-size:14px; font-weight:500; color:#555; margin-top:2px; }
 
       .title {
         font-size:22px;
         font-weight:700;
-        margin:20px 0 10px;
         color:#333;
+        margin:10px 0 20px;
+        text-align:left;
       }
 
       .content { padding:0 30px 30px; }
       p { font-size:16px; color:#444; line-height:1.7; }
 
       .button { text-align:center; margin:25px 0; }
-      .button a { background:#FB6A13; color:#fff; padding:12px 26px; border-radius:6px; text-decoration:none; font-size:16px; }
+      .button a {
+        background:#FB6A13; color:#fff; padding:12px 26px;
+        border-radius:6px; text-decoration:none; font-size:16px;
+      }
 
       .footer {
         background:#fafafa; padding:20px; text-align:center;
         font-size:13px; color:#777; border-top:1px solid #eee;
-      }
-
-      @media(max-width:600px) {
-        .header { flex-direction:column; text-align:center; }
       }
     </style>
   </head>
 
   <body>
     <div class="container">
-
+      
       <div class="top-bar"></div>
 
       <div class="header">
-        <div class="logo">
-          <img src="${LOGO_URL}" alt="Promar logo" />
-        </div>
-        <div>
-          <div class="brand">Promar</div>
-          <div class="subtitle">agencija za digitalna rješenja</div>
+        <div class="header-inner">
+          <img src="${LOGO_URL}" class="header-logo" />
+          <div class="header-text">
+            <div class="brand">Promar</div>
+            <div class="subtitle">agencija za digitalna rješenja</div>
+          </div>
         </div>
       </div>
 
-      <!-- NASLOV maila ispod headera -->
       <div class="content">
         <div class="title">Hvala na vašoj poruci${name ? ", " + name : ""}!</div>
 
         <p>
-          Zaprimili smo vaš upit i javit ćemo vam se povratno u najkraćem mogućem roku.
+          Zaprimili smo vaš upit i javit ćemo vam se u najkraćem mogućem roku.
           Ovo je automatska potvrda da je vaša poruka uspješno zaprimljena.
         </p>
 
@@ -198,11 +179,13 @@ function generateAutoReplyHtml(name) {
         <p>
           • Naš tim će pregledati vaš upit.<br/>
           • Kontaktirat ćemo vas povratno s detaljima.<br/>
-          • Ako je potrebno više informacija – javit ćemo se dodatno.
+          • Ako bude potrebno više informacija — javit ćemo se dodatno.
         </p>
 
         <h3 style="font-size:17px;margin-top:25px;color:#333;">Imate dodatno pitanje?</h3>
-        <p>Slobodno nam se obratite — uvijek smo tu da pomognemo.</p>
+        <p>
+          Slobodno nam se obratite — uvijek smo tu da pomognemo.
+        </p>
       </div>
 
       <div class="footer">
@@ -216,14 +199,16 @@ function generateAutoReplyHtml(name) {
   `;
 }
 
-// Anti-spam honeypot
+/* ============================================================================
+   ANTI-SPAM
+============================================================================ */
 function isSpam(body) {
   return !!body.honeypot;
 }
 
-/* -----------------------------------------------------------------------------
+/* ============================================================================
    MAIN HANDLER
------------------------------------------------------------------------------ */
+============================================================================ */
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -245,7 +230,7 @@ export async function POST(req) {
       tls: { rejectUnauthorized: false }
     });
 
-    // 1️⃣ — MAIL TEBI + CC
+    // 1️⃣ MAIL TEBI + CC
     await transporter.sendMail({
       from: "Promar <info@promar.hr>",
       to: "info@promar.hr",
@@ -254,7 +239,7 @@ export async function POST(req) {
       html: generateHtmlEmail(body)
     });
 
-    // 2️⃣ — AUTO-REPLY KLIJENTU
+    // 2️⃣ AUTOREPLY KLIJENTU
     await transporter.sendMail({
       from: "Promar <info@promar.hr>",
       to: body.email,
