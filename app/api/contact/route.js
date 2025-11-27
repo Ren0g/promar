@@ -118,7 +118,7 @@ export async function POST(req) {
       secure: false,
       auth: {
         user: "info@promar.hr",
-        pass: "OVDJE_UNESI_SVOJ_ZOHO_APP_PASSWORD"
+        pass: "BxzxeMJJrd38"
       },
       tls: { rejectUnauthorized: false }
     });
