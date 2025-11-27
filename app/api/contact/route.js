@@ -5,21 +5,21 @@ export async function POST(req) {
     const body = await req.json();
 
     const transporter = nodemailer.createTransport({
-      host: "smtp.mailchannels.net",
+      host: "smtp.zoho.eu",   // ako si na US datacentru, koristi smtp.zoho.com
       port: 587,
       secure: false,
       auth: {
         user: "info@promar.hr",
-        pass: "OVDJE_STAVI_LOZINKU"
+        pass: "BxzxeMJJrd38"
       }
     });
 
     await transporter.sendMail({
-      from: "Promar <info@promar.hr>",
-      to: "info@promar.hr",
+      from: 'Promar <info@promar.hr>',
+      to: 'info@promar.hr',
       subject: "Nova poruka sa Promar.hr",
       text: `
-Ime: ${body.name}
+Ime i prezime: ${body.name}
 Email: ${body.email}
 Mobitel: ${body.phone}
 Usluga: ${body.service}
@@ -29,9 +29,10 @@ ${body.message}
       `
     });
 
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
+    return Response.json({ success: true }, { status: 200 });
+
   } catch (err) {
-    console.error(err);
-    return new Response(JSON.stringify({ success: false }), { status: 500 });
+    console.error("MAIL ERROR:", err);
+    return Response.json({ success: false, error: err.message }, { status: 500 });
   }
 }
