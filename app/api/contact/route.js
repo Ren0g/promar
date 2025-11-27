@@ -1,3 +1,6 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import nodemailer from "nodemailer";
 
 export async function POST(req) {
@@ -5,7 +8,7 @@ export async function POST(req) {
     const body = await req.json();
 
     const transporter = nodemailer.createTransport({
-      host: "smtp.zoho.eu",   // ako si na US datacentru, koristi smtp.zoho.com
+      host: "smtp.zoho.eu",
       port: 587,
       secure: false,
       auth: {
@@ -15,8 +18,8 @@ export async function POST(req) {
     });
 
     await transporter.sendMail({
-      from: 'Promar <info@promar.hr>',
-      to: 'info@promar.hr',
+      from: "Promar <info@promar.hr>",
+      to: "info@promar.hr",
       subject: "Nova poruka sa Promar.hr",
       text: `
 Ime i prezime: ${body.name}
@@ -29,10 +32,12 @@ ${body.message}
       `
     });
 
-    return Response.json({ success: true }, { status: 200 });
+    return Response.json({ success: true });
 
   } catch (err) {
-    console.error("MAIL ERROR:", err);
-    return Response.json({ success: false, error: err.message }, { status: 500 });
+    return Response.json(
+      { success: false, error: err.message },
+      { status: 500 }
+    );
   }
 }
