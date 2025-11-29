@@ -25,13 +25,13 @@ export default function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
-        
-        {/* Logo + slogan */}
-        <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
-          <div className="logo-with-tagline">
-            <img src="/images/logo-dark.png" alt="Promar logo" />
-            <span className="tagline">agencija za digitalna rješenja</span>
-          </div>
+
+        {/* Logo + naziv/slogan u istom redu */}
+        <Link href="/" className="logo-area" onClick={() => setMenuOpen(false)}>
+          <img src="/images/logo-dark.png" alt="Promar logo" />
+          <span className="brand-tagline">
+            Promar — agencija za digitalna rješenja
+          </span>
         </Link>
 
         {/* Desktop navigacija */}
