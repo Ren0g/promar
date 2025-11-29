@@ -51,13 +51,13 @@ export default function HomePage() {
           />
 
           <div className="container home-about">
-            <p>
-              Iza nas su projekti poput Fotqa i Tvornice vjenčanja, što nam daje
+           <SectionTitle
+              subtitle="Iza nas su projekti poput Fotqa i Tvornice vjenčanja, što nam daje
               jedinstvenu kombinaciju iskustva u webu, videu, sadržaju i
               digitalnom marketingu. Upravo taj spoj omogućuje nam da razumijemo
               i tehnološku stranu i potrebe brenda, te isporučimo rješenja koja
-              istovremeno dobro izgledaju i dobro funkcioniraju.
-            </p>
+              istovremeno dobro izgledaju i dobro funkcioniraju."
+            />
           </div>
         </div>
       </section>
