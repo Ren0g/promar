@@ -25,14 +25,17 @@ export default function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
+        
+        {/* Logo + slogann kao dva odvojena elementa */}
+        <div className="logo-area">
+          <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
+            <img src="/images/logo-dark.png" alt="Promar logo" />
+          </Link>
 
-        {/* Logo + naziv/slogan u istom redu */}
-        <Link href="/" className="logo-area" onClick={() => setMenuOpen(false)}>
-          <img src="/images/logo-dark.png" alt="Promar logo" />
           <span className="brand-tagline">
             Promar — agencija za digitalna rješenja
           </span>
-        </Link>
+        </div>
 
         {/* Desktop navigacija */}
         <nav className="nav">
@@ -64,7 +67,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile meni */}
+      {/* Mobile menu */}
       <div className={`mobile-nav-menu ${menuOpen ? "show" : ""}`}>
         {navItems.map((item) => (
           <Link
