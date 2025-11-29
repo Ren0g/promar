@@ -50,7 +50,7 @@ export default function HomePage() {
             koja klijentima donose stvarnu vrijednost — bez kompliciranja i nepotrebnih koraka."
           />
 
-          <div className="two-cols">
+          <div className="container home-about">
             <p>
               Iza nas su projekti poput Fotqa i Tvornice vjenčanja, što nam daje
               jedinstvenu kombinaciju iskustva u webu, videu, sadržaju i
