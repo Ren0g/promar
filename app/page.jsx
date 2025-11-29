@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Promar – Web, aplikacije i marketing",
   description:
-    "Studio iz Velike Gorice za web stranice, web aplikacije, digitalni marketing te foto i video produkciju. Pomažemo brendovima da izgledaju profesionalno i privuku više klijenata."
+    "Studio iz Velike Gorice za izradu web stranice, web aplikacije, digitalni marketing te foto i video produkciju. Pomažemo brendovima da izgledaju profesionalno i privuku više klijenata."
 };
 
 import Button from "../components/Button";
@@ -14,7 +14,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="container hero-inner">
           <div className="hero-text">
-            <p className="hero-kicker">Studio za web, aplikacije i marketing</p>
+            <p className="hero-kicker">Studio za izradu web stranica, aplikacija i marketing</p>
 
             <h1 className="fade-in">
               Radimo web stranice, aplikacije i digitalni marketing.
@@ -43,7 +43,7 @@ export default function HomePage() {
         <div className="container home-about">
           <SectionTitle
             kicker="O PROMARU"
-            title="Agencija za web stranice, web aplikacije i digitalni marketing"
+            title="Agencija za izradu web stranica, web aplikacija i digitalni marketing"
             subtitle="Promar je digitalna agencija specijalizirana za izradu modernih web 
             stranica, razvoj web aplikacija i provedbu učinkovitih digitalnih kampanja. 
             Naš pristup temelji se na jasnoj strukturi, čistom dizajnu i funkcionalnim rješenjima 
