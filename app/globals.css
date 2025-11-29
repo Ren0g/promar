@@ -822,6 +822,6 @@ p {
 
 @media (max-width: 768px) {
   .section p {
-    max-width: 600px;
+    max-width: 100%;
   }
 }
