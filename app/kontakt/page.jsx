@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Kontakt | Promar – Web, aplikacije i marketing",
   description:
-    "Javite se Promaru za izradu web stranica, web aplikacija, digitalni marketing ili foto/video produkciju. Odgovaramo u najkraćem roku."
+    "Javite nam se za izradu web stranica, web aplikacija, digitalni marketing ili foto/video produkciju. Odgovaramo u najkraćem roku."
 };
 
 import SectionTitle from "../../components/SectionTitle";
