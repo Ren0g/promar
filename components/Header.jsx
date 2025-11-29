@@ -25,9 +25,13 @@ export default function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
-        {/* Logo */}
+        
+        {/* Logo + slogan */}
         <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
-          <img src="/images/logo-dark.png" alt="Promar logo" />
+          <div className="logo-with-tagline">
+            <img src="/images/logo-dark.png" alt="Promar logo" />
+            <span className="tagline">agencija za digitalna rješenja</span>
+          </div>
         </Link>
 
         {/* Desktop navigacija */}
@@ -50,7 +54,7 @@ export default function Header() {
           </Button>
         </div>
 
-        {/* Mobile toggle (hamburger) */}
+        {/* Mobile toggle */}
         <div
           className="mobile-nav-toggle"
           onClick={() => setMenuOpen((open) => !open)}
