@@ -26,7 +26,7 @@ export default function Header() {
     <header className="header">
       <div className="container header-inner">
         
-        {/* Logo + slogann kao dva odvojena elementa */}
+        {/* LOGO + SLOGAN */}
         <div className="logo-area">
           <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
             <img src="/images/logo-dark.png" alt="Promar logo" />
@@ -37,7 +37,7 @@ export default function Header() {
           </span>
         </div>
 
-        {/* Desktop navigacija */}
+        {/* NAV */}
         <nav className="nav">
           {navItems.map((item) => (
             <Link
@@ -50,14 +50,14 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
+        {/* CTA */}
         <div className="header-cta">
           <Button href="/kontakt" variant="primary">
             Zatražite ponudu
           </Button>
         </div>
 
-        {/* Mobile toggle */}
+        {/* MOBILE TOGGLE */}
         <div
           className="mobile-nav-toggle"
           onClick={() => setMenuOpen((open) => !open)}
@@ -67,7 +67,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* MOBILE MENU */}
       <div className={`mobile-nav-menu ${menuOpen ? "show" : ""}`}>
         {navItems.map((item) => (
           <Link
