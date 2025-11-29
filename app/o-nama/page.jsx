@@ -1,7 +1,7 @@
 export const metadata = {
   title: "O nama | Promar – Web, aplikacije i marketing",
   description:
-    "Digitalna agencija specijalizirana za web stranice, web aplikacije i marketing."
+    "Digitalna agencija specijalizirana za izradu web stranica, web aplikacija i marketing."
 };
 
 import SectionTitle from "../../components/SectionTitle";
