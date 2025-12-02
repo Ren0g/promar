@@ -64,7 +64,7 @@ export default function ReferencePage() {
           {/* ZIMSKA LIGA PANADIĆ */}
           <div className="reference-card">
             <img
-              src="/images/reference-panadic.webp"
+              src="/images/reference-panadic.jpg"
               alt="Zimska liga Panadić referenca"
               className="reference-image"
             />
