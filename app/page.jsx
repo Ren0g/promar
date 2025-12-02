@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Promar – Web, aplikacije i marketing",
   description:
-    "Studio iz Velike Gorice za izradu web stranice, web aplikacije, digitalni marketing te foto i video produkciju. Pomažemo brendovima da izgledaju profesionalno i privuku više klijenata."
+    "Studio iz Velike Gorice za izradu web stranica, web aplikacija, digitalni marketing te foto i video produkciju. Pomažemo brendovima da izgledaju profesionalno i privuku više klijenata."
 };
 
 import Button from "../components/Button";
@@ -51,11 +51,8 @@ export default function HomePage() {
           />
 
           <SectionTitle
-             subtitle="Iza nas su projekti poput Fotqa i Tvornice vjenčanja, što nam daje
-             jedinstvenu kombinaciju iskustva u webu, videu, sadržaju i
-             digitalnom marketingu. Upravo taj spoj omogućuje nam da razumijemo
-             i tehnološku stranu i potrebe brenda, te isporučimo rješenja koja
-             istovremeno dobro izgledaju i dobro funkcioniraju."
+             subtitle="Iza nas su projekti poput Fotqa, Tvornice vjenčanja i aplikacije Zimska liga Panadić — moderne platforme za digitalno vođenje sportskih natjecanja s rasporedima, tablicama i statistikama u realnom vremenu. 
+             Upravo takva rješenja pokazuju našu kombinaciju iskustva u webu, videu, sadržaju i digitalnom marketingu — te sposobnost izrade sustava koji izgledaju profesionalno i istovremeno rješavaju konkretne probleme."
           />
         </div>
       </section>
@@ -124,15 +121,15 @@ export default function HomePage() {
               <p>Platforma i web za najveću wedding zajednicu.</p>
             </div>
 
-            {/* Zimska liga Panadić — NOVO */}
+            {/* Zimska liga Panadić */}
             <div className="reference-card">
               <img
-                src="/images/reference-panadic.jpg"
+                src="/images/reference-panadic.webp"
                 alt="Zimska liga Panadić referenca"
                 className="reference-image"
               />
               <h3>Zimska liga Panadić</h3>
-              <p>Web aplikacija za praćenje rezultata i tablica malonogometne lige.</p>
+              <p>Web aplikacija za digitalno vođenje sportskih natjecanja.</p>
             </div>
 
           </div>
@@ -158,6 +155,7 @@ export default function HomePage() {
             <li>Brza i jasna komunikacija.</li>
             <li>Vlastita foto &amp; video produkcija.</li>
             <li>Reference: Fotqa, Tvornica vjenčanja, Zimska liga Panadić.</li>
+            <li>Iskustvo u digitalizaciji sportskih sustava.</li>
           </ul>
         </div>
       </section>
