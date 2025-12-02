@@ -101,6 +101,8 @@ export default function HomePage() {
           />
 
           <div className="references-grid">
+
+            {/* Fotqa */}
             <div className="reference-card">
               <img
                 src="/images/reference-fotqa.jpg"
@@ -110,6 +112,8 @@ export default function HomePage() {
               <h3>Fotqa</h3>
               <p>Web &amp; profesionalna foto/video produkcija.</p>
             </div>
+
+            {/* Tvornica vjenčanja */}
             <div className="reference-card">
               <img
                 src="/images/reference-vjencanja.jpg"
@@ -119,15 +123,18 @@ export default function HomePage() {
               <h3>Tvornica vjenčanja</h3>
               <p>Platforma i web za najveću wedding zajednicu.</p>
             </div>
+
+            {/* Zimska liga Panadić — NOVO */}
             <div className="reference-card">
               <img
-                src="/images/reference-vgb.jpg"
-                alt="VGB referenca"
+                src="/images/reference-panadic.webp"
+                alt="Zimska liga Panadić referenca"
                 className="reference-image"
               />
-              <h3>VGB – Velika Gorica Broadcast</h3>
-              <p>Sportska video produkcija i futsal snimke.</p>
+              <h3>Zimska liga Panadić</h3>
+              <p>Web aplikacija za praćenje rezultata i tablica malonogometne lige.</p>
             </div>
+
           </div>
 
           <div className="section-cta-centered">
@@ -150,7 +157,7 @@ export default function HomePage() {
             <li>Moderni webovi i tehnologija.</li>
             <li>Brza i jasna komunikacija.</li>
             <li>Vlastita foto &amp; video produkcija.</li>
-            <li>Reference: Fotqa, Tvornica vjenčanja, VGB.</li>
+            <li>Reference: Fotqa, Tvornica vjenčanja, Zimska liga Panadić.</li>
           </ul>
         </div>
       </section>
