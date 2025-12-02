@@ -129,7 +129,7 @@ export default function HomePage() {
                 className="reference-image"
               />
               <h3>Zimska liga Panadić</h3>
-              <p>Web aplikacija za digitalno vođenje sportskih natjecanja.</p>
+              <p>Web aplikacija za digitalno vođenje sportskih natjecanja (prilagođena za rad putem mobilnih uređaja).</p>
             </div>
 
           </div>
