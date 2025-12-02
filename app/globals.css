@@ -401,57 +401,33 @@ p {
   margin: 4px 0;
 }
 /* ============================
-   CLEAN PROMAR FOOTER — FINAL
+   CLEAN PROMAR FOOTER
    ============================ */
 
 .footer {
   background: #050505;
-  padding: 40px 0 0 0;
+  padding: 40px 0;
   color: #ffffff;
 }
 
-/* LEFT + RIGHT layout */
 .footer-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.8fr);
   gap: 40px;
-}
-
-/* LEFT SIDE (logo + text) */
-.footer-brand {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
 }
 
 .footer-brand img {
   height: 70px;
+  margin-bottom: 12px;
 }
 
-.footer-brand-text {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.footer-brand-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-orange);
-  margin: 0;
-  padding: 0;
-}
-
-.footer-tagline {
-  margin: 0;
-  font-size: 1rem;
+.footer-brand p {
   color: rgba(255, 255, 255, 0.75);
+  margin: 0;
   line-height: 1.6;
 }
 
-/* RIGHT SIDE (navigacija) */
+/* Title "Navigacija" */
 .footer-links h4 {
   margin: 0 0 10px 0;
   font-size: 1rem;
@@ -459,11 +435,13 @@ p {
   color: #ffffff;
 }
 
+/* Linkovi */
 .footer-links a {
   display: block;
   font-size: 0.95rem;
+  font-weight: 400;
   padding: 3px 0;
-  color: var(--color-orange);
+  color: #fb6a13;
   transition: color 0.2s ease;
 }
 
@@ -471,37 +449,65 @@ p {
   color: #ffffff;
 }
 
-/* COPYRIGHT (bottom) */
-.footer-bottom {
-  margin-top: 40px;
-  padding: 20px 0;
-  text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.footer-bottom p {
+/* Meta tekst – © 2025 Promar */
+.footer-meta p {
   margin: 0;
   font-size: 0.9rem;
+  text-align: right;
   color: rgba(255, 255, 255, 0.65);
 }
 
-/* RESPONSIVE FOOTER */
+/* ============================
+   RESPONSIVE – FOOTER
+   ============================ */
+
 @media (max-width: 992px) {
   .footer-inner {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .footer-brand-title {
-    font-size: 1.6rem;
+  .footer-inner {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .footer-brand img {
+    margin-bottom: 12px;
+  }
+
+  .footer-meta p {
+    text-align: left;
+    margin-top: 20px;
   }
 }
 
-/* ============================
-   BUTTONS (RESTORED)
-   ============================ */
+/* SECTION TITLE & BUTTONS */
+
+.section-title {
+  margin-bottom: 28px;
+}
+
+.section-title-center {
+  text-align: center;
+}
+
+.section-kicker {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--color-orange);
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  margin-top: 6px;
+  max-width: 36rem;
+}
+
+/* BUTTONS */
 
 .btn {
   display: inline-flex;
@@ -523,6 +529,7 @@ p {
   background: var(--color-orange);
   color: var(--color-white);
   box-shadow: 0 8px 20px rgba(251, 106, 19, 0.35);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .btn-primary:hover {
@@ -544,9 +551,56 @@ p {
   background: rgba(251, 106, 19, 0.05);
 }
 
-/* ============================
-   REMAINDER FROM ORIGINAL FILE
-   ============================ */
+/* FORM */
+
+.contact-form {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 22px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.form-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  background: #fafafa;
+}
+
+.form-field textarea {
+  border-radius: 18px;
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: rgba(251, 106, 19, 0.6);
+  background: #ffffff;
+}
 
 .form-error {
   font-size: 0.8rem;
@@ -566,11 +620,12 @@ p {
   gap: 36px;
 }
 
+/* CTA blok centriran vertikalno */
 .two-cols > .about-highlight {
   align-self: center;
 }
 
-/* Fade-in animations */
+/* Fade-in animacija */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -597,18 +652,92 @@ p {
   animation: fadeInUp 1.2s ease-out forwards;
 }
 
-/* Responsive tweaks (unchanged from original) */
+/* ============================
+   RESPONSIVE – TABLET & MOBILE
+   ============================ */
+
+/* Tablet & small desktop */
+/* Better spacing for mobile header */
+.header-inner {
+  padding-left: 16px;
+  padding-right: 16px;
+}
 @media (max-width: 992px) {
   .hero-inner,
   .two-cols,
-  .contact-layout {
+  .contact-layout,
+  .footer-inner {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-media {
+    order: -1;
+  }
+
+  .footer-meta {
+    text-align: left;
+  }
+
+  .section {
+    padding: 64px 0;
   }
 }
 
+/* Mobile */
+/* Better spacing for mobile header */
+.header-inner {
+  padding-left: 16px;
+  padding-right: 16px;
+}
 @media (max-width: 768px) {
   .cards-grid,
   .references-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .section {
+    padding: 56px 0;
+  }
+
+  .hero {
+    padding-top: 64px;
+  }
+
+  /* header / nav */
+  .nav {
+    display: none;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  .mobile-nav-toggle {
+    display: block;
+  }
+
+  /* mobile hero layout */
+  .hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+    text-align: center;
+  }
+
+  .hero-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contact-form {
+    padding: 18px;
+  }
+
+  .form-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -623,9 +752,17 @@ p {
   h3 {
     font-size: 1.2rem;
   }
+
+  p,
+  li {
+    font-size: 0.95rem;
+  }
 }
 
-/* FIXES */
+/* ======================
+   FIX: better text width on desktop sections
+   ====================== */
+
 .section .container {
   max-width: 1100px;
 }
@@ -642,16 +779,43 @@ p {
   }
 }
 
+/* Fix for O NAMA layout on laptops */
 .two-cols {
   max-width: 1100px;
   margin: 0 auto;
 }
 
+@media (max-width: 992px) {
+  .two-cols {
+    max-width: 100%;
+  }
+}
+
+/* Fix homepage hero alignment */
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+  .hero-inner {
+    max-width: 1000px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-inner {
+    max-width: 100%;
+  }
+}
+
+/* Fix4: better alignment for O PROMARU section on homepage */
 .home-about {
   max-width: 1100px;
   margin: 0 auto;
 }
 
+/* FIX: Paragrafi široki na laptopu, uži na mobitelu */
 .section p {
   max-width: 100%;
 }
