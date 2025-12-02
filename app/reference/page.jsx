@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Reference | Promar – Web, aplikacije i marketing",
   description:
-    "Od web projekata do produkcije – nekoliko referenci koje pokazuju kako radimo: Fotqa, Tvornica vjenčanja, VGB."
+    "Od web projekata do produkcije – nekoliko referenci koje pokazuju kako radimo: Fotqa, Tvornica vjenčanja, VGB i Zimska liga Panadić."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -72,6 +72,29 @@ export default function ReferencePage() {
             <p>
               <a href="https://promar.hr/vgb" target="_blank" rel="noreferrer">
                 promar.hr/vgb
+              </a>
+            </p>
+          </div>
+
+          {/* NOVO: Zimska liga Panadić */}
+          <div className="reference-card">
+            <img
+              src="/images/reference-panadic.jpg"
+              alt="Zimska liga Panadić referenca"
+              className="reference-image"
+            />
+            <h3>Zimska liga Panadić</h3>
+            <p>
+              Web aplikacija za praćenje rezultata, tablica i rasporeda Zimske
+              malonogometne lige Panadić.
+            </p>
+            <p>
+              <a
+                href="https://panadic.vercel.app"
+                target="_blank"
+                rel="noreferrer"
+              >
+                panadic.vercel.app
               </a>
             </p>
           </div>
