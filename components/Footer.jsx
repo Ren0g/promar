@@ -7,14 +7,15 @@ export default function Footer() {
 
         {/* LEFT COLUMN – LOGO + PROMAR + TAGLINE */}
         <div className="footer-brand">
-          <img src="/images/logo-primary.png" alt="Promar logo" />
+          <img src="/images/logo-dark.png" alt="Promar logo" />
 
-          {/* NOVO: veliki PROMAR iznad teksta */}
-          <h2 className="footer-brand-title">Promar</h2>
-
-          <p className="footer-tagline">
-            Studio za web, aplikacije i digitalni marketing.
-          </p>
+          {/* WRAPPER: PROMAR + TAGLINE */}
+          <div className="footer-brand-text">
+            <h2 className="footer-brand-title">Promar</h2>
+            <p className="footer-tagline">
+              Studio za web, aplikacije i digitalni marketing.
+            </p>
+          </div>
         </div>
 
         {/* RIGHT COLUMN – NAVIGACIJA */}
@@ -26,9 +27,10 @@ export default function Footer() {
           <Link href="/o-nama">O nama</Link>
           <Link href="/kontakt">Kontakt</Link>
         </div>
+
       </div>
 
-      {/* NOVO – COPYRIGHT NA DNU I CENTRIRAN */}
+      {/* COPYRIGHT NA DNU */}
       <div className="footer-bottom">
         <p>© 2025 Promar. Sva prava pridržana.</p>
       </div>
