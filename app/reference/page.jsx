@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Reference | Promar – Web, aplikacije i marketing",
   description:
-    "Od web projekata do produkcije – nekoliko referenci koje pokazuju kako radimo: Fotqa, Tvornica vjenčanja, VGB i Zimska liga Panadić."
+    "Naši web projekti i aplikacije: Fotqa, Tvornica vjenčanja i Zimska liga Panadić."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -14,10 +14,12 @@ export default function ReferencePage() {
         <SectionTitle
           kicker="REFERENCE"
           title="Projekti iza kojih stojimo"
-          subtitle="Od webova do produkcije – nekoliko projekata koji najbolje pokazuju kako radimo."
+          subtitle="Od webova do aplikacija – projekti koji najbolje pokazuju način na koji radimo."
         />
 
         <div className="references-grid">
+
+          {/* FOTQA */}
           <div className="reference-card">
             <img
               src="/images/reference-fotqa.jpg"
@@ -36,6 +38,7 @@ export default function ReferencePage() {
             </p>
           </div>
 
+          {/* TVORNICA VJENČANJA */}
           <div className="reference-card">
             <img
               src="/images/reference-vjencanja.jpg"
@@ -58,28 +61,10 @@ export default function ReferencePage() {
             </p>
           </div>
 
+          {/* ZIMSKA LIGA PANADIĆ */}
           <div className="reference-card">
             <img
-              src="/images/reference-vgb.jpg"
-              alt="VGB referenca"
-              className="reference-image"
-            />
-            <h3>VGB – Velika Gorica Broadcast</h3>
-            <p>
-              Sportska video produkcija i futsal snimke. Web u izradi, video
-              primjeri dostupni.
-            </p>
-            <p>
-              <a href="https://promar.hr/vgb" target="_blank" rel="noreferrer">
-                promar.hr/vgb
-              </a>
-            </p>
-          </div>
-
-          {/* NOVO: Zimska liga Panadić */}
-          <div className="reference-card">
-            <img
-              src="/images/reference-panadic.jpg"
+              src="/images/reference-panadic.webp"
               alt="Zimska liga Panadić referenca"
               className="reference-image"
             />
@@ -98,6 +83,7 @@ export default function ReferencePage() {
               </a>
             </p>
           </div>
+
         </div>
 
         <div className="section-cta-centered">
