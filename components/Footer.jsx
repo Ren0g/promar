@@ -5,11 +5,10 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer-inner">
 
-        {/* LEFT COLUMN – LOGO + PROMAR + TAGLINE */}
+        {/* LEFT */}
         <div className="footer-brand">
-          <img src="/images/logo-dark.png" alt="Promar logo" />
+          <img src="/images/logo-primary.png" alt="Promar logo" />
 
-          {/* WRAPPER: PROMAR + TAGLINE */}
           <div className="footer-brand-text">
             <h2 className="footer-brand-title">Promar</h2>
             <p className="footer-tagline">
@@ -18,7 +17,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN – NAVIGACIJA */}
+        {/* RIGHT */}
         <div className="footer-links">
           <h4>Navigacija</h4>
           <Link href="/">Početna</Link>
@@ -30,7 +29,6 @@ export default function Footer() {
 
       </div>
 
-      {/* COPYRIGHT NA DNU */}
       <div className="footer-bottom">
         <p>© 2025 Promar. Sva prava pridržana.</p>
       </div>
