@@ -10,6 +10,30 @@ import nodemailer from "nodemailer";
 const LOGO_URL =
   "https://raw.githubusercontent.com/Ren0g/promar/6dd632d22033e7ac5939cff1a1b427872fcac79b/public/images/logo-dark.png";
 
+// reCAPTCHA secret key
+const RECAPTCHA_SECRET = "6LfuCyEsAAAAABMs43GQYjB0LKpOY3T3YS28_B7Q";
+
+/* ============================================================================
+   reCAPTCHA VERIFY FUNCTION
+============================================================================ */
+async function verifyCaptcha(token) {
+  try {
+    const res = await fetch(
+      "https://www.google.com/recaptcha/api/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `secret=${RECAPTCHA_SECRET}&response=${token}`,
+      }
+    );
+
+    return await res.json();
+  } catch (err) {
+    console.error("CAPTCHA VERIFY ERROR:", err);
+    return { success: false, score: 0 };
+  }
+}
+
 /* ============================================================================
    EMAIL TEMPLATE — MAIL KOJI STIŽE TEBI
 ============================================================================ */
@@ -162,7 +186,7 @@ function generateAutoReplyHtml(name) {
         • Ako bude potrebno više informacija — javit ćemo se dodatno.
       </p>
 
-      <h3 style="font-size:17px;margin-top:25px;color:#333;">Imate dodatno pitanje?</h3>
+      <h3 style="font-size:17px;margin-top:25px;color:#333;">Imate dodatно pitanje?</h3>
       <p>
         Slobodno nam se obratite — uvijek smo tu da pomognemo.
       </p>
@@ -181,10 +205,11 @@ function generateAutoReplyHtml(name) {
 }
 
 /* ============================================================================
-   ANTI-SPAM CHECK
+   ANTI-SPAM HEURISTIKA
 ============================================================================ */
-function isSpam(body) {
-  return !!body.honeypot;
+function isFakeName(name) {
+  // detektira nasumične stringove poput "afsgaygdjashd"
+  return /^[A-Za-z]{12,}$/.test(name);
 }
 
 /* ============================================================================
@@ -194,10 +219,17 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    if (isSpam(body)) {
+    /* ---------------------------
+       1) HONEYPOT (bot detection)
+    --------------------------- */
+    if (body.website) {
+      console.log("HONEYPOT BOT BLOCKED");
       return Response.json({ success: true });
     }
 
+    /* ---------------------------
+       2) Validate required fields
+    --------------------------- */
     if (!body.name || !body.email || !body.message) {
       return Response.json(
         { success: false, error: "Nedostaju obavezna polja." },
@@ -205,6 +237,30 @@ export async function POST(req) {
       );
     }
 
+    /* ---------------------------
+       3) reCAPTCHA VALIDATION
+    --------------------------- */
+    const captchaResult = await verifyCaptcha(body.captcha);
+
+    console.log("recaptcha:", captchaResult);
+
+    // Ako nije uspjelo ili score prenizak → BOT
+    if (!captchaResult.success || captchaResult.score < 0.5) {
+      console.log("BOT BLOCKED — low score");
+      return Response.json({ success: true }); // tiho ignoriramo
+    }
+
+    /* ---------------------------
+       4) Additional spam rules
+    --------------------------- */
+    if (isFakeName(body.name)) {
+      console.log("FAKE NAME BOT BLOCKED");
+      return Response.json({ success: true });
+    }
+
+    /* ---------------------------
+       5) SEND EMAILS
+    --------------------------- */
     const transporter = nodemailer.createTransport({
       host: "smtp.zoho.eu",
       port: 587,
@@ -216,7 +272,7 @@ export async function POST(req) {
       tls: { rejectUnauthorized: false }
     });
 
-    // 1️⃣ MAIL TEBI + CC
+    // MAIL TEBI + COPY
     await transporter.sendMail({
       from: "Promar <info@promar.hr>",
       to: "info@promar.hr",
@@ -225,7 +281,7 @@ export async function POST(req) {
       html: generateHtmlEmail(body),
     });
 
-    // 2️⃣ AUTOREPLY KLIJENTU
+    // AUTOREPLY
     await transporter.sendMail({
       from: "Promar <info@promar.hr>",
       to: body.email,
@@ -236,6 +292,7 @@ export async function POST(req) {
     return Response.json({ success: true });
 
   } catch (err) {
+    console.error("SERVER ERROR:", err);
     return Response.json({ success: false, error: err.message }, { status: 500 });
   }
 }
