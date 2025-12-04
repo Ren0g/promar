@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "./Button";
 
 export default function ContactForm() {
@@ -9,11 +9,23 @@ export default function ContactForm() {
     email: "",
     phone: "",
     service: "",
-    message: ""
+    message: "",
+    website: "" // honeypot
   });
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+
+  // ░░░ reCAPTCHA loader ░░░
+  useEffect(() => {
+    if (!window.grecaptcha) {
+      const script = document.createElement("script");
+      script.src =
+        "https://www.google.com/recaptcha/api.js?render=6LfuCyEsAAAAAOXyd1SEb_o2TwE8jIHcieJ1lW2s";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -52,18 +64,32 @@ export default function ContactForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const validationErrors = validate(values);
 
+    const validationErrors = validate(values);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // 🔥 DODANO — SLANJE NA BACKEND
+    // ❗ Honeypot – ako je bot popunio ovo polje → prekidamo bez poruke
+    if (values.website) {
+      console.warn("BOT DETECTED (honeypot)");
+      return;
+    }
+
+    // ░░░ RECAPTCHA TOKEN ░░░
+    const token = await window.grecaptcha.execute(
+      "6LfuCyEsAAAAAOXyd1SEb_o2TwE8jIHcieJ1lW2s",
+      { action: "submit" }
+    );
+
     const response = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
+      body: JSON.stringify({
+        ...values,
+        captcha: token
+      })
     });
 
     const result = await response.json();
@@ -73,14 +99,34 @@ export default function ContactForm() {
       alert("Greška pri slanju poruke.");
       return;
     }
-    // 🔥 KRAJ DODATKA
 
     console.log("Kontakt forma poslana:", values);
     setSubmitted(true);
+
+    // Reset forme po želji
+    setValues({
+      name: "",
+      email: "",
+      phone: "",
+      service: "",
+      message: "",
+      website: ""
+    });
   }
 
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
+      {/* Honeypot */}
+      <input
+        type="text"
+        name="website"
+        value={values.website}
+        onChange={handleChange}
+        style={{ display: "none" }}
+        tabIndex="-1"
+        autoComplete="off"
+      />
+
       <div className="form-grid">
         <div className="form-field">
           <label htmlFor="name">Ime i prezime</label>
