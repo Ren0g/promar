@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Reference | Promar – Web, aplikacije i marketing",
   description:
-    "Naši web projekti i aplikacije: Fotqa, Tvornica vjenčanja i Zimska liga Panadić."
+    "Naši web projekti i aplikacije: Fotqa, Tvornica vjenčanja, Svadba.app i Zimska liga Panadić."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -18,8 +18,6 @@ export default function ReferencePage() {
         />
 
         <div className="references-grid">
-
-          {/* FOTQA */}
           <div className="reference-card">
             <img
               src="/images/reference-fotqa.jpg"
@@ -38,7 +36,6 @@ export default function ReferencePage() {
             </p>
           </div>
 
-          {/* TVORNICA VJENČANJA */}
           <div className="reference-card">
             <img
               src="/images/reference-vjencanja.jpg"
@@ -61,7 +58,26 @@ export default function ReferencePage() {
             </p>
           </div>
 
-          {/* ZIMSKA LIGA PANADIĆ */}
+          <div className="reference-card">
+            <img
+              src="/images/reference-svadba.jpg"
+              alt="Svadba.app referenca"
+              className="reference-image"
+            />
+            <h3>Svadba.app</h3>
+            <p>
+              Moderna web aplikacija za mladence koja miče Excel, poruke i
+              improvizaciju iz planiranja vjenčanja. Na jednom mjestu vodi
+              zadatke, budžet, goste, plan sjedenja, dobavljače, uplate i QR
+              galeriju za fotografije gostiju.
+            </p>
+            <p>
+              <a href="https://svadba.app" target="_blank" rel="noreferrer">
+                svadba.app
+              </a>
+            </p>
+          </div>
+
           <div className="reference-card">
             <img
               src="/images/reference-panadic.jpg"
@@ -83,7 +99,6 @@ export default function ReferencePage() {
               </a>
             </p>
           </div>
-
         </div>
 
         <div className="section-cta-centered">

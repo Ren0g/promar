@@ -10,11 +10,12 @@ import SectionTitle from "../components/SectionTitle";
 export default function HomePage() {
   return (
     <>
-      {/* HERO */}
       <section className="hero">
         <div className="container hero-inner">
           <div className="hero-text">
-            <p className="hero-kicker">Studio za izradu web stranica, aplikacija i marketing</p>
+            <p className="hero-kicker">
+              Studio za izradu web stranica, aplikacija i marketing
+            </p>
 
             <h1 className="fade-in">
               Radimo web stranice, aplikacije i digitalni marketing.
@@ -38,26 +39,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* O PROMARU */}
       <section className="section">
         <div className="container home-about">
           <SectionTitle
             kicker="O PROMARU"
             title="Agencija za izradu web stranica, web aplikacija i digitalni marketing"
-            subtitle="Promar je digitalna agencija specijalizirana za izradu modernih web 
-            stranica, razvoj web aplikacija i provedbu učinkovitih digitalnih kampanja. 
-            Naš pristup temelji se na jasnoj strukturi, čistom dizajnu i funkcionalnim rješenjima 
-            koja klijentima donose stvarnu vrijednost — bez kompliciranja i nepotrebnih koraka."
+            subtitle="Promar je digitalna agencija specijalizirana za izradu modernih web stranica, razvoj web aplikacija i provedbu učinkovitih digitalnih kampanja. Naš pristup temelji se na jasnoj strukturi, čistom dizajnu i funkcionalnim rješenjima koja klijentima donose stvarnu vrijednost — bez kompliciranja i nepotrebnih koraka."
           />
 
           <SectionTitle
-             subtitle="Iza nas su projekti poput Fotqa, Tvornice vjenčanja i aplikacije Zimska liga Panadić — moderne platforme za digitalno vođenje sportskih natjecanja s rasporedima, tablicama i statistikama u realnom vremenu. 
-             Upravo takva rješenja pokazuju našu kombinaciju iskustva u webu, videu, sadržaju i digitalnom marketingu — te sposobnost izrade sustava koji izgledaju profesionalno i istovremeno rješavaju konkretne probleme."
+            subtitle="Iza nas su projekti poput Fotqa, Tvornice vjenčanja, Svadba.app i aplikacije Zimska liga Panadić — od sadržajnih i prodajnih webova do konkretnih web aplikacija koje rješavaju stvarne procese korisnika. Upravo takva rješenja pokazuju našu kombinaciju iskustva u webu, videu, sadržaju i digitalnom marketingu — te sposobnost izrade sustava koji izgledaju profesionalno i istovremeno rješavaju konkretne probleme."
           />
         </div>
       </section>
 
-      {/* USLUGE – kratki pregled */}
       <section className="section section-alt">
         <div className="container">
           <SectionTitle
@@ -77,7 +72,7 @@ export default function HomePage() {
             </div>
             <div className="card">
               <h3>Foto &amp; video produkcija</h3>
-              <p>Snima­nje, montaža, eventi, sport, brendovi.</p>
+              <p>Snimanje, montaža, eventi, sport, brendovi.</p>
             </div>
           </div>
 
@@ -89,7 +84,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* REFERENCE – kratko */}
       <section className="section">
         <div className="container">
           <SectionTitle
@@ -98,8 +92,6 @@ export default function HomePage() {
           />
 
           <div className="references-grid">
-
-            {/* Fotqa */}
             <div className="reference-card">
               <img
                 src="/images/reference-fotqa.jpg"
@@ -107,10 +99,9 @@ export default function HomePage() {
                 className="reference-image"
               />
               <h3>Fotqa</h3>
-              <p>Web &amp; profesionalna foto/video produkcija.</p>
+              <p>Web i profesionalna foto/video produkcija.</p>
             </div>
 
-            {/* Tvornica vjenčanja */}
             <div className="reference-card">
               <img
                 src="/images/reference-vjencanja.jpg"
@@ -121,7 +112,19 @@ export default function HomePage() {
               <p>Platforma i web za najveću wedding zajednicu.</p>
             </div>
 
-            {/* Zimska liga Panadić */}
+            <div className="reference-card">
+              <img
+                src="/images/reference-svadba.jpg"
+                alt="Svadba.app referenca"
+                className="reference-image"
+              />
+              <h3>Svadba.app</h3>
+              <p>
+                Web aplikacija za organizaciju vjenčanja s modulima za zadatke,
+                budžet, goste, plan sjedenja, dobavljače i QR galeriju.
+              </p>
+            </div>
+
             <div className="reference-card">
               <img
                 src="/images/reference-panadic.jpg"
@@ -129,9 +132,11 @@ export default function HomePage() {
                 className="reference-image"
               />
               <h3>Zimska liga Panadić</h3>
-              <p>Web aplikacija za digitalno vođenje sportskih natjecanja (prilagođena za rad putem mobilnih uređaja).</p>
+              <p>
+                Web aplikacija za digitalno vođenje sportskih natjecanja,
+                prilagođena i za rad putem mobilnih uređaja.
+              </p>
             </div>
-
           </div>
 
           <div className="section-cta-centered">
@@ -142,7 +147,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ZAŠTO MI */}
       <section className="section section-alt">
         <div className="container">
           <SectionTitle
@@ -154,13 +158,15 @@ export default function HomePage() {
             <li>Moderni webovi i tehnologija.</li>
             <li>Brza i jasna komunikacija.</li>
             <li>Vlastita foto &amp; video produkcija.</li>
-            <li>Reference: Fotqa, Tvornica vjenčanja, Zimska liga Panadić.</li>
-            <li>Iskustvo u digitalizaciji sportskih sustava.</li>
+            <li>
+              Reference: Fotqa, Tvornica vjenčanja, Svadba.app i Zimska liga
+              Panadić.
+            </li>
+            <li>Iskustvo u izradi aplikacija za stvarne operativne procese.</li>
           </ul>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="section section-cta">
         <div className="container cta-inner">
           <div>

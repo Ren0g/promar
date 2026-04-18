@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const navItems = [
     { href: "/", label: "Početna" },
@@ -25,8 +29,6 @@ export default function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
-        
-        {/* LOGO + SLOGAN */}
         <div className="logo-area">
           <Link href="/" className="logo" onClick={() => setMenuOpen(false)}>
             <img src="/images/logo-dark.png" alt="Promar logo" />
@@ -37,8 +39,7 @@ export default function Header() {
           </span>
         </div>
 
-        {/* NAV */}
-        <nav className="nav">
+        <nav className="nav" aria-label="Glavna navigacija">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -50,30 +51,33 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* CTA */}
         <div className="header-cta">
           <Button href="/kontakt" variant="primary">
             Zatražite ponudu
           </Button>
         </div>
 
-        {/* MOBILE TOGGLE */}
-        <div
+        <button
+          type="button"
           className="mobile-nav-toggle"
           onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Otvori navigaciju"
+          aria-label={menuOpen ? "Zatvori navigaciju" : "Otvori navigaciju"}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav-menu"
         >
-          ☰
-        </div>
+          {menuOpen ? "✕" : "☰"}
+        </button>
       </div>
 
-      {/* MOBILE MENU */}
-      <div className={`mobile-nav-menu ${menuOpen ? "show" : ""}`}>
+      <div
+        id="mobile-nav-menu"
+        className={`mobile-nav-menu ${menuOpen ? "show" : ""}`}
+      >
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            onClick={() => setMenuOpen(false)}
+            className={isActive(item.href) ? "active" : ""}
           >
             {item.label}
           </Link>
