@@ -1,4 +1,4 @@
-name: Set Backblaze B2 CORS
+name: Set Backblaze B2 Native CORS
 
 on:
   workflow_dispatch:
@@ -6,42 +6,23 @@ on:
 jobs:
   set-cors:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Configure AWS CLI for Backblaze B2
-        run: |
-          aws configure set aws_access_key_id "${{ secrets.B2_KEY_ID }}"
-          aws configure set aws_secret_access_key "${{ secrets.B2_APPLICATION_KEY }}"
-          aws configure set default.region "eu-central-003"
+      - name: Install Backblaze B2 CLI
+        run: pip install b2
 
-      - name: Write CORS config
+      - name: Authorize B2 account
+        env:
+          B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
         run: |
-          cat > cors.json <<'EOF'
-          {
-            "CORSRules": [
-              {
-                "AllowedHeaders": ["*"],
-                "AllowedMethods": ["GET", "HEAD", "PUT", "POST", "DELETE"],
-                "AllowedOrigins": [
-                  "https://www.promar.hr",
-                  "https://promar.hr"
-                ],
-                "ExposeHeaders": ["ETag"],
-                "MaxAgeSeconds": 3600
-              }
-            ]
-          }
-          EOF
+          b2 authorize-account "$B2_KEY_ID" "$B2_APPLICATION_KEY"
 
-      - name: Apply CORS to Backblaze B2 bucket
-        run: |
-          aws --endpoint-url https://s3.eu-central-003.backblazeb2.com \
-            s3api put-bucket-cors \
-            --bucket promar-svadbe-transfer \
-            --cors-configuration file://cors.json
+      - name: Apply CORS rules to bucket
+        run: >
+          b2 bucket update
+          --cors-rules '[{"corsRuleName":"promar-transfer","allowedOrigins":["https://www.promar.hr","https://promar.hr"],"allowedHeaders":["*"],"allowedOperations":["s3_put","s3_get","s3_head","s3_delete"],"exposeHeaders":["ETag"],"maxAgeSeconds":3600}]'
+          promar-svadbe-transfer
+          allPrivate
 
-      - name: Verify CORS
-        run: |
-          aws --endpoint-url https://s3.eu-central-003.backblazeb2.com \
-            s3api get-bucket-cors \
-            --bucket promar-svadbe-transfer
+      - name: Show bucket config
+        run: b2 bucket get promar-svadbe-transfer
