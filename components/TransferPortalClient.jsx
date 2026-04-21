@@ -38,12 +38,17 @@ function capabilityText(role) {
 function uploadErrorText(error) {
   const message = String(error?.message || "Upload nije uspio.");
   if (message.includes("Failed to fetch")) {
-    return "Upload nije došao do Backblazea. Najčešći uzrok je B2 CORS postavka za promar.hr ili preview domenu.";
-  }
-  if (message.includes("ETag")) {
-    return "Upload dio je prošao, ali B2 nije vratio ETag. U CORS pravilima treba izložiti ETag header.";
+    return "Upload nije došao do Backblazea. Najčešći uzrok je B2 CORS postavka za promar.hr.";
   }
   return message;
+}
+
+async function sha1Hex(blob) {
+  const buffer = await blob.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest("SHA-1", buffer);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 async function uploadOneFile(file, area, setStatus) {
@@ -53,30 +58,47 @@ async function uploadOneFile(file, area, setStatus) {
       area,
       fileName: file.name,
       fileSize: file.size,
-      contentType: file.type || "application/octet-stream"
+      contentType: file.type || "b2/x-auto"
     })
   });
 
-  const parts = [];
-  for (let index = 0; index < plan.urls.length; index += 1) {
-    const part = plan.urls[index];
+  const partCount = Math.max(1, Math.ceil(file.size / plan.partSize));
+  const partSha1Array = [];
+
+  for (let index = 0; index < partCount; index += 1) {
     const start = index * plan.partSize;
     const end = Math.min(file.size, start + plan.partSize);
     const chunk = file.slice(start, end);
+    const sha1 = await sha1Hex(chunk);
 
-    const response = await fetch(part.url, { method: "PUT", body: chunk });
-    if (!response.ok) throw new Error(`Upload dijela ${part.partNumber} nije uspio.`);
+    const partAuth = await api("/api/transfer/multipart/part-url", {
+      method: "POST",
+      body: JSON.stringify({ area, fileId: plan.fileId })
+    });
 
-    const etag = response.headers.get("etag") || response.headers.get("ETag");
-    if (!etag) throw new Error("Nedostaje ETag za završetak multiparta.");
+    const response = await fetch(partAuth.uploadUrl, {
+      method: "POST",
+      headers: {
+        Authorization: partAuth.authorizationToken,
+        "X-Bz-Part-Number": String(index + 1),
+        "X-Bz-Content-Sha1": sha1,
+        "Content-Type": file.type || "b2/x-auto"
+      },
+      body: chunk
+    });
 
-    parts.push({ PartNumber: part.partNumber, ETag: etag });
-    setStatus(Math.round(((index + 1) / plan.urls.length) * 100));
+    if (!response.ok) {
+      const details = await response.text().catch(() => "");
+      throw new Error(details || `Upload dijela ${index + 1} nije uspio.`);
+    }
+
+    partSha1Array.push(sha1);
+    setStatus(Math.round(((index + 1) / partCount) * 100));
   }
 
   await api("/api/transfer/multipart/complete", {
     method: "POST",
-    body: JSON.stringify({ area, key: plan.key, uploadId: plan.uploadId, parts })
+    body: JSON.stringify({ area, fileId: plan.fileId, partSha1Array })
   });
 }
 
@@ -221,7 +243,7 @@ function AdminDashboard({ onLogout }) {
     try {
       await api("/api/transfer/projects", {
         method: "POST",
-        body: JSON.stringify({ label, expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null })
+        body: JSON.stringify({ label, expiresAt: expiresAt ? new Date(`${expiresAt}T23:59:59.999`).toISOString() : null })
       });
       setLabel("");
       setExpiresAt("");

@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { completeMultipartUpload, ensureProjectAreaKey } from "@/lib/b2";
+import { finishLargeFile } from "@/lib/b2-native";
 import { assertUpload, jsonError, requireTransferSession } from "@/lib/transfer-helpers";
 
 export async function POST(request) {
@@ -10,13 +10,15 @@ export async function POST(request) {
   try {
     const body = await request.json();
     assertUpload(session.role, body.area);
-    ensureProjectAreaKey(session.projectCode, body.area, body.key);
 
-    await completeMultipartUpload({
-      key: body.key,
-      uploadId: body.uploadId,
-      parts: body.parts || []
-    });
+    const fileId = String(body.fileId || "");
+    const partSha1Array = Array.isArray(body.partSha1Array) ? body.partSha1Array : [];
+
+    if (!fileId || !partSha1Array.length) {
+      return jsonError("Nedostaju podaci za završetak uploada.");
+    }
+
+    await finishLargeFile({ fileId, partSha1Array });
 
     return Response.json({ ok: true });
   } catch (err) {

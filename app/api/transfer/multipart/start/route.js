@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { createMultipartPlan } from "@/lib/b2";
+import { startLargeFile } from "@/lib/b2-native";
 import { assertUpload, jsonError, requireTransferSession } from "@/lib/transfer-helpers";
 
 export async function POST(request) {
@@ -9,9 +9,9 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const area = body.area;
+    const area = String(body.area || "");
     const fileName = String(body.fileName || "");
-    const contentType = String(body.contentType || "application/octet-stream");
+    const contentType = String(body.contentType || "b2/x-auto");
     const fileSize = Number(body.fileSize || 0);
 
     assertUpload(session.role, area);
@@ -20,12 +20,11 @@ export async function POST(request) {
       return jsonError("Nedostaju podaci o datoteci.");
     }
 
-    const plan = await createMultipartPlan({
+    const plan = await startLargeFile({
       projectCode: session.projectCode,
       area,
       fileName,
-      contentType,
-      fileSize
+      contentType
     });
 
     return Response.json(plan);
