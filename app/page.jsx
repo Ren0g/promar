@@ -30,6 +30,9 @@ export default function HomePage() {
               <Button href="/kontakt" variant="primary" className="glow">
                 Spreman za novi web? Javi se.
               </Button>
+              <Button href="/izrada-web-stranica" variant="secondary">
+                Pogledaj ponudu
+              </Button>
             </div>
           </div>
 

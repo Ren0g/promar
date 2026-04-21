@@ -1,215 +1,161 @@
-import Button from "../../components/Button";
-import SectionTitle from "../../components/SectionTitle";
-
 export const metadata = {
-  title: "Izrada web stranica za firme i obrte | Promar",
+  title: "Izrada web stranica | Promar",
   description:
-    "Landing stranica za uslugu izrade web stranica za firme i obrte. Jasna cijena, jasan proces i moderan web bez kompliciranja."
+    "Izrada modernih, preglednih i mobilno prilagođenih web stranica za firme i obrte. Jasna ponuda, realna cijena i brza isporuka."
 };
 
-const packages = [
+import Button from "../../components/Button";
+
+const paketi = [
   {
-    name: "Starter",
-    price: "299 €",
-    description: "Za jednostavnu web stranicu koja treba izgledati uredno i profesionalno.",
-    features: [
+    naziv: "Starter",
+    cijena: "od 299 €",
+    opis: "Za jednostavnu prezentacijsku stranicu ili mali obrt kojem treba uredan online nastup.",
+    stavke: [
       "do 3 sekcije ili 1 jednostavna stranica",
       "responzivan prikaz za mobitel i tablet",
-      "kontakt podaci i osnovni CTA",
-      "osnovna SEO podešenja",
-      "objava stranice"
+      "osnovna kontakt forma",
+      "osnovni unos sadržaja"
     ]
   },
   {
-    name: "Standard",
-    price: "549 €",
-    description: "Za firme i obrte kojima treba ozbiljnija prezentacija i više sadržaja.",
-    features: [
+    naziv: "Standard",
+    cijena: "od 550 €",
+    opis: "Za firme i obrte kojima treba ozbiljnija struktura, više sadržaja i bolja prezentacija usluga.",
+    stavke: [
       "do 5 podstranica",
-      "prilagođen dizajn i jasna struktura",
-      "kontakt forma",
-      "galerija ili reference",
-      "tehnička SEO podešenja"
-    ],
-    featured: true
+      "jasna struktura usluga i sadržaja",
+      "kontakt forma i osnovni SEO",
+      "povezivanje društvenih mreža"
+    ]
   },
   {
-    name: "Napredno",
-    price: "po ponudi",
-    description: "Za projekte s više sadržaja, dodatnim jezicima ili posebnim funkcionalnostima.",
-    features: [
+    naziv: "Premium",
+    cijena: "od 850 €",
+    opis: "Za projekte kojima treba više sadržaja, više funkcionalnosti i jači ukupni dojam.",
+    stavke: [
       "više podstranica i sekcija",
-      "blog ili CMS",
-      "višejezičnost",
-      "naprednije forme i integracije",
-      "prilagodba prema projektu"
+      "napredniji layout i vizualni dojam",
+      "dodatne funkcionalnosti po potrebi",
+      "proširena priprema za daljnji rast"
     ]
   }
 ];
 
-const references = [
+const koraci = [
   {
-    image: "/images/reference-fotqa.jpg",
-    alt: "Fotqa referenca",
-    title: "Fotqa",
-    text: "Primjer čistog i vizualno jakog web nastupa za foto i video studio."
+    naslov: "1. Kratak dogovor",
+    opis: "Pošaljete što trebate, a mi javimo što ima smisla i koja je realna procjena." 
   },
   {
-    image: "/images/reference-svadba.jpg",
-    alt: "Svadba.app referenca",
-    title: "Svadba.app",
-    text: "Projekt koji pokazuje da iza Promara ne stoje samo obične stranice nego i ozbiljnija digitalna rješenja."
+    naslov: "2. Izrada dizajna i strukture",
+    opis: "Slažemo stranicu tako da izgleda ozbiljno i jasno komunicira što radite."
   },
   {
-    image: "/images/reference-vjencanja.jpg",
-    alt: "Promar referenca",
-    title: "Tvornica vjenčanja",
-    text: "Sadržajni i pregledni web s jasnom strukturom i fokusom na korisničko iskustvo."
+    naslov: "3. Dorade i objava",
+    opis: "Nakon potvrde unosimo završne izmjene i pripremamo stranicu za objavu."
   }
-];
-
-const process = [
-  "Kratko dogovorimo što vam stvarno treba.",
-  "Složimo strukturu, sadržaj i izgled stranice.",
-  "Napravimo web i prilagodimo ga za mobitele.",
-  "Pregledate, javite izmjene i objavimo stranicu."
 ];
 
 const faq = [
   {
-    q: "Je li 299 € konačna cijena?",
-    a: "Ne uvijek. 299 € je ulazna cijena za jednostavnu stranicu. Ako treba više podstranica, više jezika ili dodatne funkcionalnosti, cijena ide prema paketu ili ponudi."
+    pitanje: "Je li 299 € konačna cijena?",
+    odgovor:
+      "Ne uvijek. 299 € je početna cijena za vrlo jednostavnu stranicu. Ako treba više sadržaja, podstranica ili dodatnih funkcionalnosti, cijena raste prema opsegu posla."
   },
   {
-    q: "Koliko traje izrada?",
-    a: "Za jednostavnije stranice najčešće 5 do 10 radnih dana, ovisno o sadržaju i brzini povratnih informacija."
+    pitanje: "Koliko traje izrada?",
+    odgovor:
+      "Za jednostavne stranice najčešće od nekoliko dana do dva tjedna, ovisno o materijalima i brzini komunikacije."
   },
   {
-    q: "Što trebam pripremiti?",
-    a: "Najčešće logo, osnovne podatke o firmi, tekstove i kontakt podatke. Ako nešto nedostaje, dogovorimo kako to riješiti."
-  },
-  {
-    q: "Radite li i održavanje?",
-    a: "Da. Nakon izrade možemo preuzeti manje izmjene, nadogradnje i osnovno održavanje po dogovoru."
+    pitanje: "Radite li i tekstove, vizuale i marketing?",
+    odgovor:
+      "Da. Promar uz izradu web stranica radi i aplikacije, digitalni marketing te vizualne materijale, po dogovoru."
   }
 ];
 
-export default function WebDesignLandingPage() {
+export default function IzradaWebStranicaPage() {
   return (
     <>
-      <section className="landing-hero section">
-        <div className="container landing-hero-inner">
-          <div className="landing-hero-content">
-            <p className="landing-kicker">IZRADA WEB STRANICA</p>
+      <section className="web-hero">
+        <div className="container web-hero-inner">
+          <div className="web-hero-copy">
+            <p className="web-hero-kicker">Izrada web stranica</p>
             <h1>Web stranice za firme i obrte, jasno i bez kompliciranja.</h1>
-            <p className="landing-lead">
-              Radimo moderne, pregledne i mobilno prilagođene web stranice
-              koje izgledaju ozbiljno i jasno komuniciraju što radite.
+            <p className="web-hero-text">
+              Radimo moderne, pregledne i mobilno prilagođene web stranice koje
+              izgledaju ozbiljno i jasno komuniciraju što radite.
             </p>
 
-            <ul className="landing-checks">
+            <ul className="web-hero-list">
               <li>Moderna i pregledna</li>
               <li>Prilagođena mobilnim uređajima</li>
               <li>Cijena već od 299 €</li>
             </ul>
 
-            <div className="landing-actions">
+            <div className="web-hero-actions">
               <Button href="/kontakt" variant="primary">
                 Pošaljite upit
               </Button>
-              <Button href="#paketi" variant="secondary">
+              <a href="#paketi" className="btn btn-secondary">
                 Pogledaj pakete
-              </Button>
+              </a>
             </div>
           </div>
 
-          <div className="landing-hero-visual">
-            <div className="landing-visual-card landing-visual-main">
-              <img src="/images/reference-svadba.jpg" alt="Primjer web projekta" />
-            </div>
-            <div className="landing-visual-card landing-visual-left">
-              <img src="/images/reference-fotqa.jpg" alt="Fotqa projekt" />
-            </div>
-            <div className="landing-visual-card landing-visual-right">
-              <img src="/images/reference-vjencanja.jpg" alt="Tvornica vjenčanja projekt" />
-            </div>
+          <div className="web-hero-media">
+            <img
+              src="/images/websites-hero-mockup.png"
+              alt="Mockup primjera web stranica koje izrađuje Promar"
+            />
           </div>
         </div>
       </section>
 
-      <section className="section section-alt">
-        <div className="container">
-          <SectionTitle
-            kicker="ZA KOGA JE OVO"
-            title="Za male firme, obrte i uslužne djelatnosti kojima treba ozbiljan web"
-            subtitle="Ako nemate web, imate zastarjelu stranicu ili želite jasniji i moderniji nastup, ovo je usluga s kojom najbrže možete krenuti."
-          />
-
-          <div className="landing-audience-grid">
-            <div className="card">
-              <h3>Obrti i lokalne usluge</h3>
-              <p>Frizeri, saloni, servisi, prijevoznici, apartmani, ugostitelji i slične djelatnosti.</p>
-            </div>
-            <div className="card">
-              <h3>Male firme</h3>
-              <p>Tvrtke kojima treba ozbiljna prezentacija usluga, reference i jasan kontakt.</p>
-            </div>
-            <div className="card">
-              <h3>Brendovi koji rastu</h3>
-              <p>Projekti kojima treba jača struktura, više sadržaja i prostor za daljnji razvoj.</p>
-            </div>
+      <section className="section">
+        <div className="container web-proof">
+          <div className="web-proof-card">
+            <h2>Za koga je ova ponuda?</h2>
+            <p>
+              Za male firme, obrte i uslužne djelatnosti kojima treba uredna i
+              funkcionalna web stranica bez razvlačenja i nepotrebnih komplikacija.
+            </p>
+          </div>
+          <div className="web-proof-card">
+            <h2>Što dobivate?</h2>
+            <p>
+              Jasnu strukturu, responzivan prikaz, moderan izgled i stranicu koja
+              ostavlja ozbiljniji dojam nego improvizirano rješenje.
+            </p>
           </div>
         </div>
       </section>
 
-      <section id="paketi" className="section">
+      <section className="section section-alt" id="paketi">
         <div className="container">
-          <SectionTitle
-            kicker="PAKETI"
-            title="Jasno definirani paketi i realne cijene"
-            subtitle="Bez muljanja i bez nejasnih stavki. Ako projekt izlazi iz okvira, cijena ide po ponudi."
-          />
+          <div className="section-title">
+            <p className="section-kicker">Paketi</p>
+            <h2>Odaberite paket koji ima smisla za vaš projekt</h2>
+            <p className="section-subtitle">
+              Ako projekt izlazi iz okvira ovih paketa, cijena se definira prema stvarnom opsegu posla.
+            </p>
+          </div>
 
-          <div className="landing-packages-grid">
-            {packages.map((item) => (
-              <article
-                key={item.name}
-                className={`landing-package-card ${item.featured ? "featured" : ""}`}
-              >
-                {item.featured && <span className="landing-badge">Najčešći izbor</span>}
-                <h3>{item.name}</h3>
-                <p className="landing-package-price">{item.price}</p>
-                <p className="landing-package-description">{item.description}</p>
-                <ul className="landing-package-list">
-                  {item.features.map((feature) => (
-                    <li key={feature}>{feature}</li>
+          <div className="web-packages">
+            {paketi.map((paket) => (
+              <article className="web-package-card" key={paket.naziv}>
+                <div className="web-package-head">
+                  <h3>{paket.naziv}</h3>
+                  <span>{paket.cijena}</span>
+                </div>
+                <p>{paket.opis}</p>
+                <ul className="list-check web-package-list">
+                  {paket.stavke.map((stavka) => (
+                    <li key={stavka}>{stavka}</li>
                   ))}
                 </ul>
               </article>
-            ))}
-          </div>
-
-          <div className="landing-note-box">
-            <strong>U cijenu nisu uključeni:</strong> domena, hosting, plaćeni pluginovi,
-            profesionalni tekstovi, prijevodi, webshop i custom web aplikacije.
-          </div>
-        </div>
-      </section>
-
-      <section className="section section-alt">
-        <div className="container">
-          <SectionTitle
-            kicker="KAKO RADIMO"
-            title="Proces je jednostavan i brz"
-            subtitle="Cilj nije da vas zatrpamo terminima, nego da što prije dođete do gotove stranice."
-          />
-
-          <div className="landing-steps-grid">
-            {process.map((step, index) => (
-              <div key={step} className="landing-step-card">
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <p>{step}</p>
-              </div>
             ))}
           </div>
         </div>
@@ -217,19 +163,17 @@ export default function WebDesignLandingPage() {
 
       <section className="section">
         <div className="container">
-          <SectionTitle
-            kicker="REFERENCE"
-            title="Projekti koji pokazuju stil i smjer"
-            subtitle="Promar gradi moderan, pregledan i funkcionalan web nastup, a to se vidi i na stvarnim projektima."
-          />
+          <div className="section-title">
+            <p className="section-kicker">Kako radimo</p>
+            <h2>Bez kaosa i bez nepotrebnog razvlačenja</h2>
+          </div>
 
-          <div className="landing-references-grid">
-            {references.map((item) => (
-              <article key={item.title} className="reference-card">
-                <img src={item.image} alt={item.alt} className="reference-image" />
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
+          <div className="web-steps">
+            {koraci.map((korak) => (
+              <div className="web-step" key={korak.naslov}>
+                <h3>{korak.naslov}</h3>
+                <p>{korak.opis}</p>
+              </div>
             ))}
           </div>
         </div>
@@ -237,40 +181,31 @@ export default function WebDesignLandingPage() {
 
       <section className="section section-alt">
         <div className="container">
-          <SectionTitle
-            kicker="ČESTA PITANJA"
-            title="Odmah odgovori na ono što ljude najčešće zanima"
-          />
+          <div className="section-title">
+            <p className="section-kicker">Česta pitanja</p>
+            <h2>Ono što ljude najčešće zanima prije upita</h2>
+          </div>
 
-          <div className="landing-faq-grid">
+          <div className="web-faq">
             {faq.map((item) => (
-              <article key={item.q} className="landing-faq-item">
-                <h3>{item.q}</h3>
-                <p>{item.a}</p>
+              <article className="web-faq-item" key={item.pitanje}>
+                <h3>{item.pitanje}</h3>
+                <p>{item.odgovor}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section landing-final-cta">
-        <div className="container landing-final-cta-inner">
+      <section className="section section-cta">
+        <div className="container cta-inner">
           <div>
-            <p className="landing-kicker">KREĆEMO?</p>
-            <h2>Trebate web stranicu za firmu ili obrt?</h2>
-            <p>
-              Pošaljite upit i javimo vam što točno ulazi u izradu, koji paket
-              ima smisla i koliko brzo možemo krenuti.
-            </p>
+            <h2>Trebate web stranicu?</h2>
+            <p>Pošaljite upit i javimo vam što ima smisla za vaš projekt.</p>
           </div>
-          <div className="landing-final-actions">
-            <Button href="/kontakt" variant="primary">
-              Zatražite ponudu
-            </Button>
-            <a className="landing-email-link" href="mailto:info@promar.hr">
-              info@promar.hr
-            </a>
-          </div>
+          <Button href="/kontakt" variant="primary">
+            Zatražite ponudu
+          </Button>
         </div>
       </section>
     </>
