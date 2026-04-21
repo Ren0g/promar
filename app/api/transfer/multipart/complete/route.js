@@ -1,7 +1,7 @@
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
-import { finishLargeFile } from "@/lib/b2-native";
-import { assertUpload, jsonError, requireTransferSession } from "@/lib/transfer-helpers";
+import { completeMultipartUpload } from '@/lib/b2-s3';
+import { assertUpload, jsonError, requireTransferSession } from '@/lib/transfer-helpers';
 
 export async function POST(request) {
   const { session, error } = await requireTransferSession();
@@ -9,19 +9,16 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    assertUpload(session.role, body.area);
+    const area = String(body.area || '');
+    const key = String(body.key || '');
+    const uploadId = String(body.uploadId || '');
 
-    const fileId = String(body.fileId || "");
-    const partSha1Array = Array.isArray(body.partSha1Array) ? body.partSha1Array : [];
+    assertUpload(session.role, area);
+    if (!key || !uploadId) return jsonError('Nedostaju podaci za završetak uploada.');
 
-    if (!fileId || !partSha1Array.length) {
-      return jsonError("Nedostaju podaci za završetak uploada.");
-    }
-
-    await finishLargeFile({ fileId, partSha1Array });
-
-    return Response.json({ ok: true });
+    const data = await completeMultipartUpload({ key, uploadId });
+    return Response.json(data);
   } catch (err) {
-    return jsonError(err.message || "Ne mogu završiti upload.", 500);
+    return jsonError(err.message || 'Ne mogu završiti upload.', 500);
   }
 }

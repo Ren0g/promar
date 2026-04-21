@@ -1,7 +1,7 @@
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
-import { startLargeFile } from "@/lib/b2-native";
-import { assertUpload, jsonError, requireTransferSession } from "@/lib/transfer-helpers";
+import { startMultipartUpload } from '@/lib/b2-s3';
+import { assertUpload, jsonError, requireTransferSession } from '@/lib/transfer-helpers';
 
 export async function POST(request) {
   const { session, error } = await requireTransferSession();
@@ -9,18 +9,15 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const area = String(body.area || "");
-    const fileName = String(body.fileName || "");
-    const contentType = String(body.contentType || "b2/x-auto");
+    const area = String(body.area || '');
+    const fileName = String(body.fileName || '');
+    const contentType = String(body.contentType || 'application/octet-stream');
     const fileSize = Number(body.fileSize || 0);
 
     assertUpload(session.role, area);
+    if (!fileName || !fileSize) return jsonError('Nedostaju podaci o datoteci.');
 
-    if (!fileName || !fileSize) {
-      return jsonError("Nedostaju podaci o datoteci.");
-    }
-
-    const plan = await startLargeFile({
+    const plan = await startMultipartUpload({
       projectCode: session.projectCode,
       area,
       fileName,
@@ -29,6 +26,6 @@ export async function POST(request) {
 
     return Response.json(plan);
   } catch (err) {
-    return jsonError(err.message || "Ne mogu pripremiti upload.", 500);
+    return jsonError(err.message || 'Ne mogu pripremiti upload.', 500);
   }
 }

@@ -43,14 +43,6 @@ function uploadErrorText(error) {
   return message;
 }
 
-async function sha1Hex(blob) {
-  const buffer = await blob.arrayBuffer();
-  const hashBuffer = await crypto.subtle.digest("SHA-1", buffer);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
-}
-
 async function uploadOneFile(file, area, setStatus) {
   const plan = await api("/api/transfer/multipart/start", {
     method: "POST",
@@ -58,31 +50,26 @@ async function uploadOneFile(file, area, setStatus) {
       area,
       fileName: file.name,
       fileSize: file.size,
-      contentType: file.type || "b2/x-auto"
+      contentType: file.type || "application/octet-stream"
     })
   });
 
   const partCount = Math.max(1, Math.ceil(file.size / plan.partSize));
-  const partSha1Array = [];
 
   for (let index = 0; index < partCount; index += 1) {
     const start = index * plan.partSize;
     const end = Math.min(file.size, start + plan.partSize);
     const chunk = file.slice(start, end);
-    const sha1 = await sha1Hex(chunk);
 
     const partAuth = await api("/api/transfer/multipart/part-url", {
       method: "POST",
-      body: JSON.stringify({ area, fileId: plan.fileId })
+      body: JSON.stringify({ area, key: plan.key, uploadId: plan.uploadId, partNumber: index + 1 })
     });
 
-    const response = await fetch(partAuth.uploadUrl, {
-      method: "POST",
+    const response = await fetch(partAuth.url, {
+      method: "PUT",
       headers: {
-        Authorization: partAuth.authorizationToken,
-        "X-Bz-Part-Number": String(index + 1),
-        "X-Bz-Content-Sha1": sha1,
-        "Content-Type": file.type || "b2/x-auto"
+        "Content-Type": file.type || "application/octet-stream"
       },
       body: chunk
     });
@@ -92,13 +79,12 @@ async function uploadOneFile(file, area, setStatus) {
       throw new Error(details || `Upload dijela ${index + 1} nije uspio.`);
     }
 
-    partSha1Array.push(sha1);
     setStatus(Math.round(((index + 1) / partCount) * 100));
   }
 
   await api("/api/transfer/multipart/complete", {
     method: "POST",
-    body: JSON.stringify({ area, fileId: plan.fileId, partSha1Array })
+    body: JSON.stringify({ area, key: plan.key, uploadId: plan.uploadId })
   });
 }
 
