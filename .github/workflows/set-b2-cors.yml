@@ -1,0 +1,47 @@
+name: Set Backblaze B2 CORS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  set-cors:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS CLI for Backblaze B2
+        run: |
+          aws configure set aws_access_key_id "${{ secrets.B2_KEY_ID }}"
+          aws configure set aws_secret_access_key "${{ secrets.B2_APPLICATION_KEY }}"
+          aws configure set default.region "eu-central-003"
+
+      - name: Write CORS config
+        run: |
+          cat > cors.json <<'EOF'
+          {
+            "CORSRules": [
+              {
+                "AllowedHeaders": ["*"],
+                "AllowedMethods": ["GET", "HEAD", "PUT", "POST", "DELETE"],
+                "AllowedOrigins": [
+                  "https://www.promar.hr",
+                  "https://promar.hr"
+                ],
+                "ExposeHeaders": ["ETag"],
+                "MaxAgeSeconds": 3600
+              }
+            ]
+          }
+          EOF
+
+      - name: Apply CORS to Backblaze B2 bucket
+        run: |
+          aws --endpoint-url https://s3.eu-central-003.backblazeb2.com \
+            s3api put-bucket-cors \
+            --bucket promar-svadbe-transfer \
+            --cors-configuration file://cors.json
+
+      - name: Verify CORS
+        run: |
+          aws --endpoint-url https://s3.eu-central-003.backblazeb2.com \
+            s3api get-bucket-cors \
+            --bucket promar-svadbe-transfer
