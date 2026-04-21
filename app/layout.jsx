@@ -1,6 +1,5 @@
 import "./globals.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import AppShell from "../components/AppShell";
 
 export const metadata = {
   title: "Promar – Web, aplikacije i marketing",
@@ -13,11 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="hr">
       <body>
-        <div className="app">
-          <Header />
-          <main className="page-content">{children}</main>
-          <Footer />
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
