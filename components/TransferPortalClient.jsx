@@ -38,7 +38,7 @@ function capabilityText(role) {
 function uploadErrorText(error) {
   const message = String(error?.message || "Upload nije uspio.");
   if (message.includes("Failed to fetch")) {
-    return "Upload nije došao do Backblazea. Najčešći uzrok je B2 CORS postavka za promar.hr.";
+    return "Upload nije uspio. Otvori DevTools > Network i pogledaj stvarnu grešku requesta.";
   }
   return message;
 }
@@ -200,12 +200,18 @@ function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRe
 
 function CopyButton({ value, label = "Kopiraj link" }) {
   const [done, setDone] = useState(false);
+
   async function copy() {
     await navigator.clipboard.writeText(`${window.location.origin}${value}`);
     setDone(true);
     setTimeout(() => setDone(false), 1500);
   }
-  return <button type="button" className="btn btn-secondary" onClick={copy}>{done ? "Kopirano" : label}</button>;
+
+  return (
+    <button type="button" className="btn btn-secondary" onClick={copy}>
+      {done ? "Kopirano" : label}
+    </button>
+  );
 }
 
 function AdminDashboard({ onLogout }) {
@@ -220,16 +226,22 @@ function AdminDashboard({ onLogout }) {
     setProjects(data.projects || []);
   }
 
-  useEffect(() => { loadProjects().catch((err) => setError(err.message)); }, []);
+  useEffect(() => {
+    loadProjects().catch((err) => setError(err.message));
+  }, []);
 
   async function create(event) {
     event.preventDefault();
     setBusy(true);
     setError("");
+
     try {
       await api("/api/transfer/projects", {
         method: "POST",
-        body: JSON.stringify({ label, expiresAt: expiresAt ? new Date(`${expiresAt}T23:59:59.999`).toISOString() : null })
+        body: JSON.stringify({
+          label,
+          expiresAt: expiresAt ? new Date(`${expiresAt}T23:59:59.999`).toISOString() : null
+        })
       });
       setLabel("");
       setExpiresAt("");
@@ -242,7 +254,8 @@ function AdminDashboard({ onLogout }) {
   }
 
   async function remove(projectCode, labelText) {
-    if (!window.confirm(`Obrisati svadbu \"${labelText}\" i sve datoteke?`)) return;
+    if (!window.confirm(`Obrisati svadbu "${labelText}" i sve datoteke?`)) return;
+
     try {
       await api("/api/transfer/projects/delete", {
         method: "POST",
@@ -270,13 +283,23 @@ function AdminDashboard({ onLogout }) {
         <form className="transfer-admin-form" onSubmit={create}>
           <label>
             Naziv svadbe
-            <input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="npr. Iva i Marko" />
+            <input
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="npr. Iva i Marko"
+            />
           </label>
           <label>
             Istek pristupa
-            <input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
+            <input
+              type="date"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+            />
           </label>
-          <button type="submit" className="btn btn-primary" disabled={busy}>{busy ? "Spremam..." : "Kreiraj svadbu"}</button>
+          <button type="submit" className="btn btn-primary" disabled={busy}>
+            {busy ? "Spremam..." : "Kreiraj svadbu"}
+          </button>
         </form>
         {error ? <p className="transfer-error">{error}</p> : null}
       </div>
@@ -287,9 +310,19 @@ function AdminDashboard({ onLogout }) {
             <div className="transfer-project-head">
               <div>
                 <h3>{project.label}</h3>
-                <p>{project.expiresAt ? `Istječe: ${new Date(project.expiresAt).toLocaleDateString("hr-HR")}` : "Bez roka isteka"}</p>
+                <p>
+                  {project.expiresAt
+                    ? `Istječe: ${new Date(project.expiresAt).toLocaleDateString("hr-HR")}`
+                    : "Bez roka isteka"}
+                </p>
               </div>
-              <button type="button" className="btn btn-ghost-danger" onClick={() => remove(project.code, project.label)}>Obriši svadbu</button>
+              <button
+                type="button"
+                className="btn btn-ghost-danger"
+                onClick={() => remove(project.code, project.label)}
+              >
+                Obriši svadbu
+              </button>
             </div>
 
             <div className="transfer-role-grid">
@@ -360,10 +393,15 @@ export default function TransferPortalClient() {
     event.preventDefault();
     setLoginBusy(true);
     setError("");
+
     try {
       const data = await api("/api/transfer/auth", {
         method: "POST",
-        body: JSON.stringify(mode === "admin" ? { mode: "admin", adminPin: pin } : { inviteToken, pin })
+        body: JSON.stringify(
+          mode === "admin"
+            ? { mode: "admin", adminPin: pin }
+            : { inviteToken, pin }
+        )
       });
       setSession(data);
       setPin("");
@@ -398,10 +436,18 @@ export default function TransferPortalClient() {
           <form className="transfer-login-form" onSubmit={handleLogin}>
             <label>
               PIN
-              <input type="password" inputMode="numeric" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="****" />
+              <input
+                type="password"
+                inputMode="numeric"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                placeholder="****"
+              />
             </label>
             {error ? <p className="transfer-error">{error}</p> : null}
-            <button type="submit" className="btn btn-primary" disabled={loginBusy}>{loginBusy ? "Provjera..." : "Uđi u portal"}</button>
+            <button type="submit" className="btn btn-primary" disabled={loginBusy}>
+              {loginBusy ? "Provjera..." : "Uđi u portal"}
+            </button>
           </form>
         </div>
       </div>
@@ -428,8 +474,24 @@ export default function TransferPortalClient() {
       </div>
 
       <div className="transfer-grid">
-        <FileBlock title="Ulazni materijali" area="raw" files={files.raw} canUpload={isCrew || isAdmin} canDownload={isEditor || isAdmin} canDelete={isAdmin} onRefresh={refreshFiles} />
-        <FileBlock title="Gotovi materijali" area="final" files={files.final} canUpload={isEditor || isAdmin} canDownload={isCrew || isAdmin} canDelete={isAdmin} onRefresh={refreshFiles} />
+        <FileBlock
+          title="Ulazni materijali"
+          area="raw"
+          files={files.raw}
+          canUpload={isCrew || isAdmin}
+          canDownload={isEditor || isAdmin}
+          canDelete={isAdmin}
+          onRefresh={refreshFiles}
+        />
+        <FileBlock
+          title="Gotovi materijali"
+          area="final"
+          files={files.final}
+          canUpload={isEditor || isAdmin}
+          canDownload={isCrew || isAdmin}
+          canDelete={isAdmin}
+          onRefresh={refreshFiles}
+        />
       </div>
     </div>
   );
