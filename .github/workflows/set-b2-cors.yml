@@ -18,12 +18,36 @@ jobs:
         run: |
           b2 account authorize "$B2_KEY_ID" "$B2_APPLICATION_KEY"
 
-      - name: Apply CORS rules to bucket
-        run: >
-          b2 bucket update
-          --cors-rules '[{"corsRuleName":"promar-transfer","allowedOrigins":["https://www.promar.hr","https://promar.hr"],"allowedHeaders":["*"],"allowedOperations":["s3_put","s3_get","s3_head","s3_delete"],"exposeHeaders":["ETag"],"maxAgeSeconds":3600}]'
-          promar-svadbe-transfer
-          allPrivate
+      - name: Write CORS rules file
+        run: |
+          cat > cors-rules.json <<'EOF'
+          [
+            {
+              "corsRuleName": "promar-transfer",
+              "allowedOrigins": [
+                "https://www.promar.hr",
+                "https://promar.hr"
+              ],
+              "allowedHeaders": [
+                "*"
+              ],
+              "allowedOperations": [
+                "s3_put",
+                "s3_get",
+                "s3_head",
+                "s3_delete"
+              ],
+              "exposeHeaders": [
+                "ETag"
+              ],
+              "maxAgeSeconds": 3600
+            }
+          ]
+          EOF
 
-      - name: Show bucket config
-        run: b2 bucket get promar-svadbe-transfer --showSize
+      - name: Apply CORS rules to bucket
+        run: |
+          b2 bucket update \
+            --cors-rules "$(<./cors-rules.json)" \
+            promar-svadbe-transfer \
+            allPrivate
