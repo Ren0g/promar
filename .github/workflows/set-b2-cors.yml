@@ -6,6 +6,7 @@ on:
 jobs:
   set-cors:
     runs-on: ubuntu-latest
+
     steps:
       - name: Install Backblaze B2 CLI
         run: pip install b2
@@ -15,7 +16,7 @@ jobs:
           B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
           B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
         run: |
-          b2 authorize-account "$B2_KEY_ID" "$B2_APPLICATION_KEY"
+          b2 account authorize "$B2_KEY_ID" "$B2_APPLICATION_KEY"
 
       - name: Apply CORS rules to bucket
         run: >
@@ -25,4 +26,4 @@ jobs:
           allPrivate
 
       - name: Show bucket config
-        run: b2 bucket get promar-svadbe-transfer
+        run: b2 bucket get promar-svadbe-transfer --showSize
