@@ -1,0 +1,58 @@
+name: Set Backblaze S3 CORS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  set-cors:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install boto3
+        run: pip install boto3
+
+      - name: Apply S3 CORS to Backblaze bucket
+        env:
+          B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+        run: |
+          python <<'PY'
+          import boto3
+          import json
+
+          bucket_name = "promar-svadbe-transfer"
+          endpoint_url = "https://s3.eu-central-003.backblazeb2.com"
+          region_name = "eu-central-003"
+
+          s3 = boto3.client(
+              "s3",
+              endpoint_url=endpoint_url,
+              region_name=region_name,
+              aws_access_key_id="${{ secrets.B2_KEY_ID }}",
+              aws_secret_access_key="${{ secrets.B2_APPLICATION_KEY }}",
+          )
+
+          cors = {
+              "CORSRules": [
+                  {
+                      "AllowedHeaders": ["*"],
+                      "AllowedMethods": ["GET", "HEAD", "PUT", "POST", "DELETE"],
+                      "AllowedOrigins": [
+                          "https://www.promar.hr",
+                          "https://promar.hr"
+                      ],
+                      "ExposeHeaders": ["ETag"],
+                      "MaxAgeSeconds": 3600
+                  }
+              ]
+          }
+
+          s3.put_bucket_cors(Bucket=bucket_name, CORSConfiguration=cors)
+          result = s3.get_bucket_cors(Bucket=bucket_name)
+          print(json.dumps(result, default=str, indent=2))
+          PY
