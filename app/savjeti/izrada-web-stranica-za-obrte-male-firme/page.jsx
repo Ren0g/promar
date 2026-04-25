@@ -3,7 +3,7 @@ import Button from "../../../components/Button";
 export const metadata = {
   title: "Izrada web stranica za obrte i male firme već od 299 € | Promar",
   description:
-    "Treba vam jednostavna, moderna i profesionalna web stranica za obrt ili malu firmu? Promar izrađuje web stranice već od 299 € — bez kompliciranja, jasno i prilagođeno vašem poslu.",
+    "Treba vam jednostavna, moderna i profesionalna web stranica za obrt ili malu firmu? Promar izrađuje web stranice već od 299 €.",
   keywords: [
     "izrada web stranica za obrte",
     "izrada web stranica za male firme",
