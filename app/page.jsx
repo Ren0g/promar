@@ -89,6 +89,40 @@ export default function HomePage() {
 
       <section className="section">
         <div className="container">
+          <div className="article-feature-card">
+            <div className="article-feature-media">
+              <img
+                src="/images/savjeti-web-stranica.png"
+                alt="Moderna web stranica prikazana na laptopu i mobitelu"
+              />
+            </div>
+
+            <div className="article-feature-content">
+              <p className="section-kicker">KORISNO ZA OBRTE I MALE FIRME</p>
+              <h2>Zašto je web stranica važna ako želite da vas klijenti pronađu na internetu?</h2>
+              <p>
+                Pripremili smo kratki vodič za obrte i male firme: zašto web
+                stranica nije trošak, nego digitalni izlog koji radi za vas.
+              </p>
+
+              <div className="article-feature-actions">
+                <Button
+                  href="/savjeti/izrada-web-stranica-za-obrte-male-firme"
+                  variant="primary"
+                >
+                  Pročitaj više
+                </Button>
+                <Button href="/savjeti" variant="secondary">
+                  Svi savjeti
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
           <SectionTitle
             kicker="REFERENCE"
             title="Stvarni projekti, stvarni rezultati"

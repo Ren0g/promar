@@ -45,7 +45,7 @@ const paketi = [
 const koraci = [
   {
     naslov: "1. Kratak dogovor",
-    opis: "Pošaljete što trebate, a mi javimo što ima smisla i koja je realna procjena." 
+    opis: "Pošaljete što trebate, a mi javimo što ima smisla i koja je realna procjena."
   },
   {
     naslov: "2. Izrada dizajna i strukture",
@@ -82,7 +82,7 @@ export default function IzradaWebStranicaPage() {
         <div className="container web-hero-inner">
           <div className="web-hero-copy">
             <p className="web-hero-kicker">Izrada web stranica</p>
-            <h2>Web stranice za firme i obrte, jasno i bez kompliciranja.</h2>
+            <h1>Web stranice za firme i obrte, jasno i bez kompliciranja.</h1>
             <p className="web-hero-text">
               Radimo moderne, pregledne i mobilno prilagođene web stranice koje
               izgledaju ozbiljno i jasno komuniciraju što radite.
@@ -119,14 +119,15 @@ export default function IzradaWebStranicaPage() {
             <h2>Za koga je ova ponuda?</h2>
             <p>
               Za male firme, obrte i uslužne djelatnosti kojima treba uredna i
-              funkcionalna web stranica bez razvlačenja i nepotrebnih komplikacija.
+              funkcionalna web stranica bez razvlačenja i nepotrebnih
+              komplikacija.
             </p>
           </div>
           <div className="web-proof-card">
             <h2>Što dobivate?</h2>
             <p>
-              Jasnu strukturu, responzivan prikaz, moderan izgled i stranicu koja
-              ostavlja ozbiljniji dojam nego improvizirano rješenje.
+              Jasnu strukturu, responzivan prikaz, moderan izgled i stranicu
+              koja ostavlja ozbiljniji dojam nego improvizirano rješenje.
             </p>
           </div>
         </div>
@@ -138,7 +139,8 @@ export default function IzradaWebStranicaPage() {
             <p className="section-kicker">Paketi</p>
             <h2>Odaberite paket koji ima smisla za vaš projekt</h2>
             <p className="section-subtitle">
-              Ako projekt izlazi iz okvira ovih paketa, cijena se definira prema stvarnom opsegu posla.
+              Ako projekt izlazi iz okvira ovih paketa, cijena se definira prema
+              stvarnom opsegu posla.
             </p>
           </div>
 
@@ -193,6 +195,37 @@ export default function IzradaWebStranicaPage() {
                 <p>{item.odgovor}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <div className="article-feature-card article-feature-inline">
+            <div className="article-feature-media">
+              <img
+                src="/images/savjeti-web-stranica.png"
+                alt="Moderna web stranica prikazana na laptopu i mobitelu"
+              />
+            </div>
+
+            <div className="article-feature-content">
+              <p className="section-kicker">KORISNI SAVJETI</p>
+              <h2>Niste sigurni treba li vam web stranica?</h2>
+              <p>
+                Pripremili smo kratki vodič za obrte i male firme: zašto web
+                stranica nije trošak, nego digitalni izlog koji radi za vas.
+              </p>
+
+              <div className="article-feature-actions">
+                <Button
+                  href="/savjeti/izrada-web-stranica-za-obrte-male-firme"
+                  variant="primary"
+                >
+                  Pročitajte članak
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

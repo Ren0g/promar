@@ -1171,3 +1171,226 @@ p {
 .transfer-role-card{border:1px solid rgba(31,31,31,.08);border-radius:18px;padding:18px;background:#fafafa;display:grid;gap:10px}
 .transfer-role-card p{margin:0;color:#333}
 @media (max-width: 900px){.transfer-role-grid,.transfer-admin-form{grid-template-columns:1fr}.transfer-project-head{flex-direction:column}}
+
+.article-feature-card,
+.article-listing-card,
+.article-sidebar-card,
+.article-content {
+  background: var(--color-white);
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.article-feature-card,
+.article-listing-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 28px;
+  overflow: hidden;
+}
+
+.article-feature-media img,
+.article-listing-media img,
+.article-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-feature-content,
+.article-listing-content {
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.article-feature-content h2,
+.article-listing-content h2 {
+  max-width: 18ch;
+}
+
+.article-feature-actions,
+.article-listing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.article-listing-meta,
+.article-sidebar-kicker,
+.article-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-orange);
+}
+
+.savjeti-hero {
+  padding-bottom: 28px;
+}
+
+.article-listing-featured {
+  align-items: stretch;
+}
+
+.article-hero {
+  padding: 56px 0 32px;
+  background: linear-gradient(180deg, #fff 0%, #f8f8f8 100%);
+}
+
+.article-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 36px;
+  align-items: center;
+}
+
+.article-hero-copy h1 {
+  font-size: clamp(2.3rem, 4vw, 3.8rem);
+  line-height: 1.05;
+  margin-top: 8px;
+  max-width: 14ch;
+}
+
+.article-lead {
+  font-size: 1.08rem;
+  margin-top: 18px;
+  max-width: 42rem;
+}
+
+.article-hero-media img {
+  border-radius: 28px;
+  box-shadow: var(--shadow-soft);
+  min-height: 320px;
+}
+
+.article-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.article-content {
+  padding: 34px;
+}
+
+.article-content h2 {
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+
+.article-content p + p,
+.article-content ul + p,
+.article-content ol + p,
+.article-content p + ul,
+.article-content p + ol {
+  margin-top: 16px;
+}
+
+.article-content ul,
+.article-content ol {
+  padding-left: 22px;
+  color: var(--color-gray-dark);
+}
+
+.article-content li + li {
+  margin-top: 10px;
+}
+
+.article-content li p {
+  margin-top: 10px;
+}
+
+.article-sidebar {
+  display: grid;
+  gap: 20px;
+  position: sticky;
+  top: 102px;
+}
+
+.article-sidebar-card {
+  padding: 26px;
+}
+
+.article-sidebar-card h2,
+.article-sidebar-card h3 {
+  margin-top: 6px;
+}
+
+.article-sidebar-card p {
+  margin-top: 12px;
+}
+
+.article-sidebar-card .btn {
+  margin-top: 18px;
+}
+
+.article-sidebar-note {
+  background: var(--color-gray-light);
+  box-shadow: none;
+}
+
+.article-feature-inline {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+}
+
+@media (max-width: 992px) {
+  .article-feature-card,
+  .article-listing-card,
+  .article-hero-inner,
+  .article-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .article-sidebar {
+    position: static;
+  }
+
+  .article-feature-content,
+  .article-listing-content,
+  .article-content,
+  .article-sidebar-card {
+    padding: 24px;
+  }
+
+  .article-feature-content h2,
+  .article-listing-content h2,
+  .article-hero-copy h1 {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .article-hero {
+    padding-top: 34px;
+  }
+
+  .article-hero-media img {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-feature-content,
+  .article-listing-content,
+  .article-content,
+  .article-sidebar-card {
+    padding: 20px;
+  }
+
+  .article-feature-actions,
+  .article-listing-actions {
+    align-items: stretch;
+  }
+
+  .article-feature-actions .btn,
+  .article-listing-actions .btn,
+  .article-sidebar-card .btn {
+    width: 100%;
+  }
+}
