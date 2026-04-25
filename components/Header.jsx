@@ -16,6 +16,7 @@ export default function Header() {
   const navItems = [
     { href: "/", label: "Početna" },
     { href: "/izrada-web-stranica", label: "Web stranice" },
+    { href: "/savjeti", label: "Savjeti" },
     { href: "/usluge", label: "Usluge" },
     { href: "/reference", label: "Reference" },
     { href: "/o-nama", label: "O nama" },

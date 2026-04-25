@@ -792,9 +792,9 @@ p {
 }
 
 .web-hero-copy h1 {
-  font-size: clamp(2.6rem, 4.5vw, 4.2rem);
-  line-height: 1.02;
-  max-width: 12ch;
+  font-size: clamp(2.4rem, 3.2vw, 3.4rem);
+  line-height: 1.08;
+  max-width: 14ch;
 }
 
 .web-hero-text {
@@ -943,7 +943,7 @@ p {
   }
 
   .web-hero-copy h1 {
-    font-size: clamp(2.25rem, 8vw, 3rem);
+    font-size: clamp(2.05rem, 7vw, 2.55rem);
   }
 
   .web-proof-card,
