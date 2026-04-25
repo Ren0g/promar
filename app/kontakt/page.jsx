@@ -15,6 +15,8 @@ export default function KontaktPage() {
           kicker="KONTAKT"
           title="Javite se i dogovorit ćemo sve što trebate"
           subtitle="Pošaljite nam osnovne informacije o projektu i javit ćemo se s prijedlogom i procjenom."
+          titleAs="h1"
+          titleClassName="page-main-title"
         />
 
         <div className="contact-layout">

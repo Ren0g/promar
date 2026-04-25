@@ -15,6 +15,8 @@ export default function UslugePage() {
           kicker="USLUGE"
           title="Sve što vam treba za online nastup"
           subtitle="Web stranice, web aplikacije, digitalni marketing i foto/video produkcija."
+          titleAs="h1"
+          titleClassName="page-main-title"
         />
 
         <div className="cards-grid">

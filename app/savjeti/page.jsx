@@ -19,6 +19,8 @@ export default function SavjetiPage() {
             kicker="SAVJETI"
             title="Korisni tekstovi za obrte i male firme"
             subtitle="Praktični vodiči koji pomažu da jasnije odlučite što vam treba za ozbiljan online nastup."
+            titleAs="h1"
+            titleClassName="page-main-title"
           />
         </div>
       </section>

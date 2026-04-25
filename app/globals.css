@@ -78,6 +78,11 @@ h1 {
   line-height: 1.1;
 }
 
+.page-main-title {
+  font-size: clamp(2.4rem, 3.2vw, 3.4rem);
+  line-height: 1.1;
+}
+
 h2 {
   font-size: clamp(1.9rem, 2.5vw, 2.4rem);
 }
@@ -791,9 +796,7 @@ p {
   margin-bottom: 14px;
 }
 
-.web-hero-copy h1 {
-  font-size: clamp(2.4rem, 3.2vw, 3.4rem);
-  line-height: 1.08;
+.web-hero-copy .page-main-title {
   max-width: 14ch;
 }
 
@@ -928,7 +931,7 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .web-hero-copy h1 {
+  .web-hero-copy .page-main-title {
     max-width: 100%;
   }
 
@@ -942,7 +945,7 @@ p {
     padding-top: 32px;
   }
 
-  .web-hero-copy h1 {
+  .page-main-title {
     font-size: clamp(2.05rem, 7vw, 2.55rem);
   }
 
@@ -1249,9 +1252,7 @@ p {
   align-items: center;
 }
 
-.article-hero-copy h1 {
-  font-size: clamp(2.3rem, 4vw, 3.8rem);
-  line-height: 1.05;
+.article-hero-copy .page-main-title {
   margin-top: 8px;
   max-width: 14ch;
 }
@@ -1360,7 +1361,7 @@ p {
 
   .article-feature-content h2,
   .article-listing-content h2,
-  .article-hero-copy h1 {
+  .article-hero-copy .page-main-title {
     max-width: 100%;
   }
 }

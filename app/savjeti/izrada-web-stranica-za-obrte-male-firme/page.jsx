@@ -41,7 +41,7 @@ export default function SavjetWebStranicaPage() {
         <div className="container article-hero-inner">
           <div className="article-hero-copy">
             <p className="article-kicker">Savjeti • Web stranice</p>
-            <h1>Izrada web stranica za obrte i male firme već od 299 €</h1>
+            <h1 className="page-main-title">Izrada web stranica za obrte i male firme već od 299 €</h1>
             <p className="article-lead">
               Treba vam jednostavna, moderna i profesionalna web stranica za
               obrt ili malu firmu? Evo zašto web stranica i dalje nije trošak,

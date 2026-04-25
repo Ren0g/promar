@@ -17,7 +17,7 @@ export default function HomePage() {
               Studio za izradu web stranica, aplikacija i marketing
             </p>
 
-            <h1 className="fade-in">
+            <h1 className="page-main-title fade-in">
               Radimo web stranice, aplikacije i digitalni marketing.
             </h1>
 

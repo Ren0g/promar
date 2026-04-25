@@ -14,6 +14,8 @@ export default function ONamaPage() {
         <SectionTitle
           kicker="O NAMA"
           title="Studio koji spaja web, aplikacije i digitalni marketing"
+          titleAs="h1"
+          titleClassName="page-main-title"
         />
 
         <div className="two-cols">

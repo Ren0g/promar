@@ -82,7 +82,7 @@ export default function IzradaWebStranicaPage() {
         <div className="container web-hero-inner">
           <div className="web-hero-copy">
             <p className="web-hero-kicker">Izrada web stranica</p>
-            <h1>Web stranice za firme i obrte, jasno i bez kompliciranja.</h1>
+            <h1 className="page-main-title">Web stranice za firme i obrte, jasno i bez kompliciranja.</h1>
             <p className="web-hero-text">
               Radimo moderne, pregledne i mobilno prilagođene web stranice koje
               izgledaju ozbiljno i jasno komuniciraju što radite.

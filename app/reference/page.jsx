@@ -15,6 +15,8 @@ export default function ReferencePage() {
           kicker="REFERENCE"
           title="Projekti iza kojih stojimo"
           subtitle="Od webova do aplikacija – projekti koji najbolje pokazuju način na koji radimo."
+          titleAs="h1"
+          titleClassName="page-main-title"
         />
 
         <div className="references-grid">
