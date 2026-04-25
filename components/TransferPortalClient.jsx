@@ -88,9 +88,22 @@ async function uploadOneFile(file, area, setStatus) {
   });
 }
 
+async function triggerBrowserDownload(url, filename) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  if (filename) link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRefresh }) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
+  const [bulkDownloading, setBulkDownloading] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const [error, setError] = useState("");
 
   const totalSize = useMemo(() => files.reduce((sum, file) => sum + (file.size || 0), 0), [files]);
@@ -128,9 +141,30 @@ function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRe
         method: "POST",
         body: JSON.stringify({ area, key: file.key })
       });
-      window.open(data.url, "_blank", "noopener,noreferrer");
+      await triggerBrowserDownload(data.url, file.name);
     } catch (err) {
       setError(err.message || "Download nije uspio.");
+    }
+  }
+
+  async function handleDownloadAll() {
+    if (!files.length) return;
+    setBulkDownloading(true);
+    setError("");
+
+    try {
+      for (const file of files) {
+        const data = await api("/api/transfer/download", {
+          method: "POST",
+          body: JSON.stringify({ area, key: file.key })
+        });
+        await triggerBrowserDownload(data.url, file.name);
+        await new Promise((resolve) => setTimeout(resolve, 400));
+      }
+    } catch (err) {
+      setError(err.message || "Skidanje svih datoteka nije uspjelo.");
+    } finally {
+      setBulkDownloading(false);
     }
   }
 
@@ -147,6 +181,28 @@ function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRe
     }
   }
 
+  async function handleDeleteAll() {
+    if (!files.length) return;
+    if (!window.confirm(`Obrisati sve datoteke iz sekcije "${title}"?`)) return;
+
+    setBulkDeleting(true);
+    setError("");
+
+    try {
+      for (const file of files) {
+        await api("/api/transfer/delete", {
+          method: "POST",
+          body: JSON.stringify({ area, key: file.key })
+        });
+      }
+      await onRefresh();
+    } catch (err) {
+      setError(err.message || "Brisanje svih datoteka nije uspjelo.");
+    } finally {
+      setBulkDeleting(false);
+    }
+  }
+
   return (
     <div className="transfer-card">
       <div className="transfer-card-head">
@@ -154,12 +210,37 @@ function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRe
           <h3>{title}</h3>
           <p>{files.length} datoteka · {formatBytes(totalSize)}</p>
         </div>
-        {canUpload ? (
-          <label className={`transfer-upload ${uploading ? "is-busy" : ""}`}>
-            <input type="file" multiple onChange={handleUpload} disabled={uploading} />
-            {uploading ? "Upload u tijeku..." : "Dodaj datoteke"}
-          </label>
-        ) : null}
+
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {canDownload && files.length ? (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleDownloadAll}
+              disabled={bulkDownloading}
+            >
+              {bulkDownloading ? "Skidanje..." : "Preuzmi sve"}
+            </button>
+          ) : null}
+
+          {canDelete && files.length ? (
+            <button
+              type="button"
+              className="btn btn-ghost-danger"
+              onClick={handleDeleteAll}
+              disabled={bulkDeleting}
+            >
+              {bulkDeleting ? "Brisanje..." : "Obriši sve"}
+            </button>
+          ) : null}
+
+          {canUpload ? (
+            <label className={`transfer-upload ${uploading ? "is-busy" : ""}`}>
+              <input type="file" multiple onChange={handleUpload} disabled={uploading} />
+              {uploading ? "Upload u tijeku..." : "Dodaj datoteke"}
+            </label>
+          ) : null}
+        </div>
       </div>
 
       {Object.keys(uploadProgress).length ? (
@@ -184,11 +265,30 @@ function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRe
             <div key={file.key} className="transfer-file-item">
               <div>
                 <strong>{file.name}</strong>
-                <p>{formatBytes(file.size)}{file.lastModified ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}` : ""}</p>
+                <p>
+                  {formatBytes(file.size)}
+                  {file.lastModified ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}` : ""}
+                </p>
               </div>
               <div className="transfer-file-actions">
-                {canDownload ? <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)}>Preuzmi</button> : null}
-                {canDelete ? <button type="button" className="btn btn-ghost-danger" onClick={() => handleDelete(file)}>Obriši</button> : null}
+                {canDownload ? (
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => handleDownload(file)}
+                  >
+                    Preuzmi
+                  </button>
+                ) : null}
+                {canDelete ? (
+                  <button
+                    type="button"
+                    className="btn btn-ghost-danger"
+                    onClick={() => handleDelete(file)}
+                  >
+                    Obriši
+                  </button>
+                ) : null}
               </div>
             </div>
           ))}
