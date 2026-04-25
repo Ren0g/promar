@@ -18,7 +18,7 @@ export default function SavjetiPage() {
           <SectionTitle
             kicker="SAVJETI"
             title="Korisni tekstovi za obrte i male firme"
-            subtitle="Praktični vodiči koji pomažu da jasnije odlučite što vam treba za ozbiljan online nastup — bez nepotrebnog kompliciranja."
+            subtitle="Praktični vodiči koji pomažu da jasnije odlučite što vam treba za ozbiljan online nastup."
           />
         </div>
       </section>
