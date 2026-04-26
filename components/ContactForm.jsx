@@ -16,7 +16,6 @@ export default function ContactForm() {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  // ░░░ reCAPTCHA loader ░░░
   useEffect(() => {
     if (!window.grecaptcha) {
       const script = document.createElement("script");
@@ -56,7 +55,7 @@ export default function ContactForm() {
     }
 
     if (!formValues.message.trim()) {
-      newErrors.message = "Molimo opišite projekt ili upit.";
+      newErrors.message = "Molimo ukratko opišite projekt ili upit.";
     }
 
     return newErrors;
@@ -71,13 +70,11 @@ export default function ContactForm() {
       return;
     }
 
-    // ❗ Honeypot – ako je bot popunio ovo polje → prekidamo bez poruke
     if (values.website) {
       console.warn("BOT DETECTED (honeypot)");
       return;
     }
 
-    // ░░░ RECAPTCHA TOKEN ░░░
     const token = await window.grecaptcha.execute(
       "6LfuCyEsAAAAAOXyd1SEb_o2TwE8jIHcieJ1lW2s",
       { action: "submit" }
@@ -100,10 +97,8 @@ export default function ContactForm() {
       return;
     }
 
-    console.log("Kontakt forma poslana:", values);
     setSubmitted(true);
 
-    // Reset forme po želji
     setValues({
       name: "",
       email: "",
@@ -116,7 +111,6 @@ export default function ContactForm() {
 
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
-      {/* Honeypot */}
       <input
         type="text"
         name="website"
@@ -168,7 +162,7 @@ export default function ContactForm() {
         </div>
 
         <div className="form-field">
-          <label htmlFor="service">Usluga</label>
+          <label htmlFor="service">Što trebate?</label>
           <select
             id="service"
             name="service"
@@ -176,11 +170,13 @@ export default function ContactForm() {
             onChange={handleChange}
           >
             <option value="">Odaberite uslugu</option>
-            <option value="web">Web stranica</option>
-            <option value="app">Web aplikacija</option>
+            <option value="starter-web">Starter web stranica</option>
+            <option value="standard-web">Standard web stranica</option>
+            <option value="premium-web">Premium web stranica</option>
+            <option value="web-app">Web aplikacija / funkcionalnost</option>
             <option value="marketing">Digitalni marketing</option>
-            <option value="produkcija">Foto &amp; video produkcija</option>
-            <option value="ostalo">Ostalo</option>
+            <option value="produkcija">Foto &amp; video sadržaj</option>
+            <option value="ostalo">Nisam siguran / ostalo</option>
           </select>
           {errors.service && <p className="form-error">{errors.service}</p>}
         </div>
@@ -191,8 +187,8 @@ export default function ContactForm() {
         <textarea
           id="message"
           name="message"
-          rows={5}
-          placeholder="Ukratko opišite što trebate..."
+          rows={6}
+          placeholder="Ukratko napišite čime se bavite, što želite postići, imate li domenu, tekstove i fotografije..."
           value={values.message}
           onChange={handleChange}
         />
@@ -200,12 +196,12 @@ export default function ContactForm() {
       </div>
 
       <Button type="submit" variant="primary">
-        Zatražite ponudu
+        Pošaljite upit
       </Button>
 
       {submitted && (
         <p className="form-success">
-          Hvala! Vaša poruka je zaprimljena, javit ćemo se u najkraćem roku.
+          Hvala! Upit je zaprimljen. Javit ćemo Vam se s prijedlogom sljedećeg koraka.
         </p>
       )}
     </form>

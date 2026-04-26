@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Savjeti | Promar",
   description:
-    "Korisni tekstovi za obrte i male firme o web stranicama, online nastupu i digitalnim rješenjima.",
+    "Praktični savjeti za obrte i male firme o web stranicama, online nastupu i digitalnim rješenjima.",
   alternates: {
     canonical: "/savjeti"
   }
@@ -17,8 +17,8 @@ export default function SavjetiPage() {
         <div className="container">
           <SectionTitle
             kicker="SAVJETI"
-            title="Korisni tekstovi za obrte i male firme"
-            subtitle="Praktični vodiči koji pomažu da jasnije odlučite što vam treba za ozbiljan online nastup."
+            title="Praktični vodiči prije odluke o web stranici"
+            subtitle="Kratki i konkretni tekstovi za obrte i male firme koje žele znati što im stvarno treba prije nego krenu u izradu weba."
             titleAs="h1"
             titleClassName="page-main-title"
           />
@@ -37,11 +37,10 @@ export default function SavjetiPage() {
 
             <div className="article-listing-content">
               <p className="article-listing-meta">Web stranice • Obrti i male firme</p>
-              <h2>Izrada web stranica za obrte i male firme već od 299 €</h2>
+              <h2>Web stranica za obrt: kada je dovoljna osnovna stranica, a kada treba više?</h2>
               <p>
-                Treba vam jednostavna, moderna i profesionalna web stranica za
-                obrt ili malu firmu? U ovom vodiču objašnjavamo zašto web
-                stranica nije trošak, nego digitalni izlog koji radi za vas.
+                Vodič za obrte i male firme koje žele ozbiljan online nastup,
+                ali ne žele plaćati funkcionalnosti koje im trenutačno ne trebaju.
               </p>
 
               <div className="article-listing-actions">
@@ -49,7 +48,7 @@ export default function SavjetiPage() {
                   href="/savjeti/izrada-web-stranica-za-obrte-male-firme"
                   variant="primary"
                 >
-                  Pročitajte članak
+                  Pročitajte vodič
                 </Button>
               </div>
             </div>

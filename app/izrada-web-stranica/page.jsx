@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Izrada web stranica | Promar",
+  title: "Izrada web stranica za obrte i male firme | Promar",
   description:
-    "Izrada modernih, preglednih i mobilno prilagođenih web stranica za firme i obrte. Jasna ponuda, realna cijena i brza isporuka."
+    "Izrada modernih, preglednih i mobilno prilagođenih web stranica za firme i obrte. Paketi već od 299 €, jasna struktura i konkretan opseg."
 };
 
 import Button from "../../components/Button";
@@ -10,68 +10,123 @@ const paketi = [
   {
     naziv: "Starter",
     cijena: "od 299 €",
-    opis: "Za jednostavnu prezentacijsku stranicu ili mali obrt kojem treba uredan online nastup.",
+    oznaka: "Za brz i uredan početak",
+    opis:
+      "Za obrt, uslugu ili mali projekt kojem treba jednostavna stranica koja objašnjava ponudu i omogućuje brz kontakt.",
     stavke: [
       "do 3 sekcije ili 1 jednostavna stranica",
-      "responzivan prikaz za mobitel i tablet",
-      "osnovna kontakt forma",
-      "osnovni unos sadržaja"
+      "prilagodba za mobitel i tablet",
+      "osnovna kontakt forma ili CTA za poziv/poruku",
+      "osnovni unos sadržaja",
+      "osnovna SEO priprema"
+    ],
+    nije: [
+      "pisanje opširnih tekstova",
+      "više podstranica",
+      "velike galerije",
+      "više jezika",
+      "napredne funkcionalnosti"
     ]
   },
   {
     naziv: "Standard",
     cijena: "od 550 €",
-    opis: "Za firme i obrte kojima treba ozbiljnija struktura, više sadržaja i bolja prezentacija usluga.",
+    oznaka: "Najbolji izbor za većinu firmi",
+    opis:
+      "Za firme i obrte kojima treba jasnija struktura, više sadržaja i kvalitetnija prezentacija usluga.",
     stavke: [
       "do 5 podstranica",
-      "jasna struktura usluga i sadržaja",
+      "razrada strukture usluga",
       "kontakt forma i osnovni SEO",
-      "povezivanje društvenih mreža"
-    ]
+      "povezivanje društvenih mreža",
+      "priprema sadržaja za bolji prvi dojam"
+    ],
+    nije: ["webshop", "sustav rezervacija", "custom aplikacija", "kompletno vođenje marketinga"]
   },
   {
     naziv: "Premium",
     cijena: "od 850 €",
-    opis: "Za projekte kojima treba više sadržaja, više funkcionalnosti i jači ukupni dojam.",
+    oznaka: "Za ozbiljniji nastup",
+    opis:
+      "Za projekte kojima treba jači vizualni dojam, više sadržaja, napredniji layout ili dodatne funkcionalnosti.",
     stavke: [
       "više podstranica i sekcija",
-      "napredniji layout i vizualni dojam",
-      "dodatne funkcionalnosti po potrebi",
-      "proširena priprema za daljnji rast"
-    ]
+      "napredniji vizualni dojam",
+      "dodatne funkcionalnosti po dogovoru",
+      "proširena SEO i sadržajna priprema",
+      "bolja podloga za oglašavanje i daljnji rast"
+    ],
+    nije: ["veliki sustavi bez dodatne procjene", "neograničene izmjene", "održavanje bez dogovora"]
+  }
+];
+
+const problemi = [
+  {
+    naslov: "Posjetitelj mora odmah razumjeti ponudu",
+    opis:
+      "U prvih nekoliko sekundi mora biti jasno čime se bavite, gdje radite i kako Vas klijent može kontaktirati."
+  },
+  {
+    naslov: "Dizajn mora izgledati ozbiljno, ali ne smije smetati",
+    opis:
+      "Cilj nije pokazati efekte, nego predstaviti posao pregledno, uvjerljivo i profesionalno."
+  },
+  {
+    naslov: "Svaka stranica mora imati sljedeći korak",
+    opis:
+      "Poziv, poruka, obrazac, rezervacija ili upit — korisnik mora znati što treba napraviti nakon što pročita ponudu."
   }
 ];
 
 const koraci = [
   {
-    naslov: "1. Kratak dogovor",
-    opis: "Pošaljete što trebate, a mi javimo što ima smisla i koja je realna procjena."
+    naslov: "1. Pošaljite osnovne podatke",
+    opis:
+      "Napišete čime se bavite, što želite postići i imate li domenu, tekstove i fotografije."
   },
   {
-    naslov: "2. Izrada dizajna i strukture",
-    opis: "Slažemo stranicu tako da izgleda ozbiljno i jasno komunicira što radite."
+    naslov: "2. Predlažemo opseg i paket",
+    opis:
+      "Ne guramo najskuplje rješenje. Predlažemo ono što ima smisla za Vaš cilj, sadržaj i budžet."
   },
   {
-    naslov: "3. Dorade i objava",
-    opis: "Nakon potvrde unosimo završne izmjene i pripremamo stranicu za objavu."
+    naslov: "3. Izrađujemo i objavljujemo stranicu",
+    opis:
+      "Slažemo strukturu, unosimo sadržaj, radimo dorade i pripremamo stranicu za objavu."
   }
+];
+
+const dodaci = [
+  "dodatne podstranice",
+  "pisanje ili dorada tekstova",
+  "veće galerije radova",
+  "više jezika",
+  "booking ili upitni obrasci",
+  "webshop",
+  "SEO sadržaj i članci",
+  "održavanje stranice"
 ];
 
 const faq = [
   {
     pitanje: "Je li 299 € konačna cijena?",
     odgovor:
-      "Ne uvijek. 299 € je početna cijena za vrlo jednostavnu stranicu. Ako treba više sadržaja, podstranica ili dodatnih funkcionalnosti, cijena raste prema opsegu posla."
+      "Može biti, ali samo ako projekt ostaje u opsegu Starter paketa. Ako želite više sekcija, više podstranica, opširne tekstove, veliku galeriju ili posebne funkcionalnosti, cijena se povećava prema stvarnom opsegu."
   },
   {
-    pitanje: "Koliko traje izrada?",
+    pitanje: "Koristite li gotovu strukturu kod Starter paketa?",
     odgovor:
-      "Za jednostavne stranice najčešće od nekoliko dana do dva tjedna, ovisno o materijalima i brzini komunikacije."
+      "Da. Starter paket koristi provjerenu strukturu koju prilagođavamo Vašoj djelatnosti, sadržaju, bojama i fotografijama. Zato je cijena niža i izrada brža. Potpuno custom pristup pripada većim paketima."
   },
   {
-    pitanje: "Radite li i tekstove, vizuale i marketing?",
+    pitanje: "Što ako nemam tekstove i fotografije?",
     odgovor:
-      "Da. Promar uz izradu web stranica radi i aplikacije, digitalni marketing te vizualne materijale, po dogovoru."
+      "Možemo krenuti s osnovnim informacijama i Vašim fotografijama, ali bolji sadržaj daje bolji rezultat. Pisanje tekstova, foto/video materijali i opširnija priprema mogu se dogovoriti dodatno."
+  },
+  {
+    pitanje: "Mogu li kasnije nadograditi web?",
+    odgovor:
+      "Da. Stranica se može kasnije nadograditi dodatnim podstranicama, galerijama, blogom, oglasnim landing stranicama ili funkcionalnostima."
   }
 ];
 
@@ -82,24 +137,27 @@ export default function IzradaWebStranicaPage() {
         <div className="container web-hero-inner">
           <div className="web-hero-copy">
             <p className="web-hero-kicker">Izrada web stranica</p>
-            <h1 className="page-main-title">Web stranice za firme i obrte, jasno i bez kompliciranja.</h1>
+            <h1 className="page-main-title">
+              Web stranice za obrte i firme koje jasno vode prema upitu.
+            </h1>
             <p className="web-hero-text">
-              Radimo moderne, pregledne i mobilno prilagođene web stranice koje
-              izgledaju ozbiljno i jasno komuniciraju što radite.
+              Izrađujemo moderne, pregledne i mobilno prilagođene web stranice
+              koje potencijalnom klijentu odmah pokazuju što nudite, za koga radite
+              i kako Vas može kontaktirati.
             </p>
 
             <ul className="web-hero-list">
-              <li>Moderna i pregledna</li>
-              <li>Prilagođena mobilnim uređajima</li>
-              <li>Cijena već od 299 €</li>
+              <li>Paketi već od 299 €</li>
+              <li>Jasno definirano što ulazi u cijenu</li>
+              <li>Struktura usmjerena na upite, pozive i rezervacije</li>
             </ul>
 
             <div className="web-hero-actions">
               <Button href="/kontakt" variant="primary">
-                Pošaljite upit
+                Zatražite okvirnu ponudu
               </Button>
               <a href="#paketi" className="btn btn-secondary">
-                Pogledaj pakete
+                Pogledajte pakete
               </a>
             </div>
           </div>
@@ -107,28 +165,30 @@ export default function IzradaWebStranicaPage() {
           <div className="web-hero-media">
             <img
               src="/images/websites-hero-mockup.png"
-              alt="Mockup primjera web stranica koje izrađuje Promar"
+              alt="Primjeri web stranica koje izrađuje Promar"
             />
           </div>
         </div>
       </section>
 
       <section className="section">
-        <div className="container web-proof">
-          <div className="web-proof-card">
-            <h2>Za koga je ova ponuda?</h2>
-            <p>
-              Za male firme, obrte i uslužne djelatnosti kojima treba uredna i
-              funkcionalna web stranica bez razvlačenja i nepotrebnih
-              komplikacija.
+        <div className="container">
+          <div className="section-title">
+            <p className="section-kicker">ŠTO STRANICA MORA NAPRAVITI</p>
+            <h2>Nije dovoljno da web samo izgleda moderno</h2>
+            <p className="section-subtitle">
+              Dobra stranica mora brzo objasniti vrijednost Vaše usluge, ukloniti
+              nesigurnost i dovesti posjetitelja do konkretnog kontakta.
             </p>
           </div>
-          <div className="web-proof-card">
-            <h2>Što dobivate?</h2>
-            <p>
-              Jasnu strukturu, responzivan prikaz, moderan izgled i stranicu
-              koja ostavlja ozbiljniji dojam nego improvizirano rješenje.
-            </p>
+
+          <div className="web-proof">
+            {problemi.map((problem) => (
+              <div className="web-proof-card" key={problem.naslov}>
+                <h2>{problem.naslov}</h2>
+                <p>{problem.opis}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -136,11 +196,11 @@ export default function IzradaWebStranicaPage() {
       <section className="section section-alt" id="paketi">
         <div className="container">
           <div className="section-title">
-            <p className="section-kicker">Paketi</p>
-            <h2>Odaberite paket koji ima smisla za vaš projekt</h2>
+            <p className="section-kicker">PAKETI</p>
+            <h2>Odaberite opseg koji odgovara Vašem poslu</h2>
             <p className="section-subtitle">
-              Ako projekt izlazi iz okvira ovih paketa, cijena se definira prema
-              stvarnom opsegu posla.
+              Paketi služe da odmah znate okvir. Ako projekt izlazi iz okvira,
+              cijena se definira prema dodatnom sadržaju i funkcionalnostima.
             </p>
           </div>
 
@@ -148,12 +208,24 @@ export default function IzradaWebStranicaPage() {
             {paketi.map((paket) => (
               <article className="web-package-card" key={paket.naziv}>
                 <div className="web-package-head">
-                  <h3>{paket.naziv}</h3>
+                  <div>
+                    <h3>{paket.naziv}</h3>
+                    <p>{paket.oznaka}</p>
+                  </div>
                   <span>{paket.cijena}</span>
                 </div>
                 <p>{paket.opis}</p>
+
+                <h4>Uključuje:</h4>
                 <ul className="list-check web-package-list">
                   {paket.stavke.map((stavka) => (
+                    <li key={stavka}>{stavka}</li>
+                  ))}
+                </ul>
+
+                <h4>Ne uključuje automatski:</h4>
+                <ul className="list-check web-package-list">
+                  {paket.nije.map((stavka) => (
                     <li key={stavka}>{stavka}</li>
                   ))}
                 </ul>
@@ -166,8 +238,30 @@ export default function IzradaWebStranicaPage() {
       <section className="section">
         <div className="container">
           <div className="section-title">
-            <p className="section-kicker">Kako radimo</p>
-            <h2>Bez kaosa i bez nepotrebnog razvlačenja</h2>
+            <p className="section-kicker">DODATNE MOGUĆNOSTI</p>
+            <h2>Što se može dodati po potrebi</h2>
+            <p className="section-subtitle">
+              Dodatke ne treba gurati u svaki projekt. Dodaju se kada stvarno pomažu
+              cilju stranice ili poslovnom procesu.
+            </p>
+          </div>
+
+          <div className="cards-grid">
+            {dodaci.map((dodatak) => (
+              <div className="card" key={dodatak}>
+                <h3>{dodatak}</h3>
+                <p>Dodaje se prema dogovoru i stvarnom opsegu projekta.</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-alt">
+        <div className="container">
+          <div className="section-title">
+            <p className="section-kicker">KAKO RADIMO</p>
+            <h2>Jasan proces od upita do objave</h2>
           </div>
 
           <div className="web-steps">
@@ -181,11 +275,11 @@ export default function IzradaWebStranicaPage() {
         </div>
       </section>
 
-      <section className="section section-alt">
+      <section className="section">
         <div className="container">
           <div className="section-title">
-            <p className="section-kicker">Česta pitanja</p>
-            <h2>Ono što ljude najčešće zanima prije upita</h2>
+            <p className="section-kicker">ČESTA PITANJA</p>
+            <h2>Ono što je dobro riješiti prije početka</h2>
           </div>
 
           <div className="web-faq">
@@ -199,7 +293,7 @@ export default function IzradaWebStranicaPage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section-alt">
         <div className="container">
           <div className="article-feature-card article-feature-inline">
             <div className="article-feature-media">
@@ -210,11 +304,12 @@ export default function IzradaWebStranicaPage() {
             </div>
 
             <div className="article-feature-content">
-              <p className="section-kicker">KORISNI SAVJETI</p>
-              <h2>Niste sigurni treba li vam web stranica?</h2>
+              <p className="section-kicker">PRIJE NEGO KRENETE</p>
+              <h2>Niste sigurni koji paket ima smisla?</h2>
               <p>
-                Pripremili smo kratki vodič za obrte i male firme: zašto web
-                stranica nije trošak, nego digitalni izlog koji radi za vas.
+                Pročitajte kratki vodič za obrte i male firme. Pomoći će Vam da
+                odlučite treba li Vam jednostavna stranica, ozbiljnija prezentacija
+                ili dodatne funkcionalnosti.
               </p>
 
               <div className="article-feature-actions">
@@ -222,7 +317,7 @@ export default function IzradaWebStranicaPage() {
                   href="/savjeti/izrada-web-stranica-za-obrte-male-firme"
                   variant="primary"
                 >
-                  Pročitajte članak
+                  Pročitajte vodič
                 </Button>
               </div>
             </div>
@@ -233,8 +328,8 @@ export default function IzradaWebStranicaPage() {
       <section className="section section-cta">
         <div className="container cta-inner">
           <div>
-            <h2>Trebate web stranicu?</h2>
-            <p>Pošaljite upit i javimo vam što ima smisla za vaš projekt.</p>
+            <h2>Želite znati koji paket odgovara Vašem projektu?</h2>
+            <p>Pošaljite osnovne informacije i predložit ćemo realan opseg izrade.</p>
           </div>
           <Button href="/kontakt" variant="primary">
             Zatražite ponudu

@@ -2,9 +2,9 @@ import "./globals.css";
 import AppShell from "../components/AppShell";
 
 export const metadata = {
-  title: "Promar – Web, aplikacije i marketing",
+  title: "Promar – izrada web stranica, aplikacija i digitalnih rješenja",
   description:
-    "Promar je studio specijaliziran za izradu modernih web stranica, web aplikacija, digitalni marketing te foto i video produkciju. Radimo brzo, uredno i bez kompliciranja.",
+    "Promar izrađuje moderne web stranice, web aplikacije i digitalna rješenja za obrte, male firme i projekte kojima treba ozbiljan online nastup.",
   metadataBase: new URL("https://promar.hr")
 };
 

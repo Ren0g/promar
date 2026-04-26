@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="footer-brand-text">
             <h2 className="footer-brand-title">Promar</h2>
             <p className="footer-tagline">
-              Studio za web, aplikacije i digitalni marketing.
+              Web stranice, aplikacije i digitalna rješenja za obrte i male firme.
             </p>
           </div>
         </div>
@@ -18,8 +18,9 @@ export default function Footer() {
         <div className="footer-links">
           <h4>Navigacija</h4>
           <Link href="/">Početna</Link>
+          <Link href="/izrada-web-stranica">Web stranice</Link>
           <Link href="/usluge">Usluge</Link>
-          <Link href="/reference">Reference</Link>
+          <Link href="/reference">Primjeri radova</Link>
           <Link href="/savjeti">Savjeti</Link>
           <Link href="/o-nama">O nama</Link>
           <Link href="/kontakt">Kontakt</Link>
@@ -27,7 +28,7 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2025 Promar. Sva prava pridržana.</p>
+        <p>© 2026 Promar. Sva prava pridržana.</p>
       </div>
     </footer>
   );

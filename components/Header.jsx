@@ -18,7 +18,7 @@ export default function Header() {
     { href: "/izrada-web-stranica", label: "Web stranice" },
     { href: "/savjeti", label: "Savjeti" },
     { href: "/usluge", label: "Usluge" },
-    { href: "/reference", label: "Reference" },
+    { href: "/reference", label: "Primjeri radova" },
     { href: "/o-nama", label: "O nama" },
     { href: "/kontakt", label: "Kontakt" }
   ];
@@ -37,7 +37,7 @@ export default function Header() {
           </Link>
 
           <span className="brand-tagline">
-            Promar — agencija za digitalna rješenja
+            Promar — web stranice i digitalna rješenja
           </span>
         </div>
 

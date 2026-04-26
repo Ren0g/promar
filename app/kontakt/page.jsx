@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Kontakt | Promar – Web, aplikacije i marketing",
+  title: "Kontakt | Promar – zatražite ponudu",
   description:
-    "Javite nam se za izradu web stranica, web aplikacija, digitalni marketing ili foto/video produkciju. Odgovaramo u najkraćem roku."
+    "Pošaljite upit za izradu web stranice, web aplikacije, digitalni marketing ili foto/video sadržaj. Promar će predložiti opseg i okvirnu cijenu."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -13,8 +13,8 @@ export default function KontaktPage() {
       <div className="container">
         <SectionTitle
           kicker="KONTAKT"
-          title="Javite se i dogovorit ćemo sve što trebate"
-          subtitle="Pošaljite nam osnovne informacije o projektu i javit ćemo se s prijedlogom i procjenom."
+          title="Pošaljite osnovne podatke i zatražite okvirnu ponudu"
+          subtitle="Napišite čime se bavite, kakvu stranicu ili rješenje trebate i imate li već tekstove, fotografije ili domenu. Na temelju toga možemo predložiti realan opseg posla."
           titleAs="h1"
           titleClassName="page-main-title"
         />
@@ -43,6 +43,16 @@ export default function KontaktPage() {
                 promar.hr
               </a>
             </p>
+
+            <div className="about-highlight">
+              <h3>Što je dobro poslati?</h3>
+              <ul className="list-check">
+                <li>Čime se bavite i koje usluge nudite.</li>
+                <li>Koji je cilj stranice: upiti, pozivi, rezervacije ili prezentacija.</li>
+                <li>Imate li domenu, tekstove i fotografije.</li>
+                <li>Koji paket okvirno gledate, ako već znate.</li>
+              </ul>
+            </div>
           </div>
 
           <div className="contact-form-wrapper">

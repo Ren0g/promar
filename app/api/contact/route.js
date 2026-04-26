@@ -79,7 +79,7 @@ function generateHtmlEmail(data) {
                   Promar
                 </div>
                 <div style="font-size:14px; font-weight:500; color:#555; line-height:1.3; margin-top:3px;">
-                  agencija za digitalna rješenja
+                  web stranice i digitalna rješenja
                 </div>
               </td>
             </tr>
@@ -97,7 +97,7 @@ function generateHtmlEmail(data) {
     <div class="section"><div class="label">Poruka:</div><div class="value">${data.message}</div></div>
 
     <div class="footer">
-      Promar — agencija za digitalna rješenja<br/>
+      Promar — web stranice i digitalna rješenja<br/>
       Poruka zaprimljena putem <strong>www.promar.hr</strong>
     </div>
 
@@ -116,7 +116,7 @@ function generateAutoReplyHtml(name) {
   <html lang="hr">
   <head>
   <meta charset="UTF-8" />
-  <title>Hvala na vašoj poruci – Promar</title>
+  <title>Hvala na Vašoj poruci – Promar</title>
 
   <style>
     body { background:#f4f4f4; margin:0; padding:0; font-family:Arial,Helvetica,sans-serif; }
@@ -157,7 +157,7 @@ function generateAutoReplyHtml(name) {
                   Promar
                 </div>
                 <div style="font-size:14px; font-weight:500; color:#555; line-height:1.3; margin-top:3px;">
-                  agencija za digitalna rješenja
+                  web stranice i digitalna rješenja
                 </div>
               </td>
             </tr>
@@ -168,11 +168,11 @@ function generateAutoReplyHtml(name) {
 
     <div class="content">
 
-      <div class="title">Hvala na vašoj poruci${name ? ", " + name : ""}!</div>
+      <div class="title">Hvala na Vašoj poruci${name ? ", " + name : ""}!</div>
 
       <p>
-        Zaprimili smo vaš upit i javit ćemo vam se povratno u najkraćem mogućem roku.
-        Ovo je automatska potvrda o primitku vaše poruke.
+        Zaprimili smo Vaš upit i javit ćemo Vam se povratno s prijedlogom sljedećeg koraka.
+        Ovo je automatska potvrda o primitku Vaše poruke.
       </p>
 
       <div class="button">
@@ -181,8 +181,8 @@ function generateAutoReplyHtml(name) {
 
       <h3 style="font-size:17px;margin-top:30px;color:#333;">Što slijedi dalje?</h3>
       <p>
-        • Naš tim će pregledati vaš upit.<br/>
-        • Kontaktirat ćemo vas povratno s detaljima.<br/>
+        • Pregledat ćemo Vaš upit.<br/>
+        • Kontaktirat ćemo Vas povratno s detaljima.<br/>
         • Ako bude potrebno više informacija — javit ćemo se dodatno.
       </p>
 
@@ -194,7 +194,7 @@ function generateAutoReplyHtml(name) {
     </div>
 
     <div class="footer">
-      Promar — agencija za digitalna rješenja<br/>
+      Promar — web stranice i digitalna rješenja<br/>
       <a href="https://www.promar.hr" style="color:#FB6A13;text-decoration:none;">www.promar.hr</a>
     </div>
 
@@ -285,7 +285,7 @@ export async function POST(req) {
     await transporter.sendMail({
       from: "Promar <info@promar.hr>",
       to: body.email,
-      subject: "Hvala na vašoj poruci – Promar",
+      subject: "Hvala na Vašoj poruci – Promar",
       html: generateAutoReplyHtml(body.name),
     });
 
