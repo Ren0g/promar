@@ -88,12 +88,11 @@ async function uploadOneFile(file, area, setStatus) {
   });
 }
 
-async function triggerBrowserDownload(url, filename) {
+function triggerBrowserDownload(url, filename) {
   const link = document.createElement("a");
   link.href = url;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
   if (filename) link.download = filename;
+  link.style.display = "none";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -141,7 +140,7 @@ function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRe
         method: "POST",
         body: JSON.stringify({ area, key: file.key })
       });
-      await triggerBrowserDownload(data.url, file.name);
+      triggerBrowserDownload(data.url, file.name);
     } catch (err) {
       setError(err.message || "Download nije uspio.");
     }
@@ -153,18 +152,24 @@ function FileBlock({ title, area, files, canUpload, canDownload, canDelete, onRe
     setError("");
 
     try {
-      for (const file of files) {
-        const data = await api("/api/transfer/download", {
-          method: "POST",
-          body: JSON.stringify({ area, key: file.key })
-        });
-        await triggerBrowserDownload(data.url, file.name);
-        await new Promise((resolve) => setTimeout(resolve, 400));
-      }
+      const downloads = await Promise.all(
+        files.map((file) =>
+          api("/api/transfer/download", {
+            method: "POST",
+            body: JSON.stringify({ area, key: file.key })
+          }).then((data) => ({ url: data.url, name: file.name }))
+        )
+      );
+
+      downloads.forEach((item, index) => {
+        setTimeout(() => {
+          triggerBrowserDownload(item.url, item.name);
+        }, index * 250);
+      });
     } catch (err) {
       setError(err.message || "Skidanje svih datoteka nije uspjelo.");
     } finally {
-      setBulkDownloading(false);
+      setTimeout(() => setBulkDownloading(false), files.length * 250 + 500);
     }
   }
 
@@ -529,7 +534,7 @@ export default function TransferPortalClient() {
           <h1>{mode === "admin" ? "Admin ulaz" : "Pristup datotekama"}</h1>
           <p>
             {mode === "admin"
-              ? "Ovdje kao admin kreiraš novu svadbu, dobiješ link za snimatelja i link za montažera te kasnije sve obrišeš."
+              ? "Ovdje kao admin kreiraš novu svadbu, dobiješ linkove za snimatelja i montažera te kasnije sve obrišeš."
               : "Otvoren je direktni pristup za ovu svadbu. Upiši samo PIN koji si dobio."}
           </p>
 
