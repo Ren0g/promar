@@ -72,7 +72,7 @@ export default function HomePage() {
             </p>
 
             <h1 className="page-main-title fade-in">
-              Web stranica koja jasno pokazuje što nudite i potiče klijente da pošalju upit.
+              Izrađujemo web stranice koje jasno pokazuju što nudite i potiče klijente da pošalju upit.
             </h1>
 
             <p className="hero-subtitle fade-in-delay">
