@@ -97,14 +97,46 @@ const koraci = [
 ];
 
 const dodaci = [
-  "dodatne podstranice",
-  "pisanje ili dorada tekstova",
-  "veće galerije radova",
-  "više jezika",
-  "booking ili upitni obrasci",
-  "webshop",
-  "SEO sadržaj i članci",
-  "održavanje stranice"
+  {
+    naslov: "Dodatne podstranice",
+    opis:
+      "Za usluge koje trebaju zasebno objašnjenje, primjere rada ili posebnu kontakt sekciju."
+  },
+  {
+    naslov: "Pisanje ili dorada tekstova",
+    opis:
+      "Ako nemate spremne tekstove, možemo ih složiti tako da zvuče jasno, prirodno i prodajno."
+  },
+  {
+    naslov: "Veće galerije radova",
+    opis:
+      "Za djelatnosti u kojima fotografije nose prodaju: građevina, beauty, apartmani, ugostiteljstvo i slične usluge."
+  },
+  {
+    naslov: "Više jezika",
+    opis:
+      "Za apartmane, turizam i firme koje rade sa stranim klijentima ili gostima."
+  },
+  {
+    naslov: "Booking ili upitni obrasci",
+    opis:
+      "Za rezervacije termina, slanje detaljnijih upita ili prikupljanje podataka prije prvog razgovora."
+  },
+  {
+    naslov: "Webshop",
+    opis:
+      "Za prodaju proizvoda, poklon bonova, digitalnih proizvoda ili jednostavnih online narudžbi."
+  },
+  {
+    naslov: "SEO sadržaj i članci",
+    opis:
+      "Za teme po kojima Vas ljudi traže na Googleu i za dodatne stranice koje dugoročno dovode posjetitelje."
+  },
+  {
+    naslov: "Održavanje stranice",
+    opis:
+      "Za sitne izmjene, tehničke provjere, objave novog sadržaja i sigurnost da stranica ostane uredna."
+  }
 ];
 
 const faq = [
@@ -246,11 +278,11 @@ export default function IzradaWebStranicaPage() {
             </p>
           </div>
 
-          <div className="cards-grid">
+          <div className="cards-grid add-ons-grid">
             {dodaci.map((dodatak) => (
-              <div className="card" key={dodatak}>
-                <h3>{dodatak}</h3>
-                <p>Dodaje se prema dogovoru i stvarnom opsegu projekta.</p>
+              <div className="card add-on-card" key={dodatak.naslov}>
+                <h3>{dodatak.naslov}</h3>
+                <p>{dodatak.opis}</p>
               </div>
             ))}
           </div>

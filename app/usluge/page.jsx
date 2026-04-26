@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Usluge | Promar – web stranice, aplikacije i marketing",
   description:
-    "Promar izrađuje web stranice, web aplikacije, digitalni marketing i foto/video sadržaj za obrte, male firme i digitalne projekte."
+    "Promar izrađuje web stranice, web aplikacije, digitalni marketing i foto/video sadržaj za obrte, male firme i uslužne djelatnosti."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -13,35 +13,43 @@ const usluge = [
     opis:
       "Za obrte, firme i uslužne djelatnosti kojima treba jasan online nastup: ponuda, usluge, kontakt, osnovni SEO i mobilna prilagodba.",
     cta: "Pogledajte pakete",
-    href: "/izrada-web-stranica"
+    href: "/izrada-web-stranica",
+    slika: "/images/websites-hero-mockup.png",
+    alt: "Primjer web stranica na više uređaja"
   },
   {
     naslov: "Izrada web aplikacija",
     opis:
       "Za procese koje obična web stranica ne može riješiti: upitnici, rezervacije, interni paneli, evidencije, dashboardi i specifične funkcionalnosti.",
     cta: "Pošaljite upit",
-    href: "/kontakt"
+    href: "/kontakt",
+    slika: "/images/reference-svadba.jpg",
+    alt: "Primjer web aplikacije"
   },
   {
     naslov: "Digitalni marketing",
     opis:
       "Za projekte kojima nakon izrade weba treba vidljivost: sadržaj, oglasi, kampanje, vizuali i jasnije predstavljanje ponude.",
     cta: "Zatražite procjenu",
-    href: "/kontakt"
+    href: "/kontakt",
+    slika: "/images/savjeti-web-stranica.png",
+    alt: "Digitalni sadržaj i web prezentacija"
   },
   {
     naslov: "Foto & video produkcija",
     opis:
-      "Za webove i kampanje kojima trebaju vlastite fotografije, video materijali, sadržaj za društvene mreže ili snimanje događaja i projekata.",
+      "Za webove i kampanje kojima trebaju fotografije, video materijali, sadržaj za društvene mreže ili snimanje događaja i projekata.",
     cta: "Dogovorite sadržaj",
-    href: "/kontakt"
+    href: "/kontakt",
+    slika: "/images/hero-image.jpg",
+    alt: "Foto i video produkcija za web"
   }
 ];
 
 export default function UslugePage() {
   return (
     <>
-      <section className="section section-alt">
+      <section className="section section-alt page-hero-section">
         <div className="container">
           <SectionTitle
             kicker="USLUGE"
@@ -55,15 +63,22 @@ export default function UslugePage() {
 
       <section className="section">
         <div className="container">
-          <div className="cards-grid">
+          <div className="cards-grid service-cards-grid">
             {usluge.map((usluga) => (
-              <div className="card" key={usluga.naslov}>
-                <h3>{usluga.naslov}</h3>
-                <p>{usluga.opis}</p>
-                <div className="section-cta-centered">
-                  <Button href={usluga.href} variant="secondary">
-                    {usluga.cta}
-                  </Button>
+              <div className="card service-card" key={usluga.naslov}>
+                <img
+                  src={usluga.slika}
+                  alt={usluga.alt}
+                  className="service-card-image"
+                />
+                <div className="service-card-body">
+                  <h3>{usluga.naslov}</h3>
+                  <p>{usluga.opis}</p>
+                  <div className="service-card-action">
+                    <Button href={usluga.href} variant="secondary">
+                      {usluga.cta}
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

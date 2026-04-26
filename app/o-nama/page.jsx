@@ -10,12 +10,12 @@ import Button from "../../components/Button";
 export default function ONamaPage() {
   return (
     <>
-      <section className="section section-alt">
+      <section className="section section-alt page-hero-section">
         <div className="container">
           <SectionTitle
             kicker="O PROMARU"
             title="Mali studio za web koji razmišlja poslovno, a ne samo dizajnerski"
-            subtitle="Promar iz Velike Gorice izrađuje web stranice, web aplikacije i digitalna rješenja za obrte, male firme i vlastite projekte. Fokus je na jasnoj ponudi, urednoj izvedbi i stranici koja posjetitelja vodi prema konkretnom kontaktu."
+            subtitle="Promar iz Velike Gorice izrađuje web stranice, web aplikacije i digitalna rješenja za obrte, male firme i uslužne djelatnosti. Fokus je na jasnoj ponudi, urednoj izvedbi i stranici koja posjetitelja vodi prema konkretnom kontaktu."
             titleAs="h1"
             titleClassName="page-main-title"
           />
@@ -24,7 +24,7 @@ export default function ONamaPage() {
 
       <section className="section">
         <div className="container two-cols">
-          <div>
+          <div className="content-flow">
             <h3>Direktan pristup</h3>
             <p>
               Promar nije velika agencija s deset odjela. Prednost je u tome što

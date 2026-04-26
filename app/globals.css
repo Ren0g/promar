@@ -607,6 +607,81 @@ p {
   max-width: 100%;
 }
 
+
+/* Compact page hero sections for inner pages */
+.page-hero-section {
+  padding: 64px 0 68px;
+}
+
+.page-hero-section .section-title {
+  margin-bottom: 0;
+}
+
+.page-hero-section .section-subtitle {
+  margin-top: 14px;
+}
+
+.content-flow h3:not(:first-child) {
+  margin-top: 30px;
+}
+
+.content-flow p + h3,
+.content-flow ol + h3,
+.content-flow ul + h3 {
+  margin-top: 30px;
+}
+
+.about-highlight p + p {
+  margin-top: 10px;
+}
+
+.about-highlight .btn {
+  margin-top: 18px;
+}
+
+.service-cards-grid {
+  align-items: stretch;
+}
+
+.service-card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--color-gray-light);
+}
+
+.service-card-body {
+  padding: 22px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.service-card-body p {
+  margin-top: 8px;
+}
+
+.service-card-action {
+  margin-top: auto;
+  padding-top: 22px;
+  text-align: center;
+}
+
+.add-on-card h3 {
+  text-transform: none;
+}
+
+.add-on-card p {
+  margin-top: 8px;
+}
+
 @media (max-width: 1200px) {
   .section .container,
   .hero-inner,
@@ -673,6 +748,10 @@ p {
 @media (max-width: 768px) {
   :root {
     --section-padding-y: 56px;
+  }
+
+  .page-hero-section {
+    padding: 48px 0 52px;
   }
 
   .container {

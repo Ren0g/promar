@@ -218,8 +218,8 @@ export default function HomePage() {
         <div className="container">
           <SectionTitle
             kicker="PRIMJERI RADOVA"
-            title="Vlastiti projekti koji pokazuju način rada"
-            subtitle="Prikazujemo projekte i platforme koje smo razvijali za vlastite brendove i interne potrebe. Oni pokazuju pristup strukturi, dizajnu, sadržaju i funkcionalnostima."
+            title="Primjeri radova koji pokazuju način rada"
+            subtitle="Prikazujemo projekte i platforme kroz koje se vidi pristup strukturi, dizajnu, sadržaju i funkcionalnostima — od prezentacijskih stranica do web aplikacija."
           />
 
           <div className="references-grid">
@@ -277,7 +277,7 @@ export default function HomePage() {
             <li>Direktna komunikacija, bez prebacivanja između odjela.</li>
             <li>Struktura stranice prilagođena cilju: upit, poziv, rezervacija ili prezentacija usluge.</li>
             <li>Mogućnost izrade vizuala, fotografija, videa i dodatnog sadržaja.</li>
-            <li>Iskustvo u vlastitim web projektima, aplikacijama i digitalnim platformama.</li>
+            <li>Iskustvo u web projektima, aplikacijama i digitalnim platformama.</li>
           </ul>
         </div>
       </section>

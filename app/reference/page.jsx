@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Primjeri radova | Promar – web stranice i aplikacije",
   description:
-    "Primjeri vlastitih web projekata i aplikacija koje je razvio Promar: Fotqa, Tvornica vjenčanja, Svadba.app i Zimska liga Panadić."
+    "Primjeri web stranica, platformi i aplikacija: Fotqa, Tvornica vjenčanja, Svadba.app i Zimska liga Panadić."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -13,7 +13,7 @@ const projekti = [
     slika: "/images/reference-fotqa.jpg",
     alt: "Fotqa primjer rada",
     opis:
-      "Vlastiti projekt za foto/video produkciju: web, vizualni smjer, sadržaj i predstavljanje usluge.",
+      "Web, vizualni smjer, sadržaj i predstavljanje usluge za foto/video produkciju.",
     link: "https://fotqa.com",
     label: "fotqa.com"
   },
@@ -49,12 +49,12 @@ const projekti = [
 export default function ReferencePage() {
   return (
     <>
-      <section className="section section-alt">
+      <section className="section section-alt page-hero-section">
         <div className="container">
           <SectionTitle
             kicker="PRIMJERI RADOVA"
-            title="Vlastiti projekti koji pokazuju što možemo napraviti"
-            subtitle="Ovdje su prikazani vlastiti projekti, platforme i aplikacije koje smo razvijali. Ne predstavljamo ih kao klijentske reference, nego kao konkretne primjere pristupa, izvedbe i funkcionalnosti."
+            title="Primjeri radova koji pokazuju što možemo napraviti"
+            subtitle="Ovdje su prikazane web stranice, platforme i aplikacije kroz koje se vidi način razmišljanja, struktura, dizajn i funkcionalnosti koje možemo primijeniti i na Vaš projekt."
             titleAs="h1"
             titleClassName="page-main-title"
           />
