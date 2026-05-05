@@ -372,98 +372,17 @@ function LegacySection({
   );
 }
 
+
 function LegacyProjectView({ session, onLogout, onBackToProjects }) {
-  const [raw, setRaw] = useState([]);
-  const [finalFiles, setFinalFiles] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  async function refresh() {
-    setLoading(true);
-    try {
-      const [rawData, finalData] = await Promise.all([
-        api(
-          `/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("raw")}`
-        ),
-        api(
-          `/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("final")}`
-        )
-      ]);
-
-      setRaw(rawData.files || []);
-      setFinalFiles(finalData.files || []);
-      setError("");
-    } catch (err) {
-      setError(err.message || "Ne mogu dohvatiti sadržaj.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    refresh();
-  }, [session.projectCode]);
-
-  const canUploadRaw = session.role === "crew" || session.role === "admin";
-  const canUploadFinal = session.role === "editor" || session.role === "admin";
-  const canDownloadRaw = session.role === "editor" || session.role === "admin";
-  const canDownloadFinal = session.role === "crew" || session.role === "admin";
-  const canDelete = session.role === "admin";
-
   return (
-    <div className="transfer-shell">
-      <div className="transfer-topbar">
-        <div>
-          <p className="section-kicker">PROMAR TRANSFER</p>
-          <h1>{session.projectLabel}</h1>
-          <p>{capabilityText(session.role)}</p>
-        </div>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          {session.role === "admin" && onBackToProjects ? (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onBackToProjects}
-            >
-              Natrag na svadbe
-            </button>
-          ) : null}
-          <button type="button" className="btn btn-secondary" onClick={onLogout}>
-            Odjava
-          </button>
-        </div>
-      </div>
-
-      {error ? <p className="transfer-error">{error}</p> : null}
-      {loading ? (
-        <div className="transfer-card">
-          <div className="transfer-empty">Učitavanje...</div>
-        </div>
-      ) : null}
-
-      <div className="transfer-grid">
-        <LegacySection
-          title="Ulazni materijali"
-          areaKey="raw"
-          files={raw}
-          projectCode={session.projectCode}
-          canUpload={canUploadRaw}
-          canDownload={canDownloadRaw}
-          canDelete={canDelete}
-          onRefresh={refresh}
-        />
-        <LegacySection
-          title="Gotovi materijali"
-          areaKey="final"
-          files={finalFiles}
-          projectCode={session.projectCode}
-          canUpload={canUploadFinal}
-          canDownload={canDownloadFinal}
-          canDelete={canDelete}
-          onRefresh={refresh}
-        />
-      </div>
-    </div>
+    <ProjectBrowser
+      session={{
+        ...session,
+        mode: "modern"
+      }}
+      onBackToProjects={onBackToProjects}
+      onLogout={onLogout}
+    />
   );
 }
 
@@ -1158,10 +1077,6 @@ export default function TransferPortalClient() {
 
   if (session.role === "superadmin") {
     return <AdminDashboard onLogout={handleLogout} />;
-  }
-
-  if (session.mode === "legacy") {
-    return <LegacyProjectView session={session} onLogout={handleLogout} />;
   }
 
   return <ProjectBrowser session={session} onLogout={handleLogout} />;
