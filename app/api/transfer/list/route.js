@@ -1,6 +1,7 @@
 export const runtime = "nodejs";
 
-import { listFolderEntries } from "@/lib/b2";
+import { listFolderEntries, listLegacyAreaFiles } from "@/lib/b2";
+import { getProjectConfig } from "@/lib/transfer-config";
 import { jsonError, resolveProjectAccess } from "@/lib/transfer-helpers";
 
 export async function GET(request) {
@@ -11,8 +12,33 @@ export async function GET(request) {
   if (error) return error;
 
   try {
+    const project = await getProjectConfig(session.projectCode);
+    if (!project) return jsonError("Projekt nije pronađen.", 404);
+
+    if (project.mode === "legacy") {
+      const [raw, final] = await Promise.all([
+        listLegacyAreaFiles(session.projectCode, "raw"),
+        listLegacyAreaFiles(session.projectCode, "final")
+      ]);
+
+      return Response.json({
+        mode: "legacy",
+        raw,
+        final,
+        projectCode: session.projectCode,
+        projectLabel: session.projectLabel,
+        role: session.role
+      });
+    }
+
     const entries = await listFolderEntries(session.projectCode, path);
-    return Response.json({ ...entries, projectCode: session.projectCode, projectLabel: session.projectLabel, role: session.role });
+    return Response.json({
+      mode: "modern",
+      ...entries,
+      projectCode: session.projectCode,
+      projectLabel: session.projectLabel,
+      role: session.role
+    });
   } catch (err) {
     return jsonError(err.message || "Ne mogu dohvatiti datoteke.", 500);
   }
