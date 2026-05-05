@@ -23,7 +23,7 @@ export async function POST(request) {
     }
 
     const invite = readInviteToken(inviteToken);
-    if (!invite?.projectCode) {
+    if (!invite?.projectCode || invite.role !== "user") {
       return jsonError("Pozivnica nije valjana ili je istekla.", 401);
     }
 
@@ -34,13 +34,13 @@ export async function POST(request) {
     }
 
     if (!project.accessPin || pin !== project.accessPin) {
-      return jsonError("Neispravan PIN.", 401);
+      return jsonError("Neispravan PIN za ovaj pristup.", 401);
     }
 
     await setTransferSession({
-      role: "user",
       projectCode: invite.projectCode,
-      projectLabel: project.label
+      projectLabel: project.label,
+      role: "user"
     });
 
     return Response.json({
@@ -50,6 +50,6 @@ export async function POST(request) {
       role: "user"
     });
   } catch (error) {
-    return jsonError(error.message || "Prijava nije uspjela.", 500);
+    return jsonError(error.message || "Greška kod prijave.", 500);
   }
 }

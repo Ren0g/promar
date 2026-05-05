@@ -14,9 +14,9 @@ export const metadata = {
     siteName: "Promar",
     images: [
       {
-        url: "/images/logo-dark.png",
-        width: 1200,
-        height: 630,
+        url: "/images/transfer-logo.png",
+        width: 1000,
+        height: 1000,
         alt: "Promar Transfer"
       }
     ],
@@ -27,7 +27,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Promar Transfer",
     description: "Portal za razmjenu datoteka",
-    images: ["/images/logo-dark.png"]
+    images: ["/images/transfer-logo.png"]
   }
 };
 
