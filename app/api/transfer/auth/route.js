@@ -4,14 +4,6 @@ import { setTransferSession, readInviteToken } from "@/lib/transfer-auth";
 import { getProjectConfig, isAdminPin } from "@/lib/transfer-config";
 import { jsonError } from "@/lib/transfer-helpers";
 
-function resolveLegacyRole(project, inviteRole, pin) {
-  const normalizedPin = String(pin || "").trim();
-  if (inviteRole === "admin" && project.adminPin && normalizedPin === project.adminPin) return "admin";
-  if (inviteRole === "editor" && project.editorPin && normalizedPin === project.editorPin) return "editor";
-  if (inviteRole === "crew" && project.crewPin && normalizedPin === project.crewPin) return "crew";
-  return null;
-}
-
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -36,31 +28,34 @@ export async function POST(request) {
     }
 
     const project = await getProjectConfig(invite.projectCode);
-    if (!project) return jsonError("Svadba nije pronađena.", 404);
-    if (project.expiresAt && new Date(project.expiresAt).getTime() < Date.now()) {
+    if (!project) {
+      return jsonError("Projekt nije pronađen.", 404);
+    }
+
+    if (project.expiresAt && new Date(project.expiresAt) < new Date()) {
       return jsonError("Ovaj projekt je istekao.", 403);
     }
 
-    let role = null;
-
-    if (project.mode === "legacy") {
-      role = resolveLegacyRole(project, invite.role, pin);
-    } else if (invite.role === "user" && project.accessPin && pin === project.accessPin) {
-      role = "user";
+    if (String(project.accessPin || "") !== pin) {
+      return jsonError("Neispravan PIN.", 401);
     }
 
-    if (!role) {
-      return jsonError("Neispravan PIN za ovaj pristup.", 401);
-    }
+    const role = invite.role === "admin" ? "admin" : "user";
 
     await setTransferSession({
-      projectCode: invite.projectCode,
-      projectLabel: project.label,
-      role
+      role,
+      projectCode: project.code,
+      projectLabel: project.label
     });
 
-    return Response.json({ ok: true, projectCode: invite.projectCode, projectLabel: project.label, role, mode: project.mode });
+    return Response.json({
+      ok: true,
+      role,
+      projectCode: project.code,
+      projectLabel: project.label,
+      mode: "modern"
+    });
   } catch (error) {
-    return jsonError(error.message || "Greška kod prijave.", 500);
+    return jsonError(error.message || "Ne mogu prijaviti korisnika.", 500);
   }
 }
