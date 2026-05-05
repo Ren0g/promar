@@ -464,7 +464,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                     <span className="transfer-folder-icon">📁</span>
                     <span>
                       <strong>{folder.name}</strong>
-                      <small>{folder.path}</small>
+                      <small>{typeof folder.fileCount === "number" ? `${folder.fileCount} datoteka` : "0 datoteka"}</small>
                     </span>
                   </button>
 
