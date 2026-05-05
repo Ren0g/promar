@@ -4,6 +4,14 @@ import { setTransferSession, readInviteToken } from "@/lib/transfer-auth";
 import { getProjectConfig, isAdminPin } from "@/lib/transfer-config";
 import { jsonError } from "@/lib/transfer-helpers";
 
+function resolveLegacyRole(project, inviteRole, pin) {
+  const normalizedPin = String(pin || "").trim();
+  if (inviteRole === "admin" && project.adminPin && normalizedPin === project.adminPin) return "admin";
+  if (inviteRole === "editor" && project.editorPin && normalizedPin === project.editorPin) return "editor";
+  if (inviteRole === "crew" && project.crewPin && normalizedPin === project.crewPin) return "crew";
+  return null;
+}
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -23,7 +31,7 @@ export async function POST(request) {
     }
 
     const invite = readInviteToken(inviteToken);
-    if (!invite?.projectCode) {
+    if (!invite?.projectCode || !invite?.role) {
       return jsonError("Pozivnica nije valjana ili je istekla.", 401);
     }
 
@@ -33,17 +41,25 @@ export async function POST(request) {
       return jsonError("Ovaj projekt je istekao.", 403);
     }
 
-    if (!project.accessPin || pin !== project.accessPin) {
+    let role = null;
+
+    if (project.mode === "legacy") {
+      role = resolveLegacyRole(project, invite.role, pin);
+    } else if (invite.role === "user" && project.accessPin && pin === project.accessPin) {
+      role = "user";
+    }
+
+    if (!role) {
       return jsonError("Neispravan PIN za ovaj pristup.", 401);
     }
 
     await setTransferSession({
       projectCode: invite.projectCode,
       projectLabel: project.label,
-      role: "user"
+      role
     });
 
-    return Response.json({ ok: true, projectCode: invite.projectCode, projectLabel: project.label, role: "user" });
+    return Response.json({ ok: true, projectCode: invite.projectCode, projectLabel: project.label, role, mode: project.mode });
   } catch (error) {
     return jsonError(error.message || "Greška kod prijave.", 500);
   }

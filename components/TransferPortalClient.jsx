@@ -38,6 +38,8 @@ function uploadErrorText(error) {
 
 function capabilityText(role) {
   if (role === "admin") return "Možeš dodavati, preuzimati, brisati i uređivati foldere i datoteke.";
+  if (role === "editor") return "Možeš ulaziti u foldere, preuzimati ulazne materijale i vratiti montirani sadržaj.";
+  if (role === "crew") return "Možeš ulaziti u foldere, dodavati materijale i preuzimati gotove datoteke.";
   if (role === "user") return "Možeš ulaziti u foldere, preuzimati i dodavati datoteke.";
   return "Admin pristup za izradu i gašenje svadbi.";
 }
@@ -442,7 +444,7 @@ function AdminDashboard({ onLogout }) {
         <div>
           <p className="section-kicker">PROMAR TRANSFER ADMIN</p>
           <h1>Privremene svadbe i pristupi</h1>
-          <p>Jedan PIN za suradnike, Vaš admin ulaz za upravljanje projektima i folderima.</p>
+          <p>Za nove svadbe koristite jedan PIN za suradnike. Stare svadbe i dalje prikazuju stare PIN-ove kako biste mogli dovršiti posao.</p>
         </div>
         <button type="button" className="btn btn-secondary" onClick={onLogout}>Odjava</button>
       </div>
@@ -478,11 +480,31 @@ function AdminDashboard({ onLogout }) {
             </div>
 
             <div className="transfer-role-grid">
-              <div className="transfer-role-card">
-                <strong>Pristup za suradnike</strong>
-                <p>PIN: {project.accessPin}</p>
-                <CopyButton value={project.links.access} label="Kopiraj link za pristup" />
-              </div>
+              {project.mode === "legacy" ? (
+                <>
+                  <div className="transfer-role-card">
+                    <strong>Snimatelj</strong>
+                    <p>PIN: {project.crewPin || "-"}</p>
+                    {project.links?.crew ? <CopyButton value={project.links.crew} label="Kopiraj crew link" /> : null}
+                  </div>
+                  <div className="transfer-role-card">
+                    <strong>Montažer</strong>
+                    <p>PIN: {project.editorPin || "-"}</p>
+                    {project.links?.editor ? <CopyButton value={project.links.editor} label="Kopiraj editor link" /> : null}
+                  </div>
+                  <div className="transfer-role-card">
+                    <strong>Admin za staru svadbu</strong>
+                    <p>PIN: {project.adminPin || "-"}</p>
+                    {project.links?.admin ? <CopyButton value={project.links.admin} label="Kopiraj admin link" /> : null}
+                  </div>
+                </>
+              ) : (
+                <div className="transfer-role-card">
+                  <strong>Pristup za suradnike</strong>
+                  <p>PIN: {project.accessPin}</p>
+                  {project.links?.access ? <CopyButton value={project.links.access} label="Kopiraj link za pristup" /> : null}
+                </div>
+              )}
             </div>
           </div>
         ))}
