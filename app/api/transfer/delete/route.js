@@ -1,17 +1,16 @@
 export const runtime = "nodejs";
 
-import { deleteObject, ensureProjectAreaKey } from "@/lib/b2";
-import { assertDelete, jsonError, requireTransferSession } from "@/lib/transfer-helpers";
+import { deleteObject, ensureProjectKey } from "@/lib/b2";
+import { assertDelete, jsonError, resolveProjectAccess } from "@/lib/transfer-helpers";
 
 export async function POST(request) {
-  const { session, error } = await requireTransferSession();
+  const body = await request.json().catch(() => ({}));
+  const { session, error } = await resolveProjectAccess(body.projectCode);
   if (error) return error;
 
   try {
-    const body = await request.json();
     assertDelete(session.role);
-    const area = String(body.area || "");
-    ensureProjectAreaKey(session.projectCode, area, body.key);
+    ensureProjectKey(session.projectCode, body.key);
     await deleteObject(body.key);
     return Response.json({ ok: true });
   } catch (err) {

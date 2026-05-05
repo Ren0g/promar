@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { setTransferSession, readInviteToken } from "@/lib/transfer-auth";
-import { getProjectConfig, isAdminPin, resolveRoleForPin } from "@/lib/transfer-config";
+import { getProjectConfig, isAdminPin } from "@/lib/transfer-config";
 import { jsonError } from "@/lib/transfer-helpers";
 
 export async function POST(request) {
@@ -23,7 +23,7 @@ export async function POST(request) {
     }
 
     const invite = readInviteToken(inviteToken);
-    if (!invite?.projectCode || !invite?.role) {
+    if (!invite?.projectCode) {
       return jsonError("Pozivnica nije valjana ili je istekla.", 401);
     }
 
@@ -33,18 +33,17 @@ export async function POST(request) {
       return jsonError("Ovaj projekt je istekao.", 403);
     }
 
-    const role = resolveRoleForPin(project, pin);
-    if (!role || role !== invite.role) {
+    if (!project.accessPin || pin !== project.accessPin) {
       return jsonError("Neispravan PIN za ovaj pristup.", 401);
     }
 
     await setTransferSession({
       projectCode: invite.projectCode,
       projectLabel: project.label,
-      role
+      role: "user"
     });
 
-    return Response.json({ ok: true, projectCode: invite.projectCode, projectLabel: project.label, role });
+    return Response.json({ ok: true, projectCode: invite.projectCode, projectLabel: project.label, role: "user" });
   } catch (error) {
     return jsonError(error.message || "Greška kod prijave.", 500);
   }

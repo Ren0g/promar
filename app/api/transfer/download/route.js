@@ -1,16 +1,16 @@
 export const runtime = "nodejs";
 
-import { createDownloadUrl, ensureProjectAreaKey } from "@/lib/b2";
-import { assertDownload, jsonError, requireTransferSession } from "@/lib/transfer-helpers";
+import { createDownloadUrl, ensureProjectKey } from "@/lib/b2";
+import { assertDownload, jsonError, resolveProjectAccess } from "@/lib/transfer-helpers";
 
 export async function POST(request) {
-  const { session, error } = await requireTransferSession();
+  const body = await request.json().catch(() => ({}));
+  const { session, error } = await resolveProjectAccess(body.projectCode);
   if (error) return error;
 
   try {
-    const body = await request.json();
-    assertDownload(session.role, body.area);
-    ensureProjectAreaKey(session.projectCode, body.area, body.key);
+    assertDownload(session.role);
+    ensureProjectKey(session.projectCode, body.key);
     const url = await createDownloadUrl(body.key);
     return Response.json({ url });
   } catch (err) {
