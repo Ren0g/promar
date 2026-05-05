@@ -23,39 +23,33 @@ export async function POST(request) {
     }
 
     const invite = readInviteToken(inviteToken);
-    if (!invite?.projectCode || !invite?.role) {
+    if (!invite?.projectCode) {
       return jsonError("Pozivnica nije valjana ili je istekla.", 401);
     }
 
     const project = await getProjectConfig(invite.projectCode);
-    if (!project) {
-      return jsonError("Projekt nije pronađen.", 404);
-    }
-
-    if (project.expiresAt && new Date(project.expiresAt) < new Date()) {
+    if (!project) return jsonError("Svadba nije pronađena.", 404);
+    if (project.expiresAt && new Date(project.expiresAt).getTime() < Date.now()) {
       return jsonError("Ovaj projekt je istekao.", 403);
     }
 
-    if (String(project.accessPin || "") !== pin) {
+    if (!project.accessPin || pin !== project.accessPin) {
       return jsonError("Neispravan PIN.", 401);
     }
 
-    const role = invite.role === "admin" ? "admin" : "user";
-
     await setTransferSession({
-      role,
-      projectCode: project.code,
+      role: "user",
+      projectCode: invite.projectCode,
       projectLabel: project.label
     });
 
     return Response.json({
       ok: true,
-      role,
-      projectCode: project.code,
+      projectCode: invite.projectCode,
       projectLabel: project.label,
-      mode: "modern"
+      role: "user"
     });
   } catch (error) {
-    return jsonError(error.message || "Ne mogu prijaviti korisnika.", 500);
+    return jsonError(error.message || "Prijava nije uspjela.", 500);
   }
 }
