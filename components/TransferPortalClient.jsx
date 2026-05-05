@@ -290,9 +290,12 @@ function LegacyProjectView({ session, onLogout, onBackToProjects }) {
   async function refresh() {
     setLoading(true);
     try {
-      const data = await api(`/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}`);
-      setRaw(data.raw || []);
-      setFinalFiles(data.final || []);
+      const [rawData, finalData] = await Promise.all([
+        api(`/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("raw")}`),
+        api(`/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("final")}`)
+      ]);
+      setRaw(rawData.files || []);
+      setFinalFiles(finalData.files || []);
       setError("");
     } catch (err) {
       setError(err.message || "Ne mogu dohvatiti sadržaj.");
@@ -592,13 +595,10 @@ function AdminDashboard({ onLogout }) {
   }
 
   if (openedProject) {
-    return (
-      <ProjectBrowser
-        session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "modern" }}
-        onBackToProjects={() => setOpenedProject(null)}
-        onLogout={onLogout}
-      />
-    );
+    if (openedProject.mode === "legacy") {
+      return <LegacyProjectView session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "legacy" }} onBackToProjects={() => setOpenedProject(null)} onLogout={onLogout} />;
+    }
+    return <ProjectBrowser session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "modern" }} onBackToProjects={() => setOpenedProject(null)} onLogout={onLogout} />;
   }
 
   return (
@@ -766,9 +766,9 @@ export default function TransferPortalClient() {
     return <AdminDashboard onLogout={handleLogout} />;
   }
 
-  if (session.role === "crew" || session.role === "editor") {
+  if (session.mode === "legacy") {
     return <LegacyProjectView session={session} onLogout={handleLogout} />;
   }
 
-  return <ProjectBrowser session={{ ...session, mode: "modern" }} onLogout={handleLogout} />;
+  return <ProjectBrowser session={session} onLogout={handleLogout} />;
 }
