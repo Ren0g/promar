@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -65,12 +65,19 @@ async function uploadOneFile(file, projectCode, path, setStatus) {
 
     const partAuth = await api("/api/transfer/multipart/part-url", {
       method: "POST",
-      body: JSON.stringify({ projectCode, key: plan.key, uploadId: plan.uploadId, partNumber: index + 1 })
+      body: JSON.stringify({
+        projectCode,
+        key: plan.key,
+        uploadId: plan.uploadId,
+        partNumber: index + 1
+      })
     });
 
     const response = await fetch(partAuth.url, {
       method: "PUT",
-      headers: { "Content-Type": file.type || "application/octet-stream" },
+      headers: {
+        "Content-Type": file.type || "application/octet-stream"
+      },
       body: chunk
     });
 
@@ -84,7 +91,11 @@ async function uploadOneFile(file, projectCode, path, setStatus) {
 
   await api("/api/transfer/multipart/complete", {
     method: "POST",
-    body: JSON.stringify({ projectCode, key: plan.key, uploadId: plan.uploadId })
+    body: JSON.stringify({
+      projectCode,
+      key: plan.key,
+      uploadId: plan.uploadId
+    })
   });
 }
 
@@ -113,26 +124,48 @@ function CopyButton({ value, label = "Kopiraj link" }) {
 
   async function copy() {
     if (!value) return;
-    const fullUrl = String(value).startsWith("http") ? value : `${window.location.origin}${value}`;
+
+    const fullUrl = String(value).startsWith("http")
+      ? value
+      : `${window.location.origin}${value}`;
+
     await navigator.clipboard.writeText(fullUrl);
     setDone(true);
     setTimeout(() => setDone(false), 1500);
   }
 
   return (
-    <button type="button" className="btn btn-secondary" onClick={copy} disabled={disabled} title={disabled ? "Link nije dostupan." : ""}>
+    <button
+      type="button"
+      className="btn btn-secondary"
+      onClick={copy}
+      disabled={disabled}
+      title={disabled ? "Link nije dostupan." : ""}
+    >
       {done ? "Kopirano" : label}
     </button>
   );
 }
 
-function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownload, canDelete, onRefresh }) {
+function LegacySection({
+  title,
+  areaKey,
+  files,
+  projectCode,
+  canUpload,
+  canDownload,
+  canDelete,
+  onRefresh
+}) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const totalSize = useMemo(() => files.reduce((sum, file) => sum + (file.size || 0), 0), [files]);
+  const totalSize = useMemo(
+    () => files.reduce((sum, file) => sum + (file.size || 0), 0),
+    [files]
+  );
 
   async function handleUpload(event) {
     const selected = Array.from(event.target.files || []);
@@ -151,6 +184,7 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
           setUploadProgress({ ...progressMap });
         });
       }
+
       event.target.value = "";
       setUploadProgress({});
       await onRefresh();
@@ -175,8 +209,10 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
 
   async function handleDownloadAll() {
     if (!files.length) return;
+
     setBusy(true);
     setError("");
+
     try {
       const downloads = await Promise.all(
         files.map((file) =>
@@ -186,6 +222,7 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
           }).then((data) => ({ url: data.url, name: file.name }))
         )
       );
+
       downloads.forEach((item, index) => {
         setTimeout(() => triggerBrowserDownload(item.url, item.name), index * 250);
       });
@@ -198,6 +235,7 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
 
   async function handleDelete(file) {
     if (!window.confirm(`Obrisati ${file.name}?`)) return;
+
     try {
       await api("/api/transfer/delete", {
         method: "POST",
@@ -211,9 +249,11 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
 
   async function handleDeleteAll() {
     if (!files.length) return;
-    if (!window.confirm(`Obrisati sve datoteke iz sekcije \"${title}\"?`)) return;
+    if (!window.confirm(`Obrisati sve datoteke iz sekcije "${title}"?`)) return;
+
     setBusy(true);
     setError("");
+
     try {
       for (const file of files) {
         await api("/api/transfer/delete", {
@@ -234,11 +274,34 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
       <div className="transfer-card-head">
         <div>
           <h3>{title}</h3>
-          <p>{files.length} datoteka · {formatBytes(totalSize)}</p>
+          <p>
+            {files.length} datoteka · {formatBytes(totalSize)}
+          </p>
         </div>
+
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          {canDownload && files.length ? <button type="button" className="btn btn-secondary" onClick={handleDownloadAll} disabled={busy}>{busy ? "Skidanje..." : "Preuzmi sve"}</button> : null}
-          {canDelete && files.length ? <button type="button" className="btn btn-ghost-danger" onClick={handleDeleteAll} disabled={busy}>{busy ? "Brisanje..." : "Obriši sve"}</button> : null}
+          {canDownload && files.length ? (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleDownloadAll}
+              disabled={busy}
+            >
+              {busy ? "Skidanje..." : "Preuzmi sve"}
+            </button>
+          ) : null}
+
+          {canDelete && files.length ? (
+            <button
+              type="button"
+              className="btn btn-ghost-danger"
+              onClick={handleDeleteAll}
+              disabled={busy}
+            >
+              {busy ? "Brisanje..." : "Obriši sve"}
+            </button>
+          ) : null}
+
           {canUpload ? (
             <label className={`transfer-upload ${uploading ? "is-busy" : ""}`}>
               <input type="file" multiple onChange={handleUpload} disabled={uploading} />
@@ -252,8 +315,13 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
         <div className="transfer-progress-list">
           {Object.entries(uploadProgress).map(([name, progress]) => (
             <div key={name} className="transfer-progress-item">
-              <div className="transfer-progress-label"><span>{name}</span><strong>{progress}%</strong></div>
-              <div className="transfer-progress-bar"><span style={{ width: `${progress}%` }} /></div>
+              <div className="transfer-progress-label">
+                <span>{name}</span>
+                <strong>{progress}%</strong>
+              </div>
+              <div className="transfer-progress-bar">
+                <span style={{ width: `${progress}%` }} />
+              </div>
             </div>
           ))}
         </div>
@@ -267,16 +335,39 @@ function LegacySection({ title, areaKey, files, projectCode, canUpload, canDownl
             <div key={file.key} className="transfer-file-item">
               <div>
                 <strong>{file.name}</strong>
-                <p>{formatBytes(file.size)}{file.lastModified ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}` : ""}</p>
+                <p>
+                  {formatBytes(file.size)}
+                  {file.lastModified
+                    ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}`
+                    : ""}
+                </p>
               </div>
               <div className="transfer-file-actions">
-                {canDownload ? <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)}>Preuzmi</button> : null}
-                {canDelete ? <button type="button" className="btn btn-ghost-danger" onClick={() => handleDelete(file)}>Obriši</button> : null}
+                {canDownload ? (
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => handleDownload(file)}
+                  >
+                    Preuzmi
+                  </button>
+                ) : null}
+                {canDelete ? (
+                  <button
+                    type="button"
+                    className="btn btn-ghost-danger"
+                    onClick={() => handleDelete(file)}
+                  >
+                    Obriši
+                  </button>
+                ) : null}
               </div>
             </div>
           ))}
         </div>
-      ) : <div className="transfer-empty">U ovoj sekciji još nema datoteka.</div>}
+      ) : (
+        <div className="transfer-empty">U ovoj sekciji još nema datoteka.</div>
+      )}
     </div>
   );
 }
@@ -291,9 +382,14 @@ function LegacyProjectView({ session, onLogout, onBackToProjects }) {
     setLoading(true);
     try {
       const [rawData, finalData] = await Promise.all([
-        api(`/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("raw")}`),
-        api(`/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("final")}`)
+        api(
+          `/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("raw")}`
+        ),
+        api(
+          `/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent("final")}`
+        )
       ]);
+
       setRaw(rawData.files || []);
       setFinalFiles(finalData.files || []);
       setError("");
@@ -304,7 +400,9 @@ function LegacyProjectView({ session, onLogout, onBackToProjects }) {
     }
   }
 
-  useEffect(() => { refresh(); }, [session.projectCode]);
+  useEffect(() => {
+    refresh();
+  }, [session.projectCode]);
 
   const canUploadRaw = session.role === "crew" || session.role === "admin";
   const canUploadFinal = session.role === "editor" || session.role === "admin";
@@ -321,17 +419,49 @@ function LegacyProjectView({ session, onLogout, onBackToProjects }) {
           <p>{capabilityText(session.role)}</p>
         </div>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          {session.role === "admin" && onBackToProjects ? <button type="button" className="btn btn-secondary" onClick={onBackToProjects}>Natrag na svadbe</button> : null}
-          <button type="button" className="btn btn-secondary" onClick={onLogout}>Odjava</button>
+          {session.role === "admin" && onBackToProjects ? (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onBackToProjects}
+            >
+              Natrag na svadbe
+            </button>
+          ) : null}
+          <button type="button" className="btn btn-secondary" onClick={onLogout}>
+            Odjava
+          </button>
         </div>
       </div>
 
       {error ? <p className="transfer-error">{error}</p> : null}
-      {loading ? <div className="transfer-card"><div className="transfer-empty">Učitavanje...</div></div> : null}
+      {loading ? (
+        <div className="transfer-card">
+          <div className="transfer-empty">Učitavanje...</div>
+        </div>
+      ) : null}
 
       <div className="transfer-grid">
-        <LegacySection title="Ulazni materijali" areaKey="raw" files={raw} projectCode={session.projectCode} canUpload={canUploadRaw} canDownload={canDownloadRaw} canDelete={canDelete} onRefresh={refresh} />
-        <LegacySection title="Gotovi materijali" areaKey="final" files={finalFiles} projectCode={session.projectCode} canUpload={canUploadFinal} canDownload={canDownloadFinal} canDelete={canDelete} onRefresh={refresh} />
+        <LegacySection
+          title="Ulazni materijali"
+          areaKey="raw"
+          files={raw}
+          projectCode={session.projectCode}
+          canUpload={canUploadRaw}
+          canDownload={canDownloadRaw}
+          canDelete={canDelete}
+          onRefresh={refresh}
+        />
+        <LegacySection
+          title="Gotovi materijali"
+          areaKey="final"
+          files={finalFiles}
+          projectCode={session.projectCode}
+          canUpload={canUploadFinal}
+          canDownload={canDownloadFinal}
+          canDelete={canDelete}
+          onRefresh={refresh}
+        />
       </div>
     </div>
   );
@@ -352,7 +482,9 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   async function refresh() {
     setLoading(true);
     try {
-      const data = await api(`/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent(path)}`);
+      const data = await api(
+        `/api/transfer/list?projectCode=${encodeURIComponent(session.projectCode)}&path=${encodeURIComponent(path)}`
+      );
       setFolders(data.folders || []);
       setFiles(data.files || []);
       setError("");
@@ -363,14 +495,18 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
     }
   }
 
-  useEffect(() => { refresh(); }, [path, session.projectCode]);
+  useEffect(() => {
+    refresh();
+  }, [path, session.projectCode]);
 
   async function handleUpload(event) {
     const selected = Array.from(event.target.files || []);
     if (!selected.length) return;
+
     setUploading(true);
     setError("");
     const progressMap = {};
+
     try {
       for (const file of selected) {
         progressMap[file.name] = 0;
@@ -380,6 +516,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           setUploadProgress({ ...progressMap });
         });
       }
+
       setUploadProgress({});
       event.target.value = "";
       await refresh();
@@ -392,7 +529,10 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
   async function handleDownload(file) {
     try {
-      const data = await api("/api/transfer/download", { method: "POST", body: JSON.stringify({ projectCode: session.projectCode, key: file.key }) });
+      const data = await api("/api/transfer/download", {
+        method: "POST",
+        body: JSON.stringify({ projectCode: session.projectCode, key: file.key })
+      });
       triggerBrowserDownload(data.url, file.name);
     } catch (err) {
       setError(err.message || "Download nije uspio.");
@@ -401,11 +541,23 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
   async function handleDownloadAll() {
     if (!files.length) return;
+
     setBusy(true);
     setError("");
+
     try {
-      const downloads = await Promise.all(files.map((file) => api("/api/transfer/download", { method: "POST", body: JSON.stringify({ projectCode: session.projectCode, key: file.key }) }).then((data) => ({ url: data.url, name: file.name }))));
-      downloads.forEach((item, index) => setTimeout(() => triggerBrowserDownload(item.url, item.name), index * 250));
+      const downloads = await Promise.all(
+        files.map((file) =>
+          api("/api/transfer/download", {
+            method: "POST",
+            body: JSON.stringify({ projectCode: session.projectCode, key: file.key })
+          }).then((data) => ({ url: data.url, name: file.name }))
+        )
+      );
+
+      downloads.forEach((item, index) => {
+        setTimeout(() => triggerBrowserDownload(item.url, item.name), index * 250);
+      });
     } catch (err) {
       setError(err.message || "Skidanje svih datoteka nije uspjelo.");
     } finally {
@@ -415,8 +567,12 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
   async function handleDeleteFile(file) {
     if (!window.confirm(`Obrisati ${file.name}?`)) return;
+
     try {
-      await api("/api/transfer/delete", { method: "POST", body: JSON.stringify({ projectCode: session.projectCode, key: file.key }) });
+      await api("/api/transfer/delete", {
+        method: "POST",
+        body: JSON.stringify({ projectCode: session.projectCode, key: file.key })
+      });
       await refresh();
     } catch (err) {
       setError(err.message || "Brisanje nije uspjelo.");
@@ -426,8 +582,16 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   async function handleCreateFolder() {
     const name = window.prompt("Naziv novog foldera");
     if (!name) return;
+
     try {
-      await api("/api/transfer/folder/create", { method: "POST", body: JSON.stringify({ projectCode: session.projectCode, path, name }) });
+      await api("/api/transfer/folder/create", {
+        method: "POST",
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path,
+          name
+        })
+      });
       await refresh();
     } catch (err) {
       setError(err.message || "Ne mogu napraviti folder.");
@@ -437,8 +601,16 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   async function handleRenameFolder(folder) {
     const name = window.prompt("Novi naziv foldera", folder.name);
     if (!name || name === folder.name) return;
+
     try {
-      await api("/api/transfer/folder/rename", { method: "POST", body: JSON.stringify({ projectCode: session.projectCode, path: folder.path, name }) });
+      await api("/api/transfer/folder/rename", {
+        method: "POST",
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path: folder.path,
+          name
+        })
+      });
       await refresh();
     } catch (err) {
       setError(err.message || "Ne mogu preimenovati folder.");
@@ -447,8 +619,15 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
   async function handleDeleteFolder(folder) {
     if (!window.confirm(`Obrisati folder ${folder.name} i sve unutar njega?`)) return;
+
     try {
-      await api("/api/transfer/folder/delete", { method: "POST", body: JSON.stringify({ projectCode: session.projectCode, path: folder.path }) });
+      await api("/api/transfer/folder/delete", {
+        method: "POST",
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path: folder.path
+        })
+      });
       await refresh();
     } catch (err) {
       setError(err.message || "Ne mogu obrisati folder.");
@@ -456,7 +635,10 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   }
 
   const breadcrumbs = breadcrumbParts(path);
-  const totalFileSize = useMemo(() => files.reduce((sum, file) => sum + (file.size || 0), 0), [files]);
+  const totalFileSize = useMemo(
+    () => files.reduce((sum, file) => sum + (file.size || 0), 0),
+    [files]
+  );
 
   return (
     <div className="transfer-shell">
@@ -467,20 +649,59 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           <p>{capabilityText(session.role)}</p>
         </div>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          {session.role === "admin" && onBackToProjects ? <button type="button" className="btn btn-secondary" onClick={onBackToProjects}>Natrag na svadbe</button> : null}
-          <button type="button" className="btn btn-secondary" onClick={onLogout}>Odjava</button>
+          {session.role === "admin" && onBackToProjects ? (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onBackToProjects}
+            >
+              Natrag na svadbe
+            </button>
+          ) : null}
+          <button type="button" className="btn btn-secondary" onClick={onLogout}>
+            Odjava
+          </button>
         </div>
       </div>
 
       <div className="transfer-card" style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 16,
+            flexWrap: "wrap",
+            alignItems: "center"
+          }}
+        >
           <div>
             <h3>Folderi i datoteke</h3>
-            <p>{files.length} datoteka u ovom folderu · {formatBytes(totalFileSize)}</p>
+            <p>
+              {files.length} datoteka u ovom folderu · {formatBytes(totalFileSize)}
+            </p>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-            {files.length ? <button type="button" className="btn btn-secondary" onClick={handleDownloadAll} disabled={busy}>{busy ? "Skidanje..." : "Preuzmi sve"}</button> : null}
-            {isAdmin ? <button type="button" className="btn btn-secondary" onClick={handleCreateFolder}>Napravi novi folder</button> : null}
+            {files.length ? (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleDownloadAll}
+                disabled={busy}
+              >
+                {busy ? "Skidanje..." : "Preuzmi sve"}
+              </button>
+            ) : null}
+
+            {isAdmin ? (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCreateFolder}
+              >
+                Napravi novi folder
+              </button>
+            ) : null}
+
             <label className={`transfer-upload ${uploading ? "is-busy" : ""}`}>
               <input type="file" multiple onChange={handleUpload} disabled={uploading} />
               {uploading ? "Upload u tijeku..." : "Dodaj datoteke"}
@@ -488,10 +709,27 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           </div>
         </div>
 
-        <div style={{ marginTop: 16, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-          <button type="button" className="btn btn-secondary" onClick={() => setPath("")}>Root</button>
+        <div
+          style={{
+            marginTop: 16,
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+            alignItems: "center"
+          }}
+        >
+          <button type="button" className="btn btn-secondary" onClick={() => setPath("")}>
+            Root
+          </button>
           {breadcrumbs.map((crumb) => (
-            <button key={crumb.path} type="button" className="btn btn-secondary" onClick={() => setPath(crumb.path)}>{crumb.name}</button>
+            <button
+              key={crumb.path}
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setPath(crumb.path)}
+            >
+              {crumb.name}
+            </button>
           ))}
         </div>
       </div>
@@ -501,8 +739,13 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           <div className="transfer-progress-list">
             {Object.entries(uploadProgress).map(([name, progress]) => (
               <div key={name} className="transfer-progress-item">
-                <div className="transfer-progress-label"><span>{name}</span><strong>{progress}%</strong></div>
-                <div className="transfer-progress-bar"><span style={{ width: `${progress}%` }} /></div>
+                <div className="transfer-progress-label">
+                  <span>{name}</span>
+                  <strong>{progress}%</strong>
+                </div>
+                <div className="transfer-progress-bar">
+                  <span style={{ width: `${progress}%` }} />
+                </div>
               </div>
             ))}
           </div>
@@ -513,37 +756,92 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
       <div className="transfer-card" style={{ marginBottom: 24 }}>
         <h3>Folderi</h3>
-        {loading ? <div className="transfer-empty">Učitavanje...</div> : folders.length ? (
+        {loading ? (
+          <div className="transfer-empty">Učitavanje...</div>
+        ) : folders.length ? (
           <div className="transfer-file-list">
             {folders.map((folder) => (
               <div key={folder.path} className="transfer-file-item">
-                <div><strong>📁 {folder.name}</strong><p>{folder.path}</p></div>
+                <div>
+                  <strong>📁 {folder.name}</strong>
+                  <p>{folder.path}</p>
+                </div>
                 <div className="transfer-file-actions">
-                  <button type="button" className="btn btn-secondary" onClick={() => setPath(folder.path)}>Otvori</button>
-                  {isAdmin ? <button type="button" className="btn btn-secondary" onClick={() => handleRenameFolder(folder)}>Preimenuj</button> : null}
-                  {isAdmin ? <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFolder(folder)}>Obriši</button> : null}
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setPath(folder.path)}
+                  >
+                    Otvori
+                  </button>
+                  {isAdmin ? (
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => handleRenameFolder(folder)}
+                    >
+                      Preimenuj
+                    </button>
+                  ) : null}
+                  {isAdmin ? (
+                    <button
+                      type="button"
+                      className="btn btn-ghost-danger"
+                      onClick={() => handleDeleteFolder(folder)}
+                    >
+                      Obriši
+                    </button>
+                  ) : null}
                 </div>
               </div>
             ))}
           </div>
-        ) : <div className="transfer-empty">U ovom folderu još nema podfoldera.</div>}
+        ) : (
+          <div className="transfer-empty">U ovom folderu još nema podfoldera.</div>
+        )}
       </div>
 
       <div className="transfer-card">
         <h3>Datoteke</h3>
-        {loading ? <div className="transfer-empty">Učitavanje...</div> : files.length ? (
+        {loading ? (
+          <div className="transfer-empty">Učitavanje...</div>
+        ) : files.length ? (
           <div className="transfer-file-list">
             {files.map((file) => (
               <div key={file.key} className="transfer-file-item">
-                <div><strong>{file.name}</strong><p>{formatBytes(file.size)}{file.lastModified ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}` : ""}</p></div>
+                <div>
+                  <strong>{file.name}</strong>
+                  <p>
+                    {formatBytes(file.size)}
+                    {file.lastModified
+                      ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}`
+                      : ""}
+                  </p>
+                </div>
                 <div className="transfer-file-actions">
-                  <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)}>Preuzmi</button>
-                  {isAdmin ? <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFile(file)}>Obriši</button> : null}
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => handleDownload(file)}
+                  >
+                    Preuzmi
+                  </button>
+                  {isAdmin ? (
+                    <button
+                      type="button"
+                      className="btn btn-ghost-danger"
+                      onClick={() => handleDeleteFile(file)}
+                    >
+                      Obriši
+                    </button>
+                  ) : null}
                 </div>
               </div>
             ))}
           </div>
-        ) : <div className="transfer-empty">U ovom folderu još nema datoteka.</div>}
+        ) : (
+          <div className="transfer-empty">U ovom folderu još nema datoteka.</div>
+        )}
       </div>
     </div>
   );
@@ -562,16 +860,24 @@ function AdminDashboard({ onLogout }) {
     setProjects(data.projects || []);
   }
 
-  useEffect(() => { loadProjects().catch((err) => setError(err.message)); }, []);
+  useEffect(() => {
+    loadProjects().catch((err) => setError(err.message));
+  }, []);
 
   async function create(event) {
     event.preventDefault();
     setBusy(true);
     setError("");
+
     try {
       await api("/api/transfer/projects", {
         method: "POST",
-        body: JSON.stringify({ label, expiresAt: expiresAt ? new Date(`${expiresAt}T23:59:59.999`).toISOString() : null })
+        body: JSON.stringify({
+          label,
+          expiresAt: expiresAt
+            ? new Date(`${expiresAt}T23:59:59.999`).toISOString()
+            : null
+        })
       });
       setLabel("");
       setExpiresAt("");
@@ -584,9 +890,13 @@ function AdminDashboard({ onLogout }) {
   }
 
   async function remove(projectCode, labelText) {
-    if (!window.confirm(`Obrisati svadbu \"${labelText}\" i sve datoteke?`)) return;
+    if (!window.confirm(`Obrisati svadbu "${labelText}" i sve datoteke?`)) return;
+
     try {
-      await api("/api/transfer/projects/delete", { method: "POST", body: JSON.stringify({ projectCode }) });
+      await api("/api/transfer/projects/delete", {
+        method: "POST",
+        body: JSON.stringify({ projectCode })
+      });
       if (openedProject?.code === projectCode) setOpenedProject(null);
       await loadProjects();
     } catch (err) {
@@ -596,9 +906,32 @@ function AdminDashboard({ onLogout }) {
 
   if (openedProject) {
     if (openedProject.mode === "legacy") {
-      return <LegacyProjectView session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "legacy" }} onBackToProjects={() => setOpenedProject(null)} onLogout={onLogout} />;
+      return (
+        <LegacyProjectView
+          session={{
+            role: "admin",
+            projectCode: openedProject.code,
+            projectLabel: openedProject.label,
+            mode: "legacy"
+          }}
+          onBackToProjects={() => setOpenedProject(null)}
+          onLogout={onLogout}
+        />
+      );
     }
-    return <ProjectBrowser session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "modern" }} onBackToProjects={() => setOpenedProject(null)} onLogout={onLogout} />;
+
+    return (
+      <ProjectBrowser
+        session={{
+          role: "admin",
+          projectCode: openedProject.code,
+          projectLabel: openedProject.label,
+          mode: "modern"
+        }}
+        onBackToProjects={() => setOpenedProject(null)}
+        onLogout={onLogout}
+      />
+    );
   }
 
   return (
@@ -607,9 +940,14 @@ function AdminDashboard({ onLogout }) {
         <div>
           <p className="section-kicker">PROMAR TRANSFER ADMIN</p>
           <h1>Privremene svadbe i pristupi</h1>
-          <p>Za nove svadbe koristiš jedan PIN za suradnike. Stare svadbe i dalje ostaju dostupne preko starih PIN-ova dok se posao ne dovrši.</p>
+          <p>
+            Za nove svadbe koristiš jedan PIN za suradnike. Stare svadbe i dalje ostaju
+            dostupne preko starih PIN-ova dok se posao ne dovrši.
+          </p>
         </div>
-        <button type="button" className="btn btn-secondary" onClick={onLogout}>Odjava</button>
+        <button type="button" className="btn btn-secondary" onClick={onLogout}>
+          Odjava
+        </button>
       </div>
 
       <div className="transfer-card transfer-create-card">
@@ -617,13 +955,23 @@ function AdminDashboard({ onLogout }) {
         <form className="transfer-admin-form" onSubmit={create}>
           <label>
             Naziv svadbe
-            <input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="npr. Iva i Marko" />
+            <input
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="npr. Iva i Marko"
+            />
           </label>
           <label>
             Istek pristupa
-            <input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
+            <input
+              type="date"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+            />
           </label>
-          <button type="submit" className="btn btn-primary" disabled={busy}>{busy ? "Spremam..." : "Kreiraj svadbu"}</button>
+          <button type="submit" className="btn btn-primary" disabled={busy}>
+            {busy ? "Spremam..." : "Kreiraj svadbu"}
+          </button>
         </form>
         {error ? <p className="transfer-error">{error}</p> : null}
       </div>
@@ -634,11 +982,28 @@ function AdminDashboard({ onLogout }) {
             <div className="transfer-project-head">
               <div>
                 <h3>{project.label}</h3>
-                <p>{project.expiresAt ? `Istječe: ${new Date(project.expiresAt).toLocaleDateString("hr-HR")}` : "Bez roka isteka"}</p>
+                <p>
+                  {project.expiresAt
+                    ? `Istječe: ${new Date(project.expiresAt).toLocaleDateString("hr-HR")}`
+                    : "Bez roka isteka"}
+                </p>
               </div>
+
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setOpenedProject(project)}>Otvori kao admin</button>
-                <button type="button" className="btn btn-ghost-danger" onClick={() => remove(project.code, project.label)}>Obriši svadbu</button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setOpenedProject(project)}
+                >
+                  Otvori kao admin
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost-danger"
+                  onClick={() => remove(project.code, project.label)}
+                >
+                  Obriši svadbu
+                </button>
               </div>
             </div>
 
@@ -671,7 +1036,10 @@ function AdminDashboard({ onLogout }) {
             </div>
           </div>
         ))}
-        {!projects.length ? <div className="transfer-empty">Još nema kreiranih svadbi.</div> : null}
+
+        {!projects.length ? (
+          <div className="transfer-empty">Još nema kreiranih svadbi.</div>
+        ) : null}
       </div>
     </div>
   );
@@ -689,11 +1057,13 @@ export default function TransferPortalClient() {
   async function refreshSession({ tokenPresent }) {
     try {
       const currentSession = await api("/api/transfer/session", { method: "GET" });
+
       if (!tokenPresent && currentSession.role !== "superadmin") {
         await api("/api/transfer/logout", { method: "POST" });
         setSession(null);
         return;
       }
+
       setSession(currentSession);
     } catch {
       setSession(null);
@@ -705,10 +1075,12 @@ export default function TransferPortalClient() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("t") || "";
+
     if (token) {
       setInviteToken(token);
       setMode("invite");
     }
+
     refreshSession({ tokenPresent: Boolean(token) });
   }, []);
 
@@ -716,10 +1088,15 @@ export default function TransferPortalClient() {
     event.preventDefault();
     setLoginBusy(true);
     setError("");
+
     try {
       const data = await api("/api/transfer/auth", {
         method: "POST",
-        body: JSON.stringify(mode === "admin" ? { mode: "admin", adminPin: pin } : { inviteToken, pin })
+        body: JSON.stringify(
+          mode === "admin"
+            ? { mode: "admin", adminPin: pin }
+            : { inviteToken, pin }
+        )
       });
       setSession(data);
       setPin("");
@@ -740,7 +1117,9 @@ export default function TransferPortalClient() {
     setMode("admin");
   }
 
-  if (loading) return <div className="transfer-loading">Učitavanje portala...</div>;
+  if (loading) {
+    return <div className="transfer-loading">Učitavanje portala...</div>;
+  }
 
   if (!session) {
     return (
@@ -748,14 +1127,29 @@ export default function TransferPortalClient() {
         <div className="transfer-login-card">
           <p className="section-kicker">PROMAR TRANSFER</p>
           <h1>{mode === "admin" ? "Admin ulaz" : "Pristup datotekama"}</h1>
-          <p>{mode === "admin" ? "Ovdje kao admin kreiraš svadbe i upravljaš folderima i sadržajem." : "Otvoren je pristup za ovu svadbu. Upiši PIN koji si dobio."}</p>
+          <p>
+            {mode === "admin"
+              ? "Ovdje kao admin kreiraš svadbe i upravljaš folderima i sadržajem."
+              : "Otvoren je pristup za ovu svadbu. Upiši PIN koji si dobio."}
+          </p>
+
           <form className="transfer-login-form" onSubmit={handleLogin}>
             <label>
               PIN
-              <input type="password" inputMode="numeric" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="****" />
+              <input
+                type="password"
+                inputMode="numeric"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                placeholder="****"
+              />
             </label>
+
             {error ? <p className="transfer-error">{error}</p> : null}
-            <button type="submit" className="btn btn-primary" disabled={loginBusy}>{loginBusy ? "Provjera..." : "Uđi u portal"}</button>
+
+            <button type="submit" className="btn btn-primary" disabled={loginBusy}>
+              {loginBusy ? "Provjera..." : "Uđi u portal"}
+            </button>
           </form>
         </div>
       </div>
