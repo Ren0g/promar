@@ -592,10 +592,13 @@ function AdminDashboard({ onLogout }) {
   }
 
   if (openedProject) {
-    if (openedProject.mode === "legacy") {
-      return <LegacyProjectView session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "legacy" }} onBackToProjects={() => setOpenedProject(null)} onLogout={onLogout} />;
-    }
-    return <ProjectBrowser session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "modern" }} onBackToProjects={() => setOpenedProject(null)} onLogout={onLogout} />;
+    return (
+      <ProjectBrowser
+        session={{ role: "admin", projectCode: openedProject.code, projectLabel: openedProject.label, mode: "modern" }}
+        onBackToProjects={() => setOpenedProject(null)}
+        onLogout={onLogout}
+      />
+    );
   }
 
   return (
@@ -763,9 +766,9 @@ export default function TransferPortalClient() {
     return <AdminDashboard onLogout={handleLogout} />;
   }
 
-  if (session.mode === "legacy" || session.role === "crew" || session.role === "editor") {
+  if (session.role === "crew" || session.role === "editor") {
     return <LegacyProjectView session={session} onLogout={handleLogout} />;
   }
 
-  return <ProjectBrowser session={session} onLogout={handleLogout} />;
+  return <ProjectBrowser session={{ ...session, mode: "modern" }} onLogout={handleLogout} />;
 }

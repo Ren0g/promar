@@ -24,7 +24,10 @@ export async function GET(request) {
 
   try {
     const project = await getProjectConfig(session.projectCode);
-    if (project?.mode === "legacy") {
+    const shouldUseLegacyView =
+      project?.mode === "legacy" && (session.role === "crew" || session.role === "editor");
+
+    if (shouldUseLegacyView) {
       const normalizedPath = String(path || "").trim();
       const entries = !normalizedPath
         ? legacyRootEntries()
