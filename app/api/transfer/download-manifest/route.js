@@ -37,7 +37,7 @@ export async function GET(request) {
     const items = [];
     for (const key of fileKeys) {
       ensureProjectKey(session.projectCode, key);
-      const url = await createDownloadUrl(key);
+      const url = await createDownloadUrl(key, 60 * 60 * 24);
       const relative = key.slice(prefix.length);
       const parts = relative.split("/");
       const fileName = stripTimestamp(parts.pop() || "download");
