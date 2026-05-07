@@ -37,10 +37,8 @@ function uploadErrorText(error) {
 }
 
 function capabilityText(role) {
-  if (role === "admin") {
-    return "Administracija foldera, datoteka i pristupa za ovu svadbu.";
-  }
-  return "Pregled foldera, upload i preuzimanje datoteka za ovu svadbu.";
+  if (role === "admin") return "Možete dodavati, preuzimati, brisati i uređivati foldere i datoteke.";
+  return "Možete ulaziti u foldere, preuzimati i dodavati datoteke.";
 }
 
 async function uploadOneFile(file, projectCode, path, setStatus) {
@@ -117,7 +115,7 @@ function breadcrumbParts(path) {
   }));
 }
 
-function ProjectLinkButton({ value, label = "Kopiraj link za pristup" }) {
+function CopyButton({ value, label = "Kopiraj link" }) {
   const [done, setDone] = useState(false);
   const disabled = !value;
 
@@ -129,12 +127,15 @@ function ProjectLinkButton({ value, label = "Kopiraj link za pristup" }) {
       : `${window.location.origin}${value}`;
 
     try {
-      if (navigator.clipboard && window.isSecureContext) {
+      if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(fullUrl);
       } else {
+        throw new Error("Clipboard API nije dostupna.");
+      }
+    } catch {
+      try {
         const textarea = document.createElement("textarea");
         textarea.value = fullUrl;
-        textarea.setAttribute("readonly", "");
         textarea.style.position = "fixed";
         textarea.style.opacity = "0";
         document.body.appendChild(textarea);
@@ -142,63 +143,25 @@ function ProjectLinkButton({ value, label = "Kopiraj link za pristup" }) {
         textarea.select();
         document.execCommand("copy");
         document.body.removeChild(textarea);
+      } catch {
+        window.prompt("Kopirajte link:", fullUrl);
       }
-      setDone(true);
-      setTimeout(() => setDone(false), 1500);
-    } catch {
-      window.prompt("Kopirajte ovaj link:", fullUrl);
     }
+
+    setDone(true);
+    setTimeout(() => setDone(false), 1500);
   }
 
   return (
     <button
       type="button"
-      className="btn btn-secondary transfer-project-link-btn"
+      className="btn btn-secondary"
       onClick={copy}
       disabled={disabled}
+      title={disabled ? "Link nije dostupan." : ""}
     >
       {done ? "Kopirano" : label}
     </button>
-  );
-}
-
-function TransferHeader({ title, subtitle, actions }) {
-  return (
-    <div className="transfer-masthead">
-      <div className="transfer-masthead-brand">
-        <img src="/images/transfer-logo.png" alt="Promar" className="transfer-brand-logo" />
-        <div>
-          <p className="transfer-brand-overline">Promar - digitalna rješenja</p>
-          <h1>{title}</h1>
-          <p>{subtitle}</p>
-        </div>
-      </div>
-      <div className="transfer-masthead-actions">{actions}</div>
-    </div>
-  );
-}
-
-function FolderUploadButton({ disabled, onFiles }) {
-  const inputRef = useRef(null);
-  return (
-    <>
-      <input
-        ref={inputRef}
-        type="file"
-        multiple
-        style={{ display: "none" }}
-        onChange={(event) => onFiles(Array.from(event.target.files || []), event)}
-        disabled={disabled}
-      />
-      <button
-        type="button"
-        className="btn btn-secondary"
-        onClick={() => inputRef.current?.click()}
-        disabled={disabled}
-      >
-        {disabled ? "Upload..." : "Dodaj datoteke"}
-      </button>
-    </>
   );
 }
 
@@ -211,13 +174,10 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
   const [busy, setBusy] = useState(false);
+  const [manifestBusy, setManifestBusy] = useState(false);
 
   const isAdmin = session.role === "admin";
-  const breadcrumbs = breadcrumbParts(path);
-  const totalFileSize = useMemo(
-    () => files.reduce((sum, file) => sum + (file.size || 0), 0),
-    [files]
-  );
+  const rootUploadRefs = useRef({});
 
   async function refresh() {
     setLoading(true);
@@ -239,15 +199,15 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
     refresh();
   }, [path, session.projectCode]);
 
-  async function handleUploadFiles(selectedFiles, targetPath) {
-    if (!selectedFiles.length) return;
+  async function handleUploadFiles(selected, targetPath) {
+    if (!selected.length) return;
 
     setUploading(true);
     setError("");
     const progressMap = {};
 
     try {
-      for (const file of selectedFiles) {
+      for (const file of selected) {
         progressMap[file.name] = 0;
         setUploadProgress({ ...progressMap });
         await uploadOneFile(file, session.projectCode, targetPath, (value) => {
@@ -255,6 +215,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           setUploadProgress({ ...progressMap });
         });
       }
+
       setUploadProgress({});
       await refresh();
     } catch (err) {
@@ -264,9 +225,18 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
     }
   }
 
-  async function handleFolderInputChange(selectedFiles, event, targetPath) {
-    await handleUploadFiles(selectedFiles, targetPath);
-    if (event?.target) event.target.value = "";
+  async function handleUpload(event) {
+    const selected = Array.from(event.target.files || []);
+    if (!selected.length) return;
+    await handleUploadFiles(selected, path);
+    event.target.value = "";
+  }
+
+  async function handleRootFolderUpload(event, targetPath) {
+    const selected = Array.from(event.target.files || []);
+    if (!selected.length) return;
+    await handleUploadFiles(selected, targetPath);
+    event.target.value = "";
   }
 
   async function handleDownload(file) {
@@ -283,8 +253,10 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
   async function handleDownloadAll() {
     if (!files.length) return;
+
     setBusy(true);
     setError("");
+
     try {
       const downloads = await Promise.all(
         files.map((file) =>
@@ -294,18 +266,56 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           }).then((data) => ({ url: data.url, name: file.name }))
         )
       );
+
       downloads.forEach((item, index) => {
-        setTimeout(() => triggerBrowserDownload(item.url, item.name), index * 220);
+        setTimeout(() => triggerBrowserDownload(item.url, item.name), index * 250);
       });
     } catch (err) {
       setError(err.message || "Skidanje svih datoteka nije uspjelo.");
     } finally {
-      setTimeout(() => setBusy(false), files.length * 220 + 500);
+      setTimeout(() => setBusy(false), files.length * 250 + 500);
+    }
+  }
+
+  async function handleManifestDownload() {
+    if (!folders.length && !files.length) return;
+
+    setManifestBusy(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/transfer/download-manifest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path
+        })
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Ne mogu pripremiti PowerShell downloader.");
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const fileNameBase = `${session.projectLabel || "promar-transfer"}${path ? `-${path.replaceAll("/", "-")}` : ""}`
+        .replace(/[^a-zA-Z0-9-_ ]/g, "-")
+        .trim() || "promar-transfer";
+
+      triggerBrowserDownload(objectUrl, `${fileNameBase}-download.ps1`);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+    } catch (err) {
+      setError(err.message || "Ne mogu pripremiti PowerShell downloader.");
+    } finally {
+      setManifestBusy(false);
     }
   }
 
   async function handleDeleteFile(file) {
     if (!window.confirm(`Obrisati ${file.name}?`)) return;
+
     try {
       await api("/api/transfer/delete", {
         method: "POST",
@@ -320,10 +330,15 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   async function handleCreateFolder() {
     const name = window.prompt("Naziv novog foldera");
     if (!name) return;
+
     try {
       await api("/api/transfer/folder/create", {
         method: "POST",
-        body: JSON.stringify({ projectCode: session.projectCode, path, name })
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path,
+          name
+        })
       });
       await refresh();
     } catch (err) {
@@ -334,10 +349,15 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   async function handleRenameFolder(folder) {
     const name = window.prompt("Novi naziv foldera", folder.name);
     if (!name || name === folder.name) return;
+
     try {
       await api("/api/transfer/folder/rename", {
         method: "POST",
-        body: JSON.stringify({ projectCode: session.projectCode, path: folder.path, name })
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path: folder.path,
+          name
+        })
       });
       await refresh();
     } catch (err) {
@@ -347,10 +367,14 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
   async function handleDeleteFolder(folder) {
     if (!window.confirm(`Obrisati folder ${folder.name} i sve unutar njega?`)) return;
+
     try {
       await api("/api/transfer/folder/delete", {
         method: "POST",
-        body: JSON.stringify({ projectCode: session.projectCode, path: folder.path })
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path: folder.path
+        })
       });
       await refresh();
     } catch (err) {
@@ -358,73 +382,86 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
     }
   }
 
+  const breadcrumbs = breadcrumbParts(path);
+  const totalFileSize = useMemo(
+    () => files.reduce((sum, file) => sum + (file.size || 0), 0),
+    [files]
+  );
+
   return (
     <div className="transfer-shell">
-      <TransferHeader
-        title={session.projectLabel}
-        subtitle={capabilityText(session.role)}
-        actions={
-          <>
-            {session.role === "admin" && onBackToProjects ? (
-              <button type="button" className="btn btn-secondary" onClick={onBackToProjects}>
-                Natrag na svadbe
-              </button>
-            ) : null}
-            <button type="button" className="btn btn-secondary" onClick={onLogout}>
-              Odjava
-            </button>
-          </>
-        }
-      />
-
-      <div className="transfer-toolbar-card">
-        <div className="transfer-toolbar-copy">
-          <h2>Folderi i datoteke</h2>
-          <p>
-            {path ? `Trenutni folder: ${path}` : "Root pregled projekta"} · {files.length} datoteka · {formatBytes(totalFileSize)}
-          </p>
+      <div className="transfer-topbar">
+        <div>
+          <p className="section-kicker">PROMAR TRANSFER</p>
+          <h1>{session.projectLabel}</h1>
+          <p>{capabilityText(session.role)}</p>
         </div>
-        <div className="transfer-toolbar-actions">
-          {files.length ? (
-            <button type="button" className="btn btn-secondary" onClick={handleDownloadAll} disabled={busy}>
-              {busy ? "Skidanje..." : "Preuzmi sve"}
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {session.role === "admin" && onBackToProjects ? (
+            <button type="button" className="btn btn-secondary" onClick={onBackToProjects}>
+              Natrag na svadbe
             </button>
           ) : null}
-          {isAdmin ? (
-            <button type="button" className="btn btn-secondary" onClick={handleCreateFolder}>
-              Napravi novi folder
-            </button>
-          ) : null}
-          {path ? (
-            <label className={`transfer-upload ${uploading ? "is-busy" : ""}`}>
-              <input
-                type="file"
-                multiple
-                onChange={(event) => handleFolderInputChange(Array.from(event.target.files || []), event, path)}
-                disabled={uploading}
-              />
-              {uploading ? "Upload u tijeku..." : "Dodaj datoteke"}
-            </label>
-          ) : null}
+          <button type="button" className="btn btn-secondary" onClick={onLogout}>
+            Odjava
+          </button>
         </div>
       </div>
 
-      <div className="transfer-breadcrumbs">
-        <button type="button" className={`transfer-crumb ${!path ? "is-active" : ""}`} onClick={() => setPath("")}>Root</button>
-        {breadcrumbs.map((crumb) => (
-          <button
-            key={crumb.path}
-            type="button"
-            className={`transfer-crumb ${crumb.path === path ? "is-active" : ""}`}
-            onClick={() => setPath(crumb.path)}
-          >
-            {crumb.name}
+      <div className="transfer-card" style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+          <div>
+            <h3>Folderi i datoteke</h3>
+            <p>{files.length} datoteka u ovom folderu · {formatBytes(totalFileSize)}</p>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            {files.length ? (
+              <button type="button" className="btn btn-secondary" onClick={handleDownloadAll} disabled={busy}>
+                {busy ? "Skidanje..." : "Preuzmi sve"}
+              </button>
+            ) : null}
+
+            {(files.length || folders.length) ? (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleManifestDownload}
+                disabled={manifestBusy}
+                title="Preuzimanje velikih foldera preko PowerShell skripte za Windows"
+              >
+                {manifestBusy ? "Priprema..." : "Preuzmi sve za Windows"}
+              </button>
+            ) : null}
+
+            {isAdmin ? (
+              <button type="button" className="btn btn-secondary" onClick={handleCreateFolder}>
+                Napravi novi folder
+              </button>
+            ) : null}
+
+            {path ? (
+              <label className={`transfer-upload ${uploading ? "is-busy" : ""}`}>
+                <input type="file" multiple onChange={handleUpload} disabled={uploading} />
+                {uploading ? "Upload u tijeku..." : "Dodaj datoteke"}
+              </label>
+            ) : null}
+          </div>
+        </div>
+
+        <div style={{ marginTop: 16, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+          <button type="button" className="btn btn-secondary" onClick={() => setPath("")}>
+            Root
           </button>
-        ))}
+          {breadcrumbs.map((crumb) => (
+            <button key={crumb.path} type="button" className="btn btn-secondary" onClick={() => setPath(crumb.path)}>
+              {crumb.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       {Object.keys(uploadProgress).length ? (
-        <div className="transfer-card">
+        <div className="transfer-card" style={{ marginBottom: 24 }}>
           <div className="transfer-progress-list">
             {Object.entries(uploadProgress).map(([name, progress]) => (
               <div key={name} className="transfer-progress-item">
@@ -443,129 +480,100 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
       {error ? <p className="transfer-error">{error}</p> : null}
 
-      <div className="transfer-panel-grid">
-        <div className="transfer-card">
-          <div className="transfer-section-head">
-            <h3>Folderi</h3>
-            <span>{folders.length}</span>
-          </div>
-
-          {loading ? (
-            <div className="transfer-empty">Učitavanje...</div>
-          ) : folders.length ? (
-            <div className="transfer-folder-list">
-              {folders.map((folder) => (
-                <div key={folder.path} className="transfer-folder-row">
-                  <button
-                    type="button"
-                    className="transfer-folder-link"
-                    onClick={() => setPath(folder.path)}
-                  >
-                    <span className="transfer-folder-icon">📁</span>
-                    <span>
-                      <strong>{folder.name}</strong>
-                      <small>{typeof folder.fileCount === "number" ? `${folder.fileCount} datoteka` : "0 datoteka"}</small>
-                    </span>
+      <div className="transfer-card" style={{ marginBottom: 24 }}>
+        <h3>Folderi</h3>
+        {loading ? (
+          <div className="transfer-empty">Učitavanje...</div>
+        ) : folders.length ? (
+          <div className="transfer-file-list">
+            {folders.map((folder) => (
+              <div key={folder.path} className="transfer-file-item">
+                <div>
+                  <strong style={{ cursor: "pointer" }} onClick={() => setPath(folder.path)}>
+                    📁 {folder.name}
+                  </strong>
+                  <p>{folder.path}</p>
+                </div>
+                <div className="transfer-file-actions">
+                  <button type="button" className="btn btn-secondary" onClick={() => setPath(folder.path)}>
+                    Otvori
                   </button>
 
-                  <div className="transfer-folder-actions">
-                    {!path ? (
-                      <FolderUploadButton
+                  {!path ? (
+                    <>
+                      <input
+                        ref={(el) => {
+                          rootUploadRefs.current[folder.path] = el;
+                        }}
+                        type="file"
+                        multiple
+                        style={{ display: "none" }}
+                        onChange={(e) => handleRootFolderUpload(e, folder.path)}
                         disabled={uploading}
-                        onFiles={(selected, event) => handleFolderInputChange(selected, event, folder.path)}
                       />
-                    ) : null}
-                    {isAdmin ? (
-                      <button type="button" className="btn btn-secondary" onClick={() => handleRenameFolder(folder)}>
-                        Preimenuj
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => rootUploadRefs.current[folder.path]?.click()}
+                        disabled={uploading}
+                      >
+                        {uploading ? "Upload..." : "Dodaj datoteke"}
                       </button>
-                    ) : null}
-                    {isAdmin ? (
-                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFolder(folder)}>
-                        Obriši
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="transfer-empty">U ovom folderu još nema podfoldera.</div>
-          )}
-        </div>
+                    </>
+                  ) : null}
 
-        <div className="transfer-card">
-          <div className="transfer-section-head">
-            <h3>Datoteke</h3>
-            <span>{files.length}</span>
-          </div>
-
-          {loading ? (
-            <div className="transfer-empty">Učitavanje...</div>
-          ) : files.length ? (
-            <div className="transfer-file-list">
-              {files.map((file) => (
-                <div key={file.key} className="transfer-file-item">
-                  <div>
-                    <strong>{file.name}</strong>
-                    <p>
-                      {formatBytes(file.size)}
-                      {file.lastModified ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}` : ""}
-                    </p>
-                  </div>
-                  <div className="transfer-file-actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)}>
-                      Preuzmi
+                  {isAdmin ? (
+                    <button type="button" className="btn btn-secondary" onClick={() => handleRenameFolder(folder)}>
+                      Preimenuj
                     </button>
-                    {isAdmin ? (
-                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFile(file)}>
-                        Obriši
-                      </button>
-                    ) : null}
-                  </div>
+                  ) : null}
+                  {isAdmin ? (
+                    <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFolder(folder)}>
+                      Obriši
+                    </button>
+                  ) : null}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="transfer-empty">U ovom folderu još nema datoteka.</div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="transfer-empty">U ovom folderu još nema podfoldera.</div>
+        )}
+      </div>
+
+      <div className="transfer-card">
+        <h3>Datoteke</h3>
+        {loading ? (
+          <div className="transfer-empty">Učitavanje...</div>
+        ) : files.length ? (
+          <div className="transfer-file-list">
+            {files.map((file) => (
+              <div key={file.key} className="transfer-file-item">
+                <div>
+                  <strong>{file.name}</strong>
+                  <p>
+                    {formatBytes(file.size)}
+                    {file.lastModified ? ` · ${new Date(file.lastModified).toLocaleString("hr-HR")}` : ""}
+                  </p>
+                </div>
+                <div className="transfer-file-actions">
+                  <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)}>
+                    Preuzmi
+                  </button>
+                  {isAdmin ? (
+                    <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFile(file)}>
+                      Obriši
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="transfer-empty">U ovom folderu još nema datoteka.</div>
+        )}
       </div>
     </div>
-  );
-}
-
-function ProjectCard({ project, onOpen, onRemove }) {
-  return (
-    <article className="transfer-project-card">
-      <div className="transfer-project-main">
-        <div>
-          <h3>{project.label}</h3>
-          <p>{project.expiresAt ? `Istječe: ${new Date(project.expiresAt).toLocaleDateString("hr-HR")}` : "Bez roka isteka"}</p>
-        </div>
-        <div className="transfer-project-buttons">
-          <button type="button" className="btn btn-secondary" onClick={() => onOpen(project)}>
-            Otvori kao admin
-          </button>
-          <button type="button" className="btn btn-ghost-danger" onClick={() => onRemove(project.code, project.label)}>
-            Obriši svadbu
-          </button>
-        </div>
-      </div>
-
-      <div className="transfer-project-compact-grid">
-        <div className="transfer-project-mini-card">
-          <span className="transfer-project-label">Pristup za suradnike</span>
-          <strong className="transfer-project-pin">PIN: {project.accessPin}</strong>
-          <ProjectLinkButton value={project.links?.access} />
-        </div>
-
-        <div className="transfer-project-mini-card is-muted">
-          <span className="transfer-project-label">Upravljanje projektom</span>
-          <p>Folderi, upload, download i brisanje datoteka dostupni su kroz admin ulaz za ovu svadbu.</p>
-        </div>
-      </div>
-    </article>
   );
 }
 
@@ -575,6 +583,7 @@ function AdminDashboard({ onLogout }) {
   const [expiresAt, setExpiresAt] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [manifestBusy, setManifestBusy] = useState(false);
   const [openedProject, setOpenedProject] = useState(null);
 
   async function loadProjects() {
@@ -610,7 +619,8 @@ function AdminDashboard({ onLogout }) {
   }
 
   async function remove(projectCode, labelText) {
-    if (!window.confirm(`Obrisati svadbu \"${labelText}\" i sve datoteke?`)) return;
+    if (!window.confirm(`Obrisati svadbu "${labelText}" i sve datoteke?`)) return;
+
     try {
       await api("/api/transfer/projects/delete", {
         method: "POST",
@@ -639,53 +649,67 @@ function AdminDashboard({ onLogout }) {
 
   return (
     <div className="transfer-shell">
-      <TransferHeader
-        title="Promar Transfer"
-        subtitle="Portal za razmjenu datoteka"
-        actions={<button type="button" className="btn btn-secondary" onClick={onLogout}>Odjava</button>}
-      />
-
-      <div className="transfer-dashboard-grid">
-        <div className="transfer-card transfer-create-card-modern">
-          <div className="transfer-section-head">
-            <h2>Nova svadba</h2>
-            <span>{projects.length}</span>
-          </div>
-          <p className="transfer-card-intro">Kreirajte projekt, dobijte PIN i link za suradnike te upravljajte folderima kroz admin ulaz.</p>
-          <form className="transfer-admin-form-modern" onSubmit={create}>
-            <label>
-              Naziv svadbe
-              <input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="npr. Monika i Borna" />
-            </label>
-            <label>
-              Istek pristupa
-              <input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
-            </label>
-            <button type="submit" className="btn btn-primary" disabled={busy}>
-              {busy ? "Spremam..." : "Kreiraj svadbu"}
-            </button>
-          </form>
-          {error ? <p className="transfer-error">{error}</p> : null}
+      <div className="transfer-topbar">
+        <div>
+          <p className="section-kicker">PROMAR TRANSFER ADMIN</p>
+          <h1>Privremene svadbe i pristupi</h1>
+          <p>Za svadbe koristite jedan PIN za suradnike i svoj odvojeni admin ulaz.</p>
         </div>
-
-        <div className="transfer-card transfer-dashboard-note">
-          <div className="transfer-section-head">
-            <h2>Kako radi</h2>
-            <span>1 PIN</span>
-          </div>
-          <ul className="transfer-bullet-list">
-            <li>Suradnici ulaze s jednim PIN-om i vide iste foldere.</li>
-            <li>Upload u root je ugašen. Datoteke idu samo u odabrani folder.</li>
-            <li>Admin ima dodatno kreiranje, preimenovanje i brisanje foldera.</li>
-          </ul>
-        </div>
+        <button type="button" className="btn btn-secondary" onClick={onLogout}>
+          Odjava
+        </button>
       </div>
 
-      <div className="transfer-project-list compact-two-col">
+      <div className="transfer-card transfer-create-card">
+        <h3>Nova svadba</h3>
+        <form className="transfer-admin-form" onSubmit={create}>
+          <label>
+            Naziv svadbe
+            <input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="npr. Iva i Marko" />
+          </label>
+          <label>
+            Istek pristupa
+            <input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
+          </label>
+          <button type="submit" className="btn btn-primary" disabled={busy}>
+            {busy ? "Spremam..." : "Kreiraj svadbu"}
+          </button>
+        </form>
+        {error ? <p className="transfer-error">{error}</p> : null}
+      </div>
+
+      <div className="transfer-admin-list">
         {projects.map((project) => (
-          <ProjectCard key={project.code} project={project} onOpen={setOpenedProject} onRemove={remove} />
+          <div key={project.code} className="transfer-card">
+            <div className="transfer-project-head">
+              <div>
+                <h3>{project.label}</h3>
+                <p>
+                  {project.expiresAt ? `Istječe: ${new Date(project.expiresAt).toLocaleDateString("hr-HR")}` : "Bez roka isteka"}
+                </p>
+              </div>
+
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setOpenedProject(project)}>
+                  Otvori kao admin
+                </button>
+                <button type="button" className="btn btn-ghost-danger" onClick={() => remove(project.code, project.label)}>
+                  Obriši svadbu
+                </button>
+              </div>
+            </div>
+
+            <div className="transfer-role-grid">
+              <div className="transfer-role-card">
+                <strong>Pristup za suradnike</strong>
+                <p>PIN: {project.accessPin}</p>
+                <CopyButton value={project.links?.access} label="Kopiraj link za pristup" />
+              </div>
+            </div>
+          </div>
         ))}
-        {!projects.length ? <div className="transfer-empty transfer-card">Još nema kreiranih svadbi.</div> : null}
+
+        {!projects.length ? <div className="transfer-empty">Još nema kreiranih svadbi.</div> : null}
       </div>
     </div>
   );
@@ -703,11 +727,13 @@ export default function TransferPortalClient() {
   async function refreshSession({ tokenPresent }) {
     try {
       const currentSession = await api("/api/transfer/session", { method: "GET" });
+
       if (!tokenPresent && currentSession.role !== "superadmin") {
         await api("/api/transfer/logout", { method: "POST" });
         setSession(null);
         return;
       }
+
       setSession(currentSession);
     } catch {
       setSession(null);
@@ -719,10 +745,12 @@ export default function TransferPortalClient() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("t") || "";
+
     if (token) {
       setInviteToken(token);
       setMode("invite");
     }
+
     refreshSession({ tokenPresent: Boolean(token) });
   }, []);
 
@@ -730,13 +758,12 @@ export default function TransferPortalClient() {
     event.preventDefault();
     setLoginBusy(true);
     setError("");
+
     try {
       const data = await api("/api/transfer/auth", {
         method: "POST",
         body: JSON.stringify(
-          mode === "admin"
-            ? { mode: "admin", adminPin: pin }
-            : { inviteToken, pin }
+          mode === "admin" ? { mode: "admin", adminPin: pin } : { inviteToken, pin }
         )
       });
       setSession(data);
@@ -758,26 +785,22 @@ export default function TransferPortalClient() {
     setMode("admin");
   }
 
-  if (loading) return <div className="transfer-loading">Učitavanje portala...</div>;
+  if (loading) {
+    return <div className="transfer-loading">Učitavanje portala...</div>;
+  }
 
   if (!session) {
     return (
       <div className="transfer-shell">
-        <TransferHeader
-          title="Promar Transfer"
-          subtitle="Portal za razmjenu datoteka"
-          actions={null}
-        />
-        <div className="transfer-login-card transfer-login-card-modern">
-          <div className="transfer-section-head">
-            <h2>{mode === "admin" ? "Admin ulaz" : "Pristup projektu"}</h2>
-            <span>{mode === "admin" ? "Admin" : "PIN"}</span>
-          </div>
-          <p className="transfer-card-intro">
+        <div className="transfer-login-card">
+          <p className="section-kicker">PROMAR TRANSFER</p>
+          <h1>{mode === "admin" ? "Admin ulaz" : "Pristup datotekama"}</h1>
+          <p>
             {mode === "admin"
-              ? "Ovdje upravljate svadbama, pristupima, folderima i datotekama."
-              : "Otvoren je pristup za ovaj projekt. Upišite PIN koji ste dobili."}
+              ? "Ovdje kao admin kreirate svadbe i upravljate folderima i sadržajem."
+              : "Otvoren je pristup za ovu svadbu. Upišite PIN koji ste dobili."}
           </p>
+
           <form className="transfer-login-form" onSubmit={handleLogin}>
             <label>
               PIN
@@ -789,7 +812,9 @@ export default function TransferPortalClient() {
                 placeholder="****"
               />
             </label>
+
             {error ? <p className="transfer-error">{error}</p> : null}
+
             <button type="submit" className="btn btn-primary" disabled={loginBusy}>
               {loginBusy ? "Provjera..." : "Uđi u portal"}
             </button>
