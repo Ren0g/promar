@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { createDownloadUrl, ensureProjectKey, getFolderPrefix, listAllKeys } from "@/lib/b2";
+import { createDownloadUrl, ensureProjectKey, getFolderPrefix, listAllKeys, getFileSize } from "@/lib/b2";
 import { assertDownload, jsonError, resolveProjectAccess } from "@/lib/transfer-helpers";
 
 function stripTimestamp(name) {
@@ -38,11 +38,12 @@ export async function GET(request) {
     for (const key of fileKeys) {
       ensureProjectKey(session.projectCode, key);
       const url = await createDownloadUrl(key, 60 * 60 * 24);
+      const size = await getFileSize(key);
       const relative = key.slice(prefix.length);
       const parts = relative.split("/");
       const fileName = stripTimestamp(parts.pop() || "download");
       const savePath = [...parts, fileName].filter(Boolean).join("\\");
-      items.push({ savePath, url });
+      items.push({ savePath, url, size });
     }
 
     const lines = [
@@ -57,23 +58,62 @@ export async function GET(request) {
 
     for (const item of items) {
       lines.push(
-        `  [PSCustomObject]@{ Path='${esc(item.savePath)}'; Url='${esc(item.url)}' }`
+        `  [PSCustomObject]@{ Path='${esc(item.savePath)}'; Url='${esc(item.url)}'; Size=${Number(item.size || 0)} }`
       );
     }
 
     lines.push(
       ")",
       "",
+      "$totalBytes = ($files | Measure-Object -Property Size -Sum).Sum",
+      "$downloadedBytes = 0",
+      "$startTime = Get-Date",
+      "",
       "foreach ($file in $files) {",
       "  $destination = Join-Path $baseDir $file.Path",
       "  $folder = Split-Path -Parent $destination",
       "  if ($folder) { New-Item -ItemType Directory -Force -Path $folder | Out-Null }",
+      "",
+      "  if (Test-Path $destination) {",
+      "    $existingSize = (Get-Item $destination).Length",
+      "    if ($existingSize -eq $file.Size -and $file.Size -gt 0) {",
+      "      $downloadedBytes += $file.Size",
+      "      Write-Host ('Preskacem postojeći file: ' + $file.Path)",
+      "      continue",
+      "    }",
+      "  }",
+      "",
       "  Write-Host ('Skidam: ' + $file.Path)",
       "  Invoke-WebRequest -Uri $file.Url -OutFile $destination",
+      "",
+      "  if (Test-Path $destination) {",
+      "    $actualSize = (Get-Item $destination).Length",
+      "    $downloadedBytes += $actualSize",
+      "  }",
+      "",
+      "  if ($totalBytes -gt 0) {",
+      "    $percent = [math]::Round(($downloadedBytes / $totalBytes) * 100, 2)",
+      "    $elapsed = ((Get-Date) - $startTime).TotalSeconds",
+      "    if ($elapsed -gt 0) {",
+      "      $speed = $downloadedBytes / $elapsed",
+      "      $speedMb = [math]::Round($speed / 1MB, 2)",
+      "      Write-Host ('Napredak: ' + $percent + '% | Brzina: ' + $speedMb + ' MB/s')",
+      "    } else {",
+      "      Write-Host ('Napredak: ' + $percent + '%')",
+      "    }",
+      "  }",
+      "}",
+      "",
+      "$elapsed = ((Get-Date) - $startTime).TotalSeconds",
+      "$avgSpeed = 0",
+      "if ($elapsed -gt 0) {",
+      "  $avgSpeed = [math]::Round(($downloadedBytes / $elapsed) / 1MB, 2)",
       "}",
       "",
       "Write-Host ''",
       "Write-Host 'Preuzimanje je završeno.'",
+      "Write-Host ('Ukupno skinuto: ' + [math]::Round($downloadedBytes / 1GB, 2) + ' GB')",
+      "Write-Host ('Prosječna brzina: ' + $avgSpeed + ' MB/s')",
       "Write-Host ('Lokacija: ' + $baseDir)"
     );
 
