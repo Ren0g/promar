@@ -108,18 +108,6 @@ function triggerBrowserDownload(url, filename) {
   document.body.removeChild(link);
 }
 
-function triggerBlobDownload(blob, filename) {
-  const objectUrl = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = objectUrl;
-  link.download = filename || "preuzimanje.zip";
-  link.style.display = "none";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
-}
-
 function breadcrumbParts(path) {
   if (!path) return [];
   const parts = path.split("/").filter(Boolean);
@@ -295,41 +283,24 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
 
   async function handleDownloadAll() {
     if (!files.length) return;
-
     setBusy(true);
     setError("");
-
     try {
-      const response = await fetch("/api/transfer/download-zip", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          projectCode: session.projectCode,
-          path,
-          archiveName: `${session.projectLabel || "projekt"}${path ? ` - ${path.split("/").pop()}` : ""}.zip`,
-          files: files.map((file) => ({
-            key: file.key,
-            name: file.name
-          }))
-        })
-      });
-
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "ZIP preuzimanje nije uspjelo.");
-      }
-
-      const blob = await response.blob();
-      triggerBlobDownload(
-        blob,
-        `${session.projectLabel || "projekt"}${path ? ` - ${path.split("/").pop()}` : ""}.zip`
+      const downloads = await Promise.all(
+        files.map((file) =>
+          api("/api/transfer/download", {
+            method: "POST",
+            body: JSON.stringify({ projectCode: session.projectCode, key: file.key })
+          }).then((data) => ({ url: data.url, name: file.name }))
+        )
       );
+      downloads.forEach((item, index) => {
+        setTimeout(() => triggerBrowserDownload(item.url, item.name), index * 220);
+      });
     } catch (err) {
       setError(err.message || "Skidanje svih datoteka nije uspjelo.");
     } finally {
-      setBusy(false);
+      setTimeout(() => setBusy(false), files.length * 220 + 500);
     }
   }
 
@@ -493,7 +464,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                     <span className="transfer-folder-icon">📁</span>
                     <span>
                       <strong>{folder.name}</strong>
-                      <small>{folder.path}</small>
+                      <small>{typeof folder.fileCount === "number" ? `${folder.fileCount} datoteka` : "0 datoteka"}</small>
                     </span>
                   </button>
 
