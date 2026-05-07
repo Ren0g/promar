@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { createDownloadUrl, ensureProjectKey, getFolderPrefix, getProjectPrefix, listAllKeys } from "@/lib/b2";
+import { createDownloadUrl, ensureProjectKey, getFolderPrefix, listAllKeys } from "@/lib/b2";
 import { assertDownload, jsonError, resolveProjectAccess } from "@/lib/transfer-helpers";
 
 function stripTimestamp(name) {
@@ -8,7 +8,9 @@ function stripTimestamp(name) {
 }
 
 function esc(value) {
-  return String(value || "").replace(/'/g, "''");
+  return String(value || "")
+    .replace(/'/g, "''")
+    .replace(/\r?\n/g, " ");
 }
 
 export async function GET(request) {
@@ -22,10 +24,12 @@ export async function GET(request) {
     assertDownload(session.role);
 
     const prefix = getFolderPrefix(session.projectCode, folderPath);
-    const projectPrefix = getProjectPrefix(session.projectCode);
     const keys = await listAllKeys(prefix);
 
-    const fileKeys = keys.filter((key) => key && !key.endsWith("/") && !key.endsWith(".promar-folder"));
+    const fileKeys = keys.filter(
+      (key) => key && !key.endsWith("/") && !key.endsWith(".promar-folder")
+    );
+
     if (!fileKeys.length) {
       return jsonError("U ovom folderu nema datoteka za preuzimanje.", 400);
     }
@@ -37,27 +41,29 @@ export async function GET(request) {
       const relative = key.slice(prefix.length);
       const parts = relative.split("/");
       const fileName = stripTimestamp(parts.pop() || "download");
-      const savePath = [...parts, fileName].filter(Boolean).join("\");
+      const savePath = [...parts, fileName].filter(Boolean).join("\\");
       items.push({ savePath, url });
     }
 
     const lines = [
       "$ErrorActionPreference = 'Stop'",
       "$ProgressPreference = 'SilentlyContinue'",
-      '',
+      "",
       "$baseDir = Join-Path (Get-Location) 'Promar Download'",
       "New-Item -ItemType Directory -Force -Path $baseDir | Out-Null",
-      '',
+      "",
       "$files = @("
     ];
 
     for (const item of items) {
-      lines.push(`  [PSCustomObject]@{ Path='${esc(item.savePath)}'; Url='${esc(item.url)}' }`);
+      lines.push(
+        `  [PSCustomObject]@{ Path='${esc(item.savePath)}'; Url='${esc(item.url)}' }`
+      );
     }
 
     lines.push(
       ")",
-      '',
+      "",
       "foreach ($file in $files) {",
       "  $destination = Join-Path $baseDir $file.Path",
       "  $folder = Split-Path -Parent $destination",
@@ -65,7 +71,7 @@ export async function GET(request) {
       "  Write-Host ('Skidam: ' + $file.Path)",
       "  Invoke-WebRequest -Uri $file.Url -OutFile $destination",
       "}",
-      '',
+      "",
       "Write-Host ''",
       "Write-Host 'Preuzimanje je završeno.'",
       "Write-Host ('Lokacija: ' + $baseDir)"
@@ -74,7 +80,7 @@ export async function GET(request) {
     return new Response(lines.join("\r\n"), {
       headers: {
         "Content-Type": "application/octet-stream; charset=utf-8",
-        "Content-Disposition": `attachment; filename="promar-download.ps1"`,
+        "Content-Disposition": 'attachment; filename="promar-download.ps1"',
         "Cache-Control": "no-store"
       }
     });
