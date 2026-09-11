@@ -30,8 +30,11 @@ async function api(path, options = {}) {
 
 function uploadErrorText(error) {
   const message = String(error?.message || "Upload nije uspio.");
+  if (message.includes("InternalError") || message.includes("internal incident")) {
+    return "Privremena greška Backblaze B2 servisa. Automatski pokušaji nisu uspjeli.";
+  }
   if (message.includes("Failed to fetch")) {
-    return "Upload nije uspio. Otvori DevTools > Network i pogledaj stvarnu grešku requesta.";
+    return "Mrežna veza prema spremištu je prekinuta. Automatski pokušaji nisu uspjeli.";
   }
   return message;
 }
@@ -44,58 +47,74 @@ function capabilityText(role) {
 }
 
 async function uploadOneFile(file, projectCode, path, setStatus) {
-  const plan = await api("/api/transfer/multipart/start", {
-    method: "POST",
-    body: JSON.stringify({
-      projectCode,
-      path,
-      fileName: file.name,
-      fileSize: file.size,
-      contentType: file.type || "application/octet-stream"
-    })
-  });
+  let plan = null;
 
-  const partCount = Math.max(1, Math.ceil(file.size / plan.partSize));
+  try {
+    plan = await api("/api/transfer/multipart/start", {
+      method: "POST",
+      body: JSON.stringify({
+        projectCode,
+        path,
+        fileName: file.name,
+        fileSize: file.size,
+        contentType: file.type || "application/octet-stream"
+      })
+    });
 
-  for (let index = 0; index < partCount; index += 1) {
-    const start = index * plan.partSize;
-    const end = Math.min(file.size, start + plan.partSize);
-    const chunk = file.slice(start, end);
+    const partCount = Math.max(1, Math.ceil(file.size / plan.partSize));
 
-    const partAuth = await api("/api/transfer/multipart/part-url", {
+    for (let index = 0; index < partCount; index += 1) {
+      const start = index * plan.partSize;
+      const end = Math.min(file.size, start + plan.partSize);
+      const chunk = file.slice(start, end);
+
+      const partAuth = await api("/api/transfer/multipart/part-url", {
+        method: "POST",
+        body: JSON.stringify({
+          projectCode,
+          key: plan.key,
+          uploadId: plan.uploadId,
+          partNumber: index + 1
+        })
+      });
+
+      const response = await fetch(partAuth.url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type || "application/octet-stream"
+        },
+        body: chunk
+      });
+
+      if (!response.ok) {
+        const details = await response.text().catch(() => "");
+        throw new Error(details || `Upload dijela ${index + 1} nije uspio.`);
+      }
+
+      setStatus(Math.round(((index + 1) / partCount) * 100));
+    }
+
+    await api("/api/transfer/multipart/complete", {
       method: "POST",
       body: JSON.stringify({
         projectCode,
         key: plan.key,
-        uploadId: plan.uploadId,
-        partNumber: index + 1
+        uploadId: plan.uploadId
       })
     });
-
-    const response = await fetch(partAuth.url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": file.type || "application/octet-stream"
-      },
-      body: chunk
-    });
-
-    if (!response.ok) {
-      const details = await response.text().catch(() => "");
-      throw new Error(details || `Upload dijela ${index + 1} nije uspio.`);
+  } catch (error) {
+    if (plan?.key && plan?.uploadId) {
+      await api("/api/transfer/multipart/abort", {
+        method: "POST",
+        body: JSON.stringify({
+          projectCode,
+          key: plan.key,
+          uploadId: plan.uploadId
+        })
+      }).catch(() => {});
     }
-
-    setStatus(Math.round(((index + 1) / partCount) * 100));
+    throw error;
   }
-
-  await api("/api/transfer/multipart/complete", {
-    method: "POST",
-    body: JSON.stringify({
-      projectCode,
-      key: plan.key,
-      uploadId: plan.uploadId
-    })
-  });
 }
 
 function triggerBrowserDownload(url, filename) {
@@ -209,7 +228,8 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState({});
+  const [uploadBatch, setUploadBatch] = useState(null);
+  const [failedUploads, setFailedUploads] = useState([]);
   const [busy, setBusy] = useState(false);
 
   const isAdmin = session.role === "admin";
@@ -239,29 +259,91 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
     refresh();
   }, [path, session.projectCode]);
 
-  async function handleUploadFiles(selectedFiles, targetPath) {
-    if (!selectedFiles.length) return;
+  async function runUploadBatch(items) {
+    if (!items.length) return;
 
     setUploading(true);
     setError("");
-    const progressMap = {};
+    setFailedUploads([]);
+
+    let succeeded = 0;
+    let failed = 0;
+    const failures = [];
+
+    setUploadBatch({
+      total: items.length,
+      completed: 0,
+      succeeded: 0,
+      failed: 0,
+      currentName: "",
+      currentProgress: 0,
+      done: false
+    });
 
     try {
-      for (const file of selectedFiles) {
-        progressMap[file.name] = 0;
-        setUploadProgress({ ...progressMap });
-        await uploadOneFile(file, session.projectCode, targetPath, (value) => {
-          progressMap[file.name] = value;
-          setUploadProgress({ ...progressMap });
-        });
+      for (const item of items) {
+        const { file, targetPath } = item;
+
+        setUploadBatch((current) => ({
+          ...current,
+          currentName: file.name,
+          currentProgress: 0
+        }));
+
+        try {
+          await uploadOneFile(file, session.projectCode, targetPath, (value) => {
+            setUploadBatch((current) => ({
+              ...current,
+              currentName: file.name,
+              currentProgress: value
+            }));
+          });
+          succeeded += 1;
+        } catch (err) {
+          failed += 1;
+          failures.push({
+            file,
+            targetPath,
+            error: uploadErrorText(err)
+          });
+        }
+
+        setUploadBatch((current) => ({
+          ...current,
+          completed: succeeded + failed,
+          succeeded,
+          failed,
+          currentName: "",
+          currentProgress: 0
+        }));
       }
-      setUploadProgress({});
+
+      setFailedUploads(failures);
+      setUploadBatch((current) => ({
+        ...current,
+        completed: succeeded + failed,
+        succeeded,
+        failed,
+        currentName: "",
+        currentProgress: 0,
+        done: true
+      }));
+
       await refresh();
-    } catch (err) {
-      setError(uploadErrorText(err));
     } finally {
       setUploading(false);
     }
+  }
+
+  async function handleUploadFiles(selectedFiles, targetPath) {
+    await runUploadBatch(selectedFiles.map((file) => ({ file, targetPath })));
+  }
+
+  async function handleRetryFailed() {
+    if (!failedUploads.length || uploading) return;
+    await runUploadBatch(
+      failedUploads.map(({ file, targetPath }) => ({ file, targetPath }))
+    );
   }
 
   async function handleFolderInputChange(selectedFiles, event, targetPath) {
@@ -378,11 +460,11 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
         actions={
           <>
             {session.role === "admin" && onBackToProjects ? (
-              <button type="button" className="btn btn-secondary" onClick={onBackToProjects}>
+              <button type="button" className="btn btn-secondary" onClick={onBackToProjects} disabled={uploading}>
                 Natrag na svadbe
               </button>
             ) : null}
-            <button type="button" className="btn btn-secondary" onClick={onLogout}>
+            <button type="button" className="btn btn-secondary" onClick={onLogout} disabled={uploading}>
               Odjava
             </button>
           </>
@@ -397,11 +479,11 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           </p>
         </div>
         <div className="transfer-toolbar-actions">
-          <button type="button" className="btn btn-secondary" onClick={handleDownloadAllWindows} disabled={busy}>
+          <button type="button" className="btn btn-secondary" onClick={handleDownloadAllWindows} disabled={busy || uploading}>
             {busy ? "Priprema..." : "Preuzmi sve za Windows"}
           </button>
           {isAdmin ? (
-            <button type="button" className="btn btn-secondary" onClick={handleCreateFolder}>
+            <button type="button" className="btn btn-secondary" onClick={handleCreateFolder} disabled={uploading}>
               Napravi novi folder
             </button>
           ) : null}
@@ -420,34 +502,68 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
       </div>
 
       <div className="transfer-breadcrumbs">
-        <button type="button" className={`transfer-crumb ${!path ? "is-active" : ""}`} onClick={() => setPath("")}>Root</button>
+        <button type="button" className={`transfer-crumb ${!path ? "is-active" : ""}`} onClick={() => setPath("")} disabled={uploading}>Root</button>
         {breadcrumbs.map((crumb) => (
           <button
             key={crumb.path}
             type="button"
             className={`transfer-crumb ${crumb.path === path ? "is-active" : ""}`}
             onClick={() => setPath(crumb.path)}
+            disabled={uploading}
           >
             {crumb.name}
           </button>
         ))}
       </div>
 
-      {Object.keys(uploadProgress).length ? (
+      {uploadBatch ? (
         <div className="transfer-card">
-          <div className="transfer-progress-list">
-            {Object.entries(uploadProgress).map(([name, progress]) => (
-              <div key={name} className="transfer-progress-item">
+          <div className="transfer-section-head">
+            <h3>{uploading ? "Upload u tijeku" : "Rezultat uploada"}</h3>
+            <span>{uploadBatch.completed}/{uploadBatch.total}</span>
+          </div>
+
+          <p className="transfer-card-intro">
+            Uspješno: {uploadBatch.succeeded} · Neuspjelo: {uploadBatch.failed}
+          </p>
+
+          {uploading && uploadBatch.currentName ? (
+            <div className="transfer-progress-list">
+              <div className="transfer-progress-item">
                 <div className="transfer-progress-label">
-                  <span>{name}</span>
-                  <strong>{progress}%</strong>
+                  <span>{uploadBatch.currentName}</span>
+                  <strong>{uploadBatch.currentProgress}%</strong>
                 </div>
                 <div className="transfer-progress-bar">
-                  <span style={{ width: `${progress}%` }} />
+                  <span style={{ width: `${uploadBatch.currentProgress}%` }} />
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ) : null}
+
+          {!uploading && uploadBatch.done && uploadBatch.failed === 0 ? (
+            <p>Upload je završen. Sve odabrane datoteke uspješno su spremljene.</p>
+          ) : null}
+
+          {!uploading && failedUploads.length ? (
+            <>
+              <div className="transfer-file-list">
+                {failedUploads.map((item, index) => (
+                  <div key={`${item.file.name}-${item.file.size}-${index}`} className="transfer-file-item">
+                    <div>
+                      <strong>{item.file.name}</strong>
+                      <p className="transfer-error">{item.error}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="transfer-file-actions" style={{ marginTop: 16 }}>
+                <button type="button" className="btn btn-primary" onClick={handleRetryFailed} disabled={uploading}>
+                  Ponovi neuspjele ({failedUploads.length})
+                </button>
+              </div>
+            </>
+          ) : null}
         </div>
       ) : null}
 
@@ -470,6 +586,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                     type="button"
                     className="transfer-folder-link"
                     onClick={() => setPath(folder.path)}
+                    disabled={uploading}
                   >
                     <span className="transfer-folder-icon">📁</span>
                     <span>
@@ -486,12 +603,12 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                       />
                     ) : null}
                     {isAdmin ? (
-                      <button type="button" className="btn btn-secondary" onClick={() => handleRenameFolder(folder)}>
+                      <button type="button" className="btn btn-secondary" onClick={() => handleRenameFolder(folder)} disabled={uploading}>
                         Preimenuj
                       </button>
                     ) : null}
                     {isAdmin ? (
-                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFolder(folder)}>
+                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFolder(folder)} disabled={uploading}>
                         Obriši
                       </button>
                     ) : null}
@@ -524,11 +641,11 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                     </p>
                   </div>
                   <div className="transfer-file-actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)}>
+                    <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)} disabled={uploading}>
                       Preuzmi
                     </button>
                     {isAdmin ? (
-                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFile(file)}>
+                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFile(file)} disabled={uploading}>
                         Obriši
                       </button>
                     ) : null}
