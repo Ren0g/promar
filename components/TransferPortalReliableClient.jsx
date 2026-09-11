@@ -23,7 +23,11 @@ function getRetryableRequest(input, init) {
     const isTransferMultipartApi =
       method === "POST" &&
       url.origin === window.location.origin &&
-      url.pathname.startsWith("/api/transfer/multipart/");
+      [
+        "/api/transfer/multipart/start",
+        "/api/transfer/multipart/part-url",
+        "/api/transfer/multipart/complete"
+      ].includes(url.pathname);
 
     return isBackblazePartUpload || isTransferMultipartApi ? { method, url } : null;
   } catch {
