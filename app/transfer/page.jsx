@@ -1,4 +1,4 @@
-import TransferPortalClient from "@/components/TransferPortalClient";
+import TransferPortalReliableClient from "@/components/TransferPortalReliableClient";
 
 export const metadata = {
   title: "Promar Transfer",
@@ -35,7 +35,7 @@ export default function TransferPage() {
   return (
     <section className="transfer-page">
       <div className="container transfer-page-container">
-        <TransferPortalClient />
+        <TransferPortalReliableClient />
       </div>
     </section>
   );
