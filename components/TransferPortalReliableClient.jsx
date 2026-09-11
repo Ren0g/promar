@@ -6,18 +6,28 @@ import TransferPortalClient from "@/components/TransferPortalClient";
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000, 15000, 30000, 30000];
 
-function isBackblazeUploadRequest(input, init) {
-  const method = String(init?.method || (typeof Request !== "undefined" && input instanceof Request ? input.method : "GET")).toUpperCase();
-  if (method !== "PUT") return false;
+function getRetryableRequest(input, init) {
+  // Current transfer uploader always calls fetch with a URL string and a replayable
+  // Blob/JSON body. Do not retry arbitrary Request objects because their body may
+  // already be consumed after the first attempt.
+  if (!(typeof input === "string" || input instanceof URL)) return null;
 
-  const rawUrl = typeof input === "string" || input instanceof URL ? String(input) : input?.url;
-  if (!rawUrl) return false;
+  const method = String(init?.method || "GET").toUpperCase();
 
   try {
-    const hostname = new URL(rawUrl, window.location.href).hostname.toLowerCase();
-    return hostname.endsWith("backblazeb2.com") || hostname.endsWith("backblaze.com");
+    const url = new URL(String(input), window.location.href);
+    const hostname = url.hostname.toLowerCase();
+    const isBackblazePartUpload =
+      method === "PUT" &&
+      (hostname.endsWith("backblazeb2.com") || hostname.endsWith("backblaze.com"));
+    const isTransferMultipartApi =
+      method === "POST" &&
+      url.origin === window.location.origin &&
+      url.pathname.startsWith("/api/transfer/multipart/");
+
+    return isBackblazePartUpload || isTransferMultipartApi ? { method, url } : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -29,8 +39,9 @@ export default function TransferPortalReliableClient() {
   useEffect(() => {
     const originalFetch = window.fetch.bind(window);
 
-    async function fetchWithB2Retry(input, init) {
-      if (!isBackblazeUploadRequest(input, init)) {
+    async function fetchWithTransferRetry(input, init) {
+      const retryableRequest = getRetryableRequest(input, init);
+      if (!retryableRequest) {
         return originalFetch(input, init);
       }
 
@@ -60,13 +71,13 @@ export default function TransferPortalReliableClient() {
       }
 
       if (lastResponse) return lastResponse;
-      throw lastError || new Error("Upload prema B2 nije uspio nakon više pokušaja.");
+      throw lastError || new Error("Upload nije uspio nakon više automatskih pokušaja.");
     }
 
-    window.fetch = fetchWithB2Retry;
+    window.fetch = fetchWithTransferRetry;
 
     return () => {
-      if (window.fetch === fetchWithB2Retry) {
+      if (window.fetch === fetchWithTransferRetry) {
         window.fetch = originalFetch;
       }
     };
