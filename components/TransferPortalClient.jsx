@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import TransferDownloadAllButton from "./TransferDownloadAllButton";
 
 function formatBytes(bytes) {
   if (!bytes) return "0 B";
@@ -479,9 +480,11 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           </p>
         </div>
         <div className="transfer-toolbar-actions">
-          <button type="button" className="btn btn-secondary" onClick={handleDownloadAllWindows} disabled={busy || uploading}>
-            {busy ? "Priprema..." : "Preuzmi sve za Windows"}
-          </button>
+          <TransferDownloadAllButton
+            projectCode={session.projectCode}
+            path={path}
+            disabled={uploading}
+          />
           {isAdmin ? (
             <button type="button" className="btn btn-secondary" onClick={handleCreateFolder} disabled={uploading}>
               Napravi novi folder
