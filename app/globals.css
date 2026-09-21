@@ -403,10 +403,13 @@ p {
   white-space: nowrap;
 }
 
-.reference-image {
-  display: block;
-  width: 100%;
+.reference-browser-screen {
+  position: relative;
   aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.reference-image {
   object-fit: cover;
   object-position: top center;
 }
