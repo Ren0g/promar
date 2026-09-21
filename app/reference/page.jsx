@@ -6,7 +6,7 @@ export const metadata = {
 
 import SectionTitle from "../../components/SectionTitle";
 import Button from "../../components/Button";
-import Image from "next/image";
+import ReferenceMockup from "../../components/ReferenceMockup";
 
 const projekti = [
   {
@@ -94,14 +94,10 @@ export default function ReferencePage() {
           <div className="references-grid">
             {projekti.map((projekt) => (
               <div className="reference-card" key={projekt.naziv}>
-                <Image
+                <ReferenceMockup
                   src={projekt.slika}
                   alt={projekt.alt}
-                  className="reference-image"
-                  width={1348}
-                  height={926}
-                  sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
-                  unoptimized
+                  url={projekt.label}
                 />
                 <h3>{projekt.naziv}</h3>
                 <p>{projekt.opis}</p>

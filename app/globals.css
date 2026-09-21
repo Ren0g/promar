@@ -349,11 +349,66 @@ p {
   height: 100%;
 }
 
-.reference-image {
-  width: 100%;
-  aspect-ratio: 16 / 10;
+.reference-browser-mockup {
+  overflow: hidden;
+  border: 1px solid #d9dee7;
   border-radius: var(--radius-md);
+  background: #eef1f5;
+  box-shadow: 0 12px 28px rgba(18, 31, 52, 0.14);
+}
+
+.reference-browser-bar {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 10px;
+  background: #eef1f5;
+  border-bottom: 1px solid #d9dee7;
+}
+
+.reference-browser-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.reference-browser-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6159;
+}
+
+.reference-browser-dots span:nth-child(2) {
+  background: #ffbd2e;
+}
+
+.reference-browser-dots span:nth-child(3) {
+  background: #28c840;
+}
+
+.reference-browser-address {
+  min-width: 0;
+  padding: 4px 10px;
+  overflow: hidden;
+  border: 1px solid #dde2ea;
+  border-radius: 6px;
+  background: #fff;
+  color: #657086;
+  font-size: 0.68rem;
+  line-height: 1;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reference-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
+  object-position: top center;
 }
 
 .reference-card a {
