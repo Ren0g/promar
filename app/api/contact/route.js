@@ -10,13 +10,22 @@ import nodemailer from "nodemailer";
 const LOGO_URL =
   "https://raw.githubusercontent.com/Ren0g/promar/6dd632d22033e7ac5939cff1a1b427872fcac79b/public/images/logo-dark.png";
 
-// reCAPTCHA secret key
-const RECAPTCHA_SECRET = "6LfuCyEsAAAAABMs43GQYjB0LKpOY3T3YS28_B7Q";
+// Secrets must come from server-side environment variables.
+const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET;
+const SMTP_HOST = process.env.SMTP_HOST || "smtp.zoho.eu";
+const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
+const SMTP_USER = process.env.SMTP_USER || "info@promar.hr";
+const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
 
 /* ============================================================================
    reCAPTCHA VERIFY FUNCTION
 ============================================================================ */
 async function verifyCaptcha(token) {
+  if (!RECAPTCHA_SECRET) {
+    console.error("Missing RECAPTCHA_SECRET environment variable.");
+    return { success: false, score: 0 };
+  }
+
   try {
     const res = await fetch(
       "https://www.google.com/recaptcha/api/siteverify",
@@ -261,21 +270,24 @@ export async function POST(req) {
     /* ---------------------------
        5) SEND EMAILS
     --------------------------- */
+    if (!SMTP_PASSWORD) {
+      throw new Error("Missing SMTP_PASSWORD environment variable.");
+    }
+
     const transporter = nodemailer.createTransport({
-      host: "smtp.zoho.eu",
-      port: 587,
-      secure: false,
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_PORT === 465,
       auth: {
-        user: "info@promar.hr",
-        pass: "BxzxeMJJrd38"
-      },
-      tls: { rejectUnauthorized: false }
+        user: SMTP_USER,
+        pass: SMTP_PASSWORD
+      }
     });
 
     // MAIL TEBI + COPY
     await transporter.sendMail({
-      from: "Promar <info@promar.hr>",
-      to: "info@promar.hr",
+      from: `Promar <${SMTP_USER}>`,
+      to: SMTP_USER,
       cc: "renato.galekovic@gmail.com",
       subject: `Novi upit – ${body.name}`,
       html: generateHtmlEmail(body),
@@ -283,7 +295,7 @@ export async function POST(req) {
 
     // AUTOREPLY
     await transporter.sendMail({
-      from: "Promar <info@promar.hr>",
+      from: `Promar <${SMTP_USER}>`,
       to: body.email,
       subject: "Hvala na Vašoj poruci – Promar",
       html: generateAutoReplyHtml(body.name),
