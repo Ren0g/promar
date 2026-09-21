@@ -6,6 +6,7 @@ export const metadata = {
 
 import Button from "../components/Button";
 import SectionTitle from "../components/SectionTitle";
+import Image from "next/image";
 
 const problemi = [
   {
@@ -224,35 +225,92 @@ export default function HomePage() {
 
           <div className="references-grid">
             <div className="reference-card">
-              <img
+              <Image
                 src="/images/reference-fotqa.jpg"
                 alt="Fotqa primjer rada"
                 className="reference-image"
+                width={1348}
+                height={926}
+                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
               />
               <h3>Fotqa</h3>
               <p>Web, vizualni identitet i sadržaj za foto/video produkciju.</p>
             </div>
 
             <div className="reference-card">
-              <img
+              <Image
                 src="/images/reference-vjencanja.jpg"
                 alt="Tvornica vjenčanja primjer rada"
                 className="reference-image"
+                width={1348}
+                height={926}
+                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
               />
               <h3>Tvornica vjenčanja</h3>
               <p>Web i sadržaj za wedding zajednicu i povezivanje mladenaca s dobavljačima.</p>
             </div>
 
             <div className="reference-card">
-              <img
+              <Image
                 src="/images/reference-svadba.jpg"
                 alt="Svadba.app primjer aplikacije"
                 className="reference-image"
+                width={1348}
+                height={926}
+                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
               />
               <h3>Svadba.app</h3>
               <p>
                 Web aplikacija za organizaciju vjenčanja s modulima za zadatke,
                 budžet, goste, plan sjedenja i galeriju.
+              </p>
+            </div>
+
+            <div className="reference-card">
+              <Image
+                src="/images/reference-skorica.jpg"
+                alt="Skorica platforma za sportska natjecanja"
+                className="reference-image"
+                width={1348}
+                height={926}
+                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+              />
+              <h3>Skorica</h3>
+              <p>
+                Web stranica i platforma za organizaciju liga i turnira,
+                rezultate, tablice i javnu objavu natjecanja.
+              </p>
+            </div>
+
+            <div className="reference-card">
+              <Image
+                src="/images/reference-teravita.jpg"
+                alt="Tera Vita primjer web stranice"
+                className="reference-image"
+                width={1348}
+                height={926}
+                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+              />
+              <h3>Tera Vita</h3>
+              <p>
+                Web stranica za manualne tretmane ljudi i životinja, s jasnim
+                predstavljanjem pristupa, usluga i dogovora termina.
+              </p>
+            </div>
+
+            <div className="reference-card">
+              <Image
+                src="/images/reference-masaza-balans.jpg"
+                alt="Masaža Balans primjer web stranice"
+                className="reference-image"
+                width={1348}
+                height={926}
+                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+              />
+              <h3>Masaža Balans</h3>
+              <p>
+                Web stranica za terapijsku masažu s prikazom usluga i cijena,
+                iskustava klijenata i izravnim dogovorom termina.
               </p>
             </div>
           </div>
