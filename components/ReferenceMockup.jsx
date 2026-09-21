@@ -11,15 +11,16 @@ export default function ReferenceMockup({ src, alt, url }) {
         </span>
         <span className="reference-browser-address">{url}</span>
       </div>
-      <Image
-        src={src}
-        alt={alt}
-        className="reference-image"
-        width={1348}
-        height={926}
-        sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
-        unoptimized
-      />
+      <div className="reference-browser-screen">
+        <Image
+          src={src}
+          alt={alt}
+          className="reference-image"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+          unoptimized
+        />
+      </div>
     </div>
   );
 }
