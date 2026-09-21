@@ -20,7 +20,7 @@ export default function ContactForm() {
     if (!window.grecaptcha) {
       const script = document.createElement("script");
       script.src =
-        "https://www.google.com/recaptcha/api.js?render=6LfuCyEsAAAAAOXyd1SEb_o2TwE8jIHcieJ1lW2s";
+        "https://www.google.com/recaptcha/api.js?render=6Lf4ccctAAAAAOn7aWLgPVMm2HPf1WQ8OAtLVKrB";
       script.async = true;
       document.body.appendChild(script);
     }
@@ -76,7 +76,7 @@ export default function ContactForm() {
     }
 
     const token = await window.grecaptcha.execute(
-      "6LfuCyEsAAAAAOXyd1SEb_o2TwE8jIHcieJ1lW2s",
+      "6Lf4ccctAAAAAOn7aWLgPVMm2HPf1WQ8OAtLVKrB",
       { action: "submit" }
     );
 
