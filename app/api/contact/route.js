@@ -305,6 +305,21 @@ export async function POST(req) {
 
   } catch (err) {
     console.error("SERVER ERROR:", err);
-    return Response.json({ success: false, error: err.message }, { status: 500 });
+
+    const errorCode =
+      err?.code ||
+      (String(err?.message || "").includes("SMTP_PASSWORD")
+        ? "SMTP_CONFIG"
+        : "SERVER_ERROR");
+
+    return Response.json(
+      {
+        success: false,
+        errorCode,
+        responseCode: err?.responseCode || null,
+        command: err?.command || null
+      },
+      { status: 500 }
+    );
   }
 }
