@@ -93,7 +93,10 @@ export default function ContactForm() {
 
     if (!result.success) {
       setSubmitted(false);
-      alert("Greška pri slanju poruke.");
+      const details = [result.errorCode, result.responseCode, result.command]
+        .filter(Boolean)
+        .join(" / ");
+      alert(`Greška pri slanju poruke.${details ? ` Kod: ${details}` : ""}`);
       return;
     }
 
