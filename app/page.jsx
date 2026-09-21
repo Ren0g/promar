@@ -6,7 +6,7 @@ export const metadata = {
 
 import Button from "../components/Button";
 import SectionTitle from "../components/SectionTitle";
-import Image from "next/image";
+import ReferenceMockup from "../components/ReferenceMockup";
 
 const problemi = [
   {
@@ -225,39 +225,30 @@ export default function HomePage() {
 
           <div className="references-grid">
             <div className="reference-card">
-              <Image
+              <ReferenceMockup
                 src="/images/reference-fotqa.jpg"
                 alt="Fotqa primjer rada"
-                className="reference-image"
-                width={1348}
-                height={926}
-                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+                url="fotqa.com"
               />
               <h3>Fotqa</h3>
               <p>Web, vizualni identitet i sadržaj za foto/video produkciju.</p>
             </div>
 
             <div className="reference-card">
-              <Image
+              <ReferenceMockup
                 src="/images/reference-vjencanja.jpg"
                 alt="Tvornica vjenčanja primjer rada"
-                className="reference-image"
-                width={1348}
-                height={926}
-                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+                url="tvornicavjencanja.hr"
               />
               <h3>Tvornica vjenčanja</h3>
               <p>Web i sadržaj za wedding zajednicu i povezivanje mladenaca s dobavljačima.</p>
             </div>
 
             <div className="reference-card">
-              <Image
+              <ReferenceMockup
                 src="/images/reference-svadba.jpg"
                 alt="Svadba.app primjer aplikacije"
-                className="reference-image"
-                width={1348}
-                height={926}
-                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+                url="svadba.app"
               />
               <h3>Svadba.app</h3>
               <p>
@@ -267,13 +258,10 @@ export default function HomePage() {
             </div>
 
             <div className="reference-card">
-              <Image
+              <ReferenceMockup
                 src="/images/reference-skorica.jpg"
                 alt="Skorica platforma za sportska natjecanja"
-                className="reference-image"
-                width={1348}
-                height={926}
-                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+                url="skorica.com"
               />
               <h3>Skorica</h3>
               <p>
@@ -283,13 +271,10 @@ export default function HomePage() {
             </div>
 
             <div className="reference-card">
-              <Image
+              <ReferenceMockup
                 src="/images/reference-teravita.jpg"
                 alt="Tera Vita primjer web stranice"
-                className="reference-image"
-                width={1348}
-                height={926}
-                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+                url="teravita.hr"
               />
               <h3>Tera Vita</h3>
               <p>
@@ -299,13 +284,10 @@ export default function HomePage() {
             </div>
 
             <div className="reference-card">
-              <Image
+              <ReferenceMockup
                 src="/images/reference-masaza-balans.jpg"
                 alt="Masaža Balans primjer web stranice"
-                className="reference-image"
-                width={1348}
-                height={926}
-                sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+                url="masazabalans.hr"
               />
               <h3>Masaža Balans</h3>
               <p>
