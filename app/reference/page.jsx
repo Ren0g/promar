@@ -101,6 +101,7 @@ export default function ReferencePage() {
                   width={1348}
                   height={926}
                   sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
+                  unoptimized
                 />
                 <h3>{projekt.naziv}</h3>
                 <p>{projekt.opis}</p>
