@@ -1,11 +1,12 @@
 export const metadata = {
   title: "Primjeri radova | Promar – web stranice i aplikacije",
   description:
-    "Primjeri web stranica, platformi i aplikacija: Fotqa, Tvornica vjenčanja, Svadba.app i Zimska liga Panadić."
+    "Primjeri web stranica, platformi i aplikacija: Fotqa, Tvornica vjenčanja, Svadba.app, Skorica, Tera Vita, Masaža Balans i Zimska liga Panadić."
 };
 
 import SectionTitle from "../../components/SectionTitle";
 import Button from "../../components/Button";
+import Image from "next/image";
 
 const projekti = [
   {
@@ -34,6 +35,33 @@ const projekti = [
       "Web aplikacija za organizaciju vjenčanja s modulima za zadatke, budžet, goste, plan sjedenja, dobavljače, uplate i QR galeriju.",
     link: "https://svadba.app",
     label: "svadba.app"
+  },
+  {
+    naziv: "Skorica",
+    slika: "/images/reference-skorica.jpg",
+    alt: "Skorica platforma za sportska natjecanja",
+    opis:
+      "Web stranica i platforma za organizaciju liga i turnira, praćenje rezultata, tablica i javnu objavu natjecanja.",
+    link: "https://www.skorica.com",
+    label: "skorica.com"
+  },
+  {
+    naziv: "Tera Vita",
+    slika: "/images/reference-teravita.jpg",
+    alt: "Tera Vita primjer web stranice",
+    opis:
+      "Web stranica za manualne tretmane ljudi i životinja, s jasnim predstavljanjem pristupa, usluga i dogovora termina.",
+    link: "https://teravita.hr",
+    label: "teravita.hr"
+  },
+  {
+    naziv: "Masaža Balans",
+    slika: "/images/reference-masaza-balans.jpg",
+    alt: "Masaža Balans primjer web stranice",
+    opis:
+      "Web stranica za terapijsku masažu s prikazom usluga i cijena, iskustava klijenata te izravnim dogovorom termina.",
+    link: "https://www.masazabalans.hr",
+    label: "masazabalans.hr"
   },
   {
     naziv: "Zimska liga Panadić",
@@ -66,10 +94,13 @@ export default function ReferencePage() {
           <div className="references-grid">
             {projekti.map((projekt) => (
               <div className="reference-card" key={projekt.naziv}>
-                <img
+                <Image
                   src={projekt.slika}
                   alt={projekt.alt}
                   className="reference-image"
+                  width={1348}
+                  height={926}
+                  sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 33vw"
                 />
                 <h3>{projekt.naziv}</h3>
                 <p>{projekt.opis}</p>
