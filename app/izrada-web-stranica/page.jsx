@@ -267,8 +267,8 @@ export default function IzradaWebStranicaPage() {
                   </div>
                   <div className="web-package-prices">
                     <span className="web-package-current-price">{paket.cijena}</span>
-                    <span className="web-package-base-label">Bazna cijena (10. 9. 2026.)</span>
-                    <span className="web-package-base-value">{paket.baznaCijena}</span>
+                    <span className="web-package-base-value">Bazna cijena: {paket.baznaCijena}</span>
+                    <span className="web-package-base-date">10. 9. 2026.</span>
                   </div>
                 </div>
                 <p>{paket.opis}</p>
