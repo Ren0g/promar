@@ -239,37 +239,19 @@ export default function IzradaWebStranicaPage() {
             </p>
           </div>
 
-          <div className="web-hero-actions" style={{ justifyContent: "center", marginTop: "0", marginBottom: "28px" }}>
-            <a
-              href="/cjenik-promar.pdf"
-              className="btn btn-primary"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Pogledajte kompletan cjenik (PDF)
-            </a>
-            <a
-              href="/STUDIO_KURILOVECKA152_VELIKAGORICA_U01_0001_20261116_1832.csv"
-              className="btn btn-secondary"
-              download
-            >
-              Preuzmite CSV cjenik
-            </a>
-          </div>
-
           <div className="web-packages">
             {paketi.map((paket) => (
               <article className="web-package-card" key={paket.naziv}>
                 <div className="web-package-head">
-                  <div>
+                  <div className="web-package-heading-line">
                     <h3>{paket.naziv}</h3>
-                    <p>{paket.oznaka}</p>
+                    <div className="web-package-prices">
+                      <span className="web-package-current-price">{paket.cijena}</span>
+                      <span className="web-package-base-value">Bazna cijena: {paket.baznaCijena}</span>
+                      <span className="web-package-base-date">10. 9. 2026.</span>
+                    </div>
                   </div>
-                  <div className="web-package-prices">
-                    <span className="web-package-current-price">{paket.cijena}</span>
-                    <span className="web-package-base-value">Bazna cijena: {paket.baznaCijena}</span>
-                    <span className="web-package-base-date">10. 9. 2026.</span>
-                  </div>
+                  <p className="web-package-tagline">{paket.oznaka}</p>
                 </div>
                 <p>{paket.opis}</p>
 

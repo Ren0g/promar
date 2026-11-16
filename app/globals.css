@@ -1025,21 +1025,19 @@ p {
 }
 
 .web-package-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
   margin-bottom: 12px;
 }
 
-.web-package-head > div:first-child {
-  min-width: 0;
+.web-package-heading-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.web-package-head span {
-  color: var(--color-orange);
-  font-weight: 700;
-  white-space: nowrap;
+.web-package-heading-line h3 {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .web-package-prices {
@@ -1051,6 +1049,12 @@ p {
   gap: 1px;
 }
 
+.web-package-head .web-package-current-price {
+  color: var(--color-orange);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .web-package-head .web-package-base-value,
 .web-package-head .web-package-base-date {
   color: #696969;
@@ -1058,6 +1062,10 @@ p {
   font-weight: 400;
   line-height: 1.35;
   white-space: nowrap;
+}
+
+.web-package-head .web-package-tagline {
+  margin-top: 8px;
 }
 
 .web-package-list {
