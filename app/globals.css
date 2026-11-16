@@ -1028,8 +1028,12 @@ p {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
+  gap: 10px;
   margin-bottom: 12px;
+}
+
+.web-package-head > div:first-child {
+  min-width: 0;
 }
 
 .web-package-head span {
@@ -1040,25 +1044,20 @@ p {
 
 .web-package-prices {
   display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
   align-items: flex-end;
   text-align: right;
-  flex-shrink: 0;
-  gap: 2px;
+  gap: 1px;
 }
 
-.web-package-head .web-package-base-label {
-  color: #555;
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.3;
-  white-space: normal;
-}
-
-.web-package-head .web-package-base-value {
-  color: #1f1f1f;
-  font-size: 0.95rem;
-  font-weight: 600;
+.web-package-head .web-package-base-value,
+.web-package-head .web-package-base-date {
+  color: #696969;
+  font-size: 0.73rem;
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: nowrap;
 }
 
 .web-package-list {
