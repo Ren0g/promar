@@ -10,6 +10,7 @@ const paketi = [
   {
     naziv: "Starter",
     cijena: "od 299 €",
+    baznaCijena: "299 €",
     oznaka: "Za brz i uredan početak",
     opis:
       "Za obrt, uslugu ili mali projekt kojem treba jednostavna stranica koja objašnjava ponudu i omogućuje brz kontakt.",
@@ -31,6 +32,7 @@ const paketi = [
   {
     naziv: "Standard",
     cijena: "od 550 €",
+    baznaCijena: "550 €",
     oznaka: "Najbolji izbor za većinu firmi",
     opis:
       "Za firme i obrte kojima treba jasnija struktura, više sadržaja i kvalitetnija prezentacija usluga.",
@@ -46,6 +48,7 @@ const paketi = [
   {
     naziv: "Premium",
     cijena: "od 850 €",
+    baznaCijena: "850 €",
     oznaka: "Za ozbiljniji nastup",
     opis:
       "Za projekte kojima treba jači vizualni dojam, više sadržaja, napredniji layout ili dodatne funkcionalnosti.",
@@ -262,7 +265,11 @@ export default function IzradaWebStranicaPage() {
                     <h3>{paket.naziv}</h3>
                     <p>{paket.oznaka}</p>
                   </div>
-                  <span>{paket.cijena}</span>
+                  <div className="web-package-prices">
+                    <span className="web-package-current-price">{paket.cijena}</span>
+                    <span className="web-package-base-label">Bazna cijena (10. 9. 2026.)</span>
+                    <span className="web-package-base-value">{paket.baznaCijena}</span>
+                  </div>
                 </div>
                 <p>{paket.opis}</p>
 
