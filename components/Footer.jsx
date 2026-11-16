@@ -24,6 +24,8 @@ export default function Footer() {
           <Link href="/savjeti">Savjeti</Link>
           <Link href="/o-nama">O nama</Link>
           <Link href="/kontakt">Kontakt</Link>
+          <a href="/cjenik-promar.pdf" target="_blank" rel="noopener noreferrer">Kompletan cjenik (PDF)</a>
+          <a href="/STUDIO_KURILOVECKA152_VELIKAGORICA_U01_0001_20261116_1832.csv" download>Objava cjenika (CSV)</a>
         </div>
       </div>
 
