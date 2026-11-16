@@ -1068,6 +1068,47 @@ p {
   margin-top: 8px;
 }
 
+.web-package-card {
+  position: relative;
+}
+
+.web-package-base-inline {
+  display: none;
+}
+
+.web-package-base-vertical {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  color: #777;
+}
+
+@media (min-width: 641px) {
+  .web-package-card {
+    padding-right: 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  .web-package-base-vertical {
+    display: none;
+  }
+
+  .web-package-base-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+  }
+}
+
 .web-package-list {
   margin-top: 18px;
 }

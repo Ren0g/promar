@@ -247,11 +247,16 @@ export default function IzradaWebStranicaPage() {
                     <h3>{paket.naziv}</h3>
                     <div className="web-package-prices">
                       <span className="web-package-current-price">{paket.cijena}</span>
-                      <span className="web-package-base-value">Bazna cijena: {paket.baznaCijena}</span>
-                      <span className="web-package-base-date">10. 9. 2026.</span>
+                      <div className="web-package-base-inline">
+                        <span className="web-package-base-value">Bazna cijena: {paket.baznaCijena}</span>
+                        <span className="web-package-base-date">10. 9. 2026.</span>
+                      </div>
                     </div>
                   </div>
                   <p className="web-package-tagline">{paket.oznaka}</p>
+                </div>
+                <div className="web-package-base-vertical">
+                  Bazna cijena: {paket.baznaCijena} · 10. 9. 2026.
                 </div>
                 <p>{paket.opis}</p>
 
