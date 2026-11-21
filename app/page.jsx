@@ -246,6 +246,21 @@ export default function HomePage() {
 
             <div className="reference-card">
               <ReferenceMockup
+                src="/images/reference-stand.jpg"
+                alt="Naslovnica oglasnika Štand"
+                url="stand.com.hr"
+              />
+              <h3>Štand</h3>
+              <p>Oglasnik za nove i rabljene vjenčane artikle.</p>
+              <p>
+                <a href="https://stand.com.hr" target="_blank" rel="noreferrer">
+                  stand.com.hr
+                </a>
+              </p>
+            </div>
+
+            <div className="reference-card">
+              <ReferenceMockup
                 src="/images/reference-svadba.jpg"
                 alt="Svadba.app primjer aplikacije"
                 url="svadba.app"

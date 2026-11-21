@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Primjeri radova | Promar – web stranice i aplikacije",
   description:
-    "Primjeri web stranica, platformi i aplikacija: Fotqa, Tvornica vjenčanja, Svadba.app, Skorica, Tera Vita, Masaža Balans i Zimska liga Panadić."
+    "Primjeri web stranica, platformi i aplikacija: Fotqa, Tvornica vjenčanja, Štand, Svadba.app, Skorica, Tera Vita, Masaža Balans i Zimska liga Panadić."
 };
 
 import SectionTitle from "../../components/SectionTitle";
@@ -26,6 +26,15 @@ const projekti = [
       "Wedding platforma i zajednica: web, sadržaj, vizuali i struktura koja povezuje mladence s dobavljačima.",
     link: "https://tvornicavjencanja.hr",
     label: "tvornicavjencanja.hr"
+  },
+  {
+    naziv: "Štand",
+    slika: "/images/reference-stand.jpg",
+    alt: "Naslovnica oglasnika Štand",
+    opis:
+      "Oglasnik za nove i rabljene vjenčane artikle s objavom oglasa, pretragom po kategoriji i lokaciji, spremanjem oglasa i porukama prodavateljima.",
+    link: "https://stand.com.hr",
+    label: "stand.com.hr"
   },
   {
     naziv: "Svadba.app",
