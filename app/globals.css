@@ -248,10 +248,10 @@ p {
 
 .hero-inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
   gap: 40px;
   align-items: center;
-  max-width: 1164px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
@@ -758,7 +758,6 @@ p {
 
 @media (max-width: 1200px) {
   .section .container,
-  .hero-inner,
   .two-cols,
   .home-about {
     max-width: 1000px;
