@@ -232,6 +232,9 @@ export default function HomePage() {
               />
               <h3>Fotqa</h3>
               <p>Web, vizualni identitet i sadržaj za foto/video produkciju.</p>
+              <a href="https://fotqa.com" target="_blank" rel="noreferrer">
+                fotqa.com
+              </a>
             </div>
 
             <div className="reference-card">
@@ -242,6 +245,9 @@ export default function HomePage() {
               />
               <h3>Tvornica vjenčanja</h3>
               <p>Web i sadržaj za wedding zajednicu i povezivanje mladenaca s dobavljačima.</p>
+              <a href="https://tvornicavjencanja.hr" target="_blank" rel="noreferrer">
+                tvornicavjencanja.hr
+              </a>
             </div>
 
             <div className="reference-card">
@@ -252,11 +258,9 @@ export default function HomePage() {
               />
               <h3>Štand</h3>
               <p>Oglasnik za nove i rabljene vjenčane artikle.</p>
-              <p>
-                <a href="https://stand.com.hr" target="_blank" rel="noreferrer">
-                  stand.com.hr
-                </a>
-              </p>
+              <a href="https://stand.com.hr" target="_blank" rel="noreferrer">
+                stand.com.hr
+              </a>
             </div>
 
             <div className="reference-card">
@@ -270,6 +274,9 @@ export default function HomePage() {
                 Web aplikacija za organizaciju vjenčanja s modulima za zadatke,
                 budžet, goste, plan sjedenja i galeriju.
               </p>
+              <a href="https://svadba.app" target="_blank" rel="noreferrer">
+                svadba.app
+              </a>
             </div>
 
             <div className="reference-card">
@@ -283,6 +290,9 @@ export default function HomePage() {
                 Web stranica i platforma za organizaciju liga i turnira,
                 rezultate, tablice i javnu objavu natjecanja.
               </p>
+              <a href="https://www.skorica.com" target="_blank" rel="noreferrer">
+                skorica.com
+              </a>
             </div>
 
             <div className="reference-card">
@@ -296,6 +306,9 @@ export default function HomePage() {
                 Web stranica za manualne tretmane ljudi i životinja, s jasnim
                 predstavljanjem pristupa, usluga i dogovora termina.
               </p>
+              <a href="https://teravita.hr" target="_blank" rel="noreferrer">
+                teravita.hr
+              </a>
             </div>
 
             <div className="reference-card">
@@ -309,6 +322,9 @@ export default function HomePage() {
                 Web stranica za terapijsku masažu s prikazom usluga i cijena,
                 iskustava klijenata i izravnim dogovorom termina.
               </p>
+              <a href="https://www.masazabalans.hr" target="_blank" rel="noreferrer">
+                masazabalans.hr
+              </a>
             </div>
 
             <div className="reference-card">
@@ -319,6 +335,9 @@ export default function HomePage() {
               />
               <h3>Zimska liga Panadić</h3>
               <p>Aplikacija za praćenje rezultata, tablica i rasporeda sportske lige.</p>
+              <a href="https://panadic.vercel.app" target="_blank" rel="noreferrer">
+                panadic.vercel.app
+              </a>
             </div>
           </div>
 

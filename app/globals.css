@@ -420,6 +420,12 @@ p {
   word-break: break-word;
 }
 
+.home-references-grid .reference-card > a {
+  align-self: flex-start;
+  margin-top: auto;
+  max-width: 100%;
+}
+
 @media (min-width: 993px) {
   .home-references-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
