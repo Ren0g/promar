@@ -297,19 +297,6 @@ export default function HomePage() {
                 predstavljanjem pristupa, usluga i dogovora termina.
               </p>
             </div>
-
-            <div className="reference-card">
-              <ReferenceMockup
-                src="/images/reference-masaza-balans.jpg"
-                alt="Masaža Balans primjer web stranice"
-                url="masazabalans.hr"
-              />
-              <h3>Masaža Balans</h3>
-              <p>
-                Web stranica za terapijsku masažu s prikazom usluga i cijena,
-                iskustava klijenata i izravnim dogovorom termina.
-              </p>
-            </div>
           </div>
 
           <div className="section-cta-centered">
