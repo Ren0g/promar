@@ -283,6 +283,12 @@ p {
   box-shadow: var(--shadow-soft);
 }
 
+@media (min-width: 993px) {
+  .hero-text .page-main-title {
+    font-size: clamp(2.25rem, 2.8vw, 3rem);
+  }
+}
+
 .two-cols {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
