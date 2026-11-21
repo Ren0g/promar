@@ -420,6 +420,16 @@ p {
   word-break: break-word;
 }
 
+@media (min-width: 993px) {
+  .home-references-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-references-grid .reference-browser-bar {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+  }
+}
+
 .about-highlight {
   margin-top: 20px;
   padding: 18px 20px;

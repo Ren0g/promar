@@ -223,7 +223,7 @@ export default function HomePage() {
             subtitle="Prikazujemo projekte i platforme kroz koje se vidi pristup strukturi, dizajnu, sadržaju i funkcionalnostima — od prezentacijskih stranica do web aplikacija."
           />
 
-          <div className="references-grid">
+          <div className="references-grid home-references-grid">
             <div className="reference-card">
               <ReferenceMockup
                 src="/images/reference-fotqa.jpg"
@@ -296,6 +296,29 @@ export default function HomePage() {
                 Web stranica za manualne tretmane ljudi i životinja, s jasnim
                 predstavljanjem pristupa, usluga i dogovora termina.
               </p>
+            </div>
+
+            <div className="reference-card">
+              <ReferenceMockup
+                src="/images/reference-masaza-balans.jpg"
+                alt="Masaža Balans primjer web stranice"
+                url="masazabalans.hr"
+              />
+              <h3>Masaža Balans</h3>
+              <p>
+                Web stranica za terapijsku masažu s prikazom usluga i cijena,
+                iskustava klijenata i izravnim dogovorom termina.
+              </p>
+            </div>
+
+            <div className="reference-card">
+              <ReferenceMockup
+                src="/images/reference-panadic.jpg"
+                alt="Zimska liga Panadić primjer aplikacije"
+                url="panadic.vercel.app"
+              />
+              <h3>Zimska liga Panadić</h3>
+              <p>Aplikacija za praćenje rezultata, tablica i rasporeda sportske lige.</p>
             </div>
           </div>
 
