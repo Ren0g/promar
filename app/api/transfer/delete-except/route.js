@@ -56,11 +56,12 @@ export async function POST(request) {
       return Response.json(
         {
           ok: false,
+          error: `Obrisano je ${result.deletedCount} datoteka, ali ${result.errors.length} nije uspjelo. Popis će se osvježiti; pokušajte ponovno samo s preostalima.`,
           ...summary,
           deletedCount: result.deletedCount,
           errors: result.errors
         },
-        { status: 207 }
+        { status: 500 }
       );
     }
 
