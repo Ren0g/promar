@@ -231,14 +231,23 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   const [uploading, setUploading] = useState(false);
   const [uploadBatch, setUploadBatch] = useState(null);
   const [failedUploads, setFailedUploads] = useState([]);
+  const [selectedKeepKeys, setSelectedKeepKeys] = useState(() => new Set());
+  const [bulkDeleteBusy, setBulkDeleteBusy] = useState(false);
+  const [fileSearch, setFileSearch] = useState("");
   const [busy, setBusy] = useState(false);
 
   const isAdmin = session.role === "admin";
+  const transferBusy = uploading || bulkDeleteBusy;
   const breadcrumbs = breadcrumbParts(path);
   const totalFileSize = useMemo(
     () => files.reduce((sum, file) => sum + (file.size || 0), 0),
     [files]
   );
+  const visibleFiles = useMemo(() => {
+    const query = fileSearch.trim().toLocaleLowerCase("hr-HR");
+    if (!query) return files;
+    return files.filter((file) => file.name.toLocaleLowerCase("hr-HR").includes(query));
+  }, [files, fileSearch]);
 
   async function refresh() {
     setLoading(true);
@@ -259,6 +268,11 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   useEffect(() => {
     refresh();
   }, [path, session.projectCode]);
+
+  useEffect(() => {
+    setSelectedKeepKeys(new Set());
+    setFileSearch("");
+  }, [path]);
 
   async function runUploadBatch(items) {
     if (!items.length) return;
@@ -350,6 +364,74 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
   async function handleFolderInputChange(selectedFiles, event, targetPath) {
     await handleUploadFiles(selectedFiles, targetPath);
     if (event?.target) event.target.value = "";
+  }
+
+  function toggleKeepFile(key) {
+    setSelectedKeepKeys((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
+
+  async function handleDeleteAllExceptSelected() {
+    if (!selectedKeepKeys.size || bulkDeleteBusy) {
+      setError("Označite barem jednu datoteku koju želite zadržati.");
+      return;
+    }
+
+    setBulkDeleteBusy(true);
+    setError("");
+
+    try {
+      const keepKeys = Array.from(selectedKeepKeys);
+      const preview = await api("/api/transfer/delete-except", {
+        method: "POST",
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path,
+          keepKeys,
+          execute: false
+        })
+      });
+
+      if (!preview.deleteCount) {
+        window.alert("Sve datoteke u ovom folderu označene su za zadržavanje. Nema ništa za brisanje.");
+        return;
+      }
+
+      const confirmed = window.confirm(
+        `U folderu je ${preview.totalCount} datoteka.\n\n` +
+        `Zadržavate: ${preview.keepCount}\n` +
+        `OBRISAT ĆE SE: ${preview.deleteCount}\n\n` +
+        "Brisanje se ne može poništiti. Želite li nastaviti?"
+      );
+
+      if (!confirmed) return;
+
+      const result = await api("/api/transfer/delete-except", {
+        method: "POST",
+        body: JSON.stringify({
+          projectCode: session.projectCode,
+          path,
+          keepKeys,
+          execute: true,
+          expectedDeleteCount: preview.deleteCount
+        })
+      });
+
+      setSelectedKeepKeys(new Set());
+      await refresh();
+      window.alert(
+        `Gotovo. Obrisano je ${result.deletedCount} datoteka, a ${result.keepCount} je ostalo u folderu.`
+      );
+    } catch (err) {
+      setError(err.message || "Masovno brisanje nije uspjelo.");
+      await refresh();
+    } finally {
+      setBulkDeleteBusy(false);
+    }
   }
 
   async function handleDownload(file) {
@@ -461,11 +543,11 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
         actions={
           <>
             {session.role === "admin" && onBackToProjects ? (
-              <button type="button" className="btn btn-secondary" onClick={onBackToProjects} disabled={uploading}>
+              <button type="button" className="btn btn-secondary" onClick={onBackToProjects} disabled={transferBusy}>
                 Natrag na svadbe
               </button>
             ) : null}
-            <button type="button" className="btn btn-secondary" onClick={onLogout} disabled={uploading}>
+            <button type="button" className="btn btn-secondary" onClick={onLogout} disabled={transferBusy}>
               Odjava
             </button>
           </>
@@ -483,10 +565,10 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
           <TransferDownloadAllButton
             projectCode={session.projectCode}
             path={path}
-            disabled={uploading}
+            disabled={transferBusy}
           />
           {isAdmin ? (
-            <button type="button" className="btn btn-secondary" onClick={handleCreateFolder} disabled={uploading}>
+            <button type="button" className="btn btn-secondary" onClick={handleCreateFolder} disabled={transferBusy}>
               Napravi novi folder
             </button>
           ) : null}
@@ -496,7 +578,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                 type="file"
                 multiple
                 onChange={(event) => handleFolderInputChange(Array.from(event.target.files || []), event, path)}
-                disabled={uploading}
+                disabled={transferBusy}
               />
               {uploading ? "Upload u tijeku..." : "Dodaj datoteke"}
             </label>
@@ -505,14 +587,14 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
       </div>
 
       <div className="transfer-breadcrumbs">
-        <button type="button" className={`transfer-crumb ${!path ? "is-active" : ""}`} onClick={() => setPath("")} disabled={uploading}>Root</button>
+        <button type="button" className={`transfer-crumb ${!path ? "is-active" : ""}`} onClick={() => setPath("")} disabled={transferBusy}>Root</button>
         {breadcrumbs.map((crumb) => (
           <button
             key={crumb.path}
             type="button"
             className={`transfer-crumb ${crumb.path === path ? "is-active" : ""}`}
             onClick={() => setPath(crumb.path)}
-            disabled={uploading}
+            disabled={transferBusy}
           >
             {crumb.name}
           </button>
@@ -561,11 +643,47 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                 ))}
               </div>
               <div className="transfer-file-actions" style={{ marginTop: 16 }}>
-                <button type="button" className="btn btn-primary" onClick={handleRetryFailed} disabled={uploading}>
+                <button type="button" className="btn btn-primary" onClick={handleRetryFailed} disabled={transferBusy}>
                   Ponovi neuspjele ({failedUploads.length})
                 </button>
               </div>
             </>
+          ) : null}
+        </div>
+      ) : null}
+
+      {isAdmin && files.length ? (
+        <div className="transfer-card" style={{ marginBottom: 18 }}>
+          <div className="transfer-section-head">
+            <h3>Odabir datoteka za zadržavanje</h3>
+            <span>{selectedKeepKeys.size}/{files.length}</span>
+          </div>
+          <p className="transfer-card-intro">
+            Označite samo datoteke koje želite ostaviti na serveru. Nakon toga možete obrisati sve ostale jednim klikom.
+          </p>
+          <div className="transfer-file-actions" style={{ alignItems: "center", marginTop: 14 }}>
+            <input
+              type="search"
+              value={fileSearch}
+              onChange={(event) => setFileSearch(event.target.value)}
+              placeholder="Pretraži datoteke po nazivu"
+              disabled={transferBusy}
+              style={{ minWidth: 280, maxWidth: 460 }}
+            />
+            <strong>Za zadržavanje označeno: {selectedKeepKeys.size}</strong>
+            <button
+              type="button"
+              className="btn btn-ghost-danger"
+              onClick={handleDeleteAllExceptSelected}
+              disabled={transferBusy || selectedKeepKeys.size === 0}
+            >
+              {bulkDeleteBusy ? "Brisanje..." : "Obriši sve osim označenih"}
+            </button>
+          </div>
+          {fileSearch ? (
+            <p style={{ marginTop: 10 }}>
+              Prikazano prema pretrazi: {visibleFiles.length} od {files.length} datoteka.
+            </p>
           ) : null}
         </div>
       ) : null}
@@ -589,7 +707,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                     type="button"
                     className="transfer-folder-link"
                     onClick={() => setPath(folder.path)}
-                    disabled={uploading}
+                    disabled={transferBusy}
                   >
                     <span className="transfer-folder-icon">📁</span>
                     <span>
@@ -601,17 +719,17 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                   <div className="transfer-folder-actions">
                     {!path ? (
                       <FolderUploadButton
-                        disabled={uploading}
+                        disabled={transferBusy}
                         onFiles={(selected, event) => handleFolderInputChange(selected, event, folder.path)}
                       />
                     ) : null}
                     {isAdmin ? (
-                      <button type="button" className="btn btn-secondary" onClick={() => handleRenameFolder(folder)} disabled={uploading}>
+                      <button type="button" className="btn btn-secondary" onClick={() => handleRenameFolder(folder)} disabled={transferBusy}>
                         Preimenuj
                       </button>
                     ) : null}
                     {isAdmin ? (
-                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFolder(folder)} disabled={uploading}>
+                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFolder(folder)} disabled={transferBusy}>
                         Obriši
                       </button>
                     ) : null}
@@ -634,7 +752,7 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
             <div className="transfer-empty">Učitavanje...</div>
           ) : files.length ? (
             <div className="transfer-file-list">
-              {files.map((file) => (
+              {visibleFiles.map((file) => (
                 <div key={file.key} className="transfer-file-item">
                   <div>
                     <strong>{file.name}</strong>
@@ -644,11 +762,22 @@ function ProjectBrowser({ session, onBackToProjects, onLogout }) {
                     </p>
                   </div>
                   <div className="transfer-file-actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)} disabled={uploading}>
+                    {isAdmin ? (
+                      <label style={{ display: "inline-flex", alignItems: "center", gap: 7, fontWeight: 600 }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedKeepKeys.has(file.key)}
+                          onChange={() => toggleKeepFile(file.key)}
+                          disabled={transferBusy}
+                        />
+                        Zadrži
+                      </label>
+                    ) : null}
+                    <button type="button" className="btn btn-secondary" onClick={() => handleDownload(file)} disabled={transferBusy}>
                       Preuzmi
                     </button>
                     {isAdmin ? (
-                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFile(file)} disabled={uploading}>
+                      <button type="button" className="btn btn-ghost-danger" onClick={() => handleDeleteFile(file)} disabled={transferBusy}>
                         Obriši
                       </button>
                     ) : null}
